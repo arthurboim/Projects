@@ -2,11 +2,8 @@ package Gui;
 
 import java.awt.EventQueue;
 
-import javax.swing.JFrame;
-
-import com.sun.codemodel.JLabel;
-
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 
 public class FileChooserAbFinder {
 
