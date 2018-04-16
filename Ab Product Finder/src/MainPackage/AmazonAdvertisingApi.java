@@ -80,7 +80,6 @@ public class AmazonAdvertisingApi {
 	}
 	       
     private static String fetch(String requestUrl,String detail,ArrayList<product> list) throws ParserConfigurationException, SAXException, IOException {
-	            String title = null; //https://www.youtube.com/watch?v=HfGWVy-eMRc
 	            ArrayList<product> list2 = new ArrayList<product>();
 	           
 	                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

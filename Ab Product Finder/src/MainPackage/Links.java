@@ -1,25 +1,20 @@
 package MainPackage;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.netty.util.internal.SystemPropertyUtil;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-import com.gargoylesoftware.htmlunit.javascript.host.canvas.ext.EXT_texture_filter_anisotropic;
 
 public class Links {
 
 	void get_links(String url) throws IOException {
 		int flag = 0;
-		int i = 1;
 		String name = url;
 		name = name.substring(url.indexOf(".com/") + 5, url.indexOf("/zgbs/"));
 		System.out.println("File name = " + name + " created");
@@ -81,7 +76,9 @@ public class Links {
 
 			out.flush();
 		}
+		out.close();
 		System.out.println("End");
+		
 	}
 
 	void get_moversandshakers_Links(String url) throws IOException {
@@ -104,6 +101,7 @@ public class Links {
 				i = -1;
 			}
 		}
+		out.close();
 		System.out.println("End!");
 	}
 

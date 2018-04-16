@@ -1,14 +1,12 @@
 package MainPackage;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Database {
@@ -19,7 +17,7 @@ public class Database {
 	public  static String  Pass= null;
 	public  static java.sql.Statement statement= null;
 	public  ResultSet res2 = null;
-	public  String FILENAME = "C:\\Users\\Noname\\Desktop\\ubuythebest4u-Keys.txt";
+	public  String FILENAME = "C:\\keys\\ubuythebest4u-Keys.txt";
 	public  static String scham = null;
 	
 	public Database() throws IOException, SQLException 
@@ -31,10 +29,19 @@ public class Database {
 			String sCurrentLine;
 			while ((sCurrentLine = br.readLine()) != null) 
 			{
-
-				if (sCurrentLine.contains("User:")) User = "root";
-				if (sCurrentLine.contains("Pass:")) Pass = "root";
-				if (sCurrentLine.contains("Connection:")) Connection = "jdbc:mysql://localhost:4444/";
+				/* Change the code here */
+				if (sCurrentLine.contains("User:")) 
+					{
+						User = "root";
+					}
+				if (sCurrentLine.contains("Pass:")) 
+					{
+						Pass = "root";
+					}
+				if (sCurrentLine.contains("Connection:")) 
+					{
+						Connection = sCurrentLine.substring(sCurrentLine.indexOf("jdbc:mysql:"));
+					}
 				
 				if (sCurrentLine.contains("Schame:"))
 				{
@@ -43,6 +50,7 @@ public class Database {
 				}
 			}
 			con = DriverManager.getConnection(Connection,"root","root");
+			br.close();
 	}
 
 

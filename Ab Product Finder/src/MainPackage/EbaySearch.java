@@ -52,7 +52,7 @@ public class EbaySearch {
 	public  static java.sql.Statement statement ;
 	public  static String Connection = null;
 	public  static String scham = null;
-	public  String FILENAME = "C:\\Users\\Noname\\Desktop\\ubuythebest4u-Keys.txt";
+	public  String FILENAME = "C:\\keys\\ubuythebest4u-Keys.txt";
 	public  String AWS_ACCESS_KEY_ID_FROM_FILE  = null;
 	public  String AWS_SECRET_KEY_FROM_FILE = null;
 	public  String ENDPOINT_FROM_FILE = null;
@@ -73,7 +73,7 @@ public class EbaySearch {
 	
 	public EbaySearch() {
 
-		FILENAME = "C:\\Users\\Noname\\Desktop\\ubuythebest4u-Keys.txt";
+		FILENAME = "C:\\keys\\ubuythebest4u-Keys.txt";
 		System.out.println("File name that loaded = "+FILENAME);
 
 		BufferedReader br = null;
@@ -214,6 +214,7 @@ public class EbaySearch {
 	            int  Flag = 0;
 	            for(SearchItem item : items) 
 	            {
+	            	try{
 	            	if (counter ==1&&item!=null) 
 	            	{
 	            		
@@ -221,7 +222,7 @@ public class EbaySearch {
 	            		ele.arbitraje = (ele.ebayLowestPrice + ele.Ebay_shipping) -info1.Min_price_to_sale(ele.price);
 	            	}
 	            	
-	            	try{
+	            	
 	            	if (item.getSellingStatus().getCurrentPrice().getValue() +item.getShippingInfo().getShippingServiceCost().getValue()>info1.Min_price_to_sale(ele.price)&&item!=null&&Flag==0)
 	            		{
 	            		ele.PlaceInlowestprice = counter;

@@ -3,7 +3,6 @@ package MainPackage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -65,7 +64,12 @@ public class FileOp
 		String line = reader.readLine();
 		while(line!=null)
 		{
-			if (line.contains("HERE-->")) return true;
+			if (line.contains("HERE-->")) 
+				{
+					fis.close();
+					reader.close();
+					return true;
+				}
 			line = reader.readLine();
 		}
 		
@@ -73,6 +77,7 @@ public class FileOp
 		reader.close();
 		line = null;
 		System.gc();
+		
 		return false;
 	}
 	
@@ -86,7 +91,12 @@ public class FileOp
 		String line = reader.readLine();
 		while(line!=null)
 		{
-			if (line.contains("HERE-->")) return line;
+			if (line.contains("HERE-->")) 
+				{
+					fis.close();
+					reader.close();
+					return line;
+				}
 			line = reader.readLine();
 		}
 		
@@ -94,6 +104,7 @@ public class FileOp
 		reader.close();
 		line = null;
 		System.gc();
+		reader.close();
 		return null;
 	}
 

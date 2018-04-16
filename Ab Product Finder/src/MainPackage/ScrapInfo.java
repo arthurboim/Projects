@@ -1,5 +1,4 @@
 package MainPackage;
-import java.awt.print.Book;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -9,29 +8,21 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
-import org.apache.xalan.templates.ElemElement;
-import org.apache.xerces.util.SynchronizedSymbolTable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-import com.mysql.fabric.xmlrpc.base.Array;
 
 public class ScrapInfo {
 
@@ -44,7 +35,7 @@ public class ScrapInfo {
 	public  static String  Pass= null;
 	public  static java.sql.Statement statement= null;
 	public  ResultSet res2 = null;
-	public  String FILENAME = "C:\\Users\\Noname\\Desktop\\ubuythebest4u-Keys.txt";
+	public  String FILENAME = "C:\\keys\\ubuythebest4u-Keys.txt";
 	public  static String scham = null;
 	
 	public ScrapInfo() throws IOException {
@@ -60,7 +51,7 @@ public class ScrapInfo {
 			if (sCurrentLine.contains("User:")) User = "root";
 			if (sCurrentLine.contains("Pass:")) Pass = "root";
 			if (sCurrentLine.contains("Connection:")) 
-				Connection = "jdbc:mysql://localhost:4444/";
+				Connection = "jdbc:mysql://localhost:3306/";
 			
 			if (sCurrentLine.contains("Schame:"))
 			{
@@ -68,6 +59,7 @@ public class ScrapInfo {
 				Connection =Connection+scham;
 			}
 		}
+		br.close();
 	}
 
 	public void Items_info(List<product> ItemsList,String Path1) throws InterruptedException, SQLException, IOException {
@@ -399,11 +391,11 @@ public class ScrapInfo {
 			}
 
 		}
+		writer.close();
 	}
 	
 
 	void Books_info(String url, List<book> Bookslist) throws InterruptedException {
-		int i = 1;
 		System.setProperty("webdriver.chrome.driver", "C:\\ChromeDriverFolder\\chromedriver.exe");
 		ChromeDriver driver = new ChromeDriver();
 		Amazon_Get_Items_Movers_And_Shakers_books(url, Bookslist);

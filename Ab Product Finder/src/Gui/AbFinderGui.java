@@ -3,7 +3,6 @@ package Gui;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
-import java.awt.GridLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
@@ -14,11 +13,8 @@ import MainPackage.FileOp;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.SwingConstants;
-import javax.swing.JFileChooser;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
@@ -30,7 +26,6 @@ import javax.swing.UIManager;
 import java.awt.Color;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
-import java.awt.TextArea;
 
 public class AbFinderGui {
 
