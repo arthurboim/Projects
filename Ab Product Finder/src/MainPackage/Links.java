@@ -81,28 +81,4 @@ public class Links {
 		
 	}
 
-	void get_moversandshakers_Links(String url) throws IOException {
-		System.setProperty("webdriver.chrome.driver", "C:\\ChromeDriverFolder\\chromedriver.exe");
-		ChromeDriver driver = new ChromeDriver();
-		String fileName = "C:\\Users\\Noname\\Desktop\\Movers-and-shakers.txt";
-		FileWriter fw = new FileWriter(fileName, true);
-		BufferedWriter bw = new BufferedWriter(fw);
-		PrintWriter out = new PrintWriter(bw);
-		int i = 1;
-		driver.get(url);
-		while (i > 0) {
-			try {
-				System.out.println(driver.findElement(By.xpath("//*[@id='zg_browseRoot']/ul/li[" + i + "]/a"))
-						.getAttribute("href"));
-				out.println(driver.findElement(By.xpath("//*[@id='zg_browseRoot']/ul/li[" + i + "]/a"))
-						.getAttribute("href"));
-				i++;
-			} catch (Exception e) {
-				i = -1;
-			}
-		}
-		out.close();
-		System.out.println("End!");
-	}
-
 }

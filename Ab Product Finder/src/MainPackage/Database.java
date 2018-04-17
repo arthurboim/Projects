@@ -53,7 +53,6 @@ public class Database {
 			br.close();
 	}
 
-
 	public void Set_product_from_database(List<product> ItemsListToAmazon) throws SQLException
 	{
 		String WriteToData;

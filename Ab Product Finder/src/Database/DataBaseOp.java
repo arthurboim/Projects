@@ -8,12 +8,9 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
-
 public class DataBaseOp 
 {
 	public static  String FILENAME = "C:\\Keys\\ubuythebest4u-Keys.txt";
-	//public static  String FILENAME = "C:\\Users\\Noname\\Desktop\\ubuythebest4u-Keys.txt";
 	public static Connection con = null;
 	public static Connection con2 = null;
 	public static java.sql.Statement statement = null;
@@ -33,20 +30,15 @@ public class DataBaseOp
 			String sCurrentLine;
 			while ((sCurrentLine = br.readLine()) != null) 
 			{
-				//System.out.println(sCurrentLine);
 				if (sCurrentLine.contains("Connection:"))
 				{
 					Connection = sCurrentLine.substring(sCurrentLine.indexOf("Connection:")+12);
-					//System.out.println("Connection = "+Connection);
 				}
 				
 				if (sCurrentLine.contains("Schame:"))
 				{
 					scham = sCurrentLine.substring(sCurrentLine.indexOf("Schame:")+8);
-					//System.out.println("Schame = "+scham);
 					Connection =Connection+scham;
-					
-					//System.out.println("Connection = "+Connection);
 				}
 			}
 		} catch (IOException e) {
@@ -133,9 +125,6 @@ public class DataBaseOp
 
 	
 	}
-	
-	
-	
 	
 	public void  GetResults0AbFinder(String ip)
 	{
