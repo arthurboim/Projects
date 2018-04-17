@@ -123,7 +123,9 @@ public class DataBaseOp
 			System.out.println("Getting items from "+s);
 			GetResults0AbFinder(s);
 			GetItemsThatIsCheapest(s);
+			UpdateRemoteDBWith1(s);
 		}
+		
 		res3.close();
 		res3 = null;
 		System.gc();
@@ -131,6 +133,9 @@ public class DataBaseOp
 
 	
 	}
+	
+	
+	
 	
 	public void  GetResults0AbFinder(String ip)
 	{
@@ -140,7 +145,7 @@ public class DataBaseOp
 			System.out.println("jdbc:mysql://"+ip+":3306/amazon");
 			con = DriverManager.getConnection("jdbc:mysql://"+ip+":3306/amazon","root","root");
 			statement = con.createStatement();//
-			ResultSet res = statement.executeQuery("SELECT * FROM items where Amazon_price>10 and amazon_rank>0 and amazon_rank<20000 and ebayResults = 0 GROUP BY asin");
+			ResultSet res = statement.executeQuery("SELECT * FROM items where Amazon_price>10 and amazon_rank>0 and amazon_rank<20000 and ebayResults = 0 and uploaded =0 GROUP BY asin");
 			while(res.next())
 			{
 				SetResultsAbFinder(res.getDouble("Amazon_price"),res.getString("ASIN"),res.getInt("Amazon_Rank"),res.getInt("ebayResults"),res.getInt("Placeinlowestprice"));
@@ -160,13 +165,32 @@ public class DataBaseOp
 			System.out.println("jdbc:mysql://"+ip+":3306/amazon");
 			con = DriverManager.getConnection("jdbc:mysql://"+ip+":3306/amazon","root","root");
 			statement = con.createStatement();//
-			ResultSet res = statement.executeQuery("SELECT * FROM items where Amazon_price>10 and amazon_rank>0 and amazon_rank<20000 and Placeinlowestprice = 1 GROUP BY asin");
+			ResultSet res = statement.executeQuery("SELECT * FROM items where Amazon_price>10 and amazon_rank>0 and amazon_rank<20000 and Placeinlowestprice = 1 and uploaded =0 GROUP BY asin");
 			while(res.next())
 			{
 				SetResultsAbFinder(res.getDouble("Amazon_price"),res.getString("ASIN"),res.getInt("Amazon_Rank"),res.getInt("ebayResults"),res.getInt("Placeinlowestprice"));
 			}
 			res.close();
 		} catch (SQLException e) {System.out.println("GetItemsThatIsCheapest");e.printStackTrace();}
+
+		
+	}
+	
+	public void  UpdateRemoteDBWith1(String ip)
+	{
+		try 
+		{
+			System.out.println("Setting 1 to "+ip);
+			System.out.println("jdbc:mysql://"+ip+":3306/amazon");
+			con = DriverManager.getConnection("jdbc:mysql://"+ip+":3306/amazon","root","root");
+			statement = con.createStatement();//
+			statement.executeUpdate("update "+scham+".items set Uploaded = 1;");
+
+		} catch (SQLException e) 
+		{
+			System.out.println("UpdateRemoteDBWith1");
+			e.printStackTrace();
+		}
 
 		
 	}

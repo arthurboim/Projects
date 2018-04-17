@@ -51,7 +51,10 @@ public class ScrapInfo {
 			if (sCurrentLine.contains("User:")) User = "root";
 			if (sCurrentLine.contains("Pass:")) Pass = "root";
 			if (sCurrentLine.contains("Connection:")) 
-				Connection = "jdbc:mysql://localhost:3306/";
+			{
+				Connection = sCurrentLine.substring(sCurrentLine.indexOf("jdbc:"));
+				//Connection = "jdbc:mysql://localhost:444/";
+			}
 			
 			if (sCurrentLine.contains("Schame:"))
 			{
