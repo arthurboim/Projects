@@ -1,7 +1,6 @@
 package Ebay;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
@@ -24,7 +23,7 @@ public class Ebay extends MarketPlace
 	public  static String  Pass= null;
 	public  static java.sql.Statement statement= null;
 	public  ResultSet res2 = null;
-	public  String FILENAME = "C:\\Users\\Noname\\Desktop\\ubuythebest4u-Keys.txt";
+	public  String FILENAME = "C:\\Users\\Noname\\Desktop\\ConfigFile-Keys.txt";
 	public  static String scham = null;
 	
 	public Ebay() throws IOException
@@ -48,6 +47,7 @@ public class Ebay extends MarketPlace
 	
 			}
 		}
+		br.close();
 	
 		
 	}
@@ -117,8 +117,8 @@ public class Ebay extends MarketPlace
 		ResultSet res;
 		con = DriverManager.getConnection(Connection,"root","root");
 		statement = con.createStatement();
-		
-		String[] arr = item.Title.split(" ");
+		System.out.println(item.Title);
+		String[] arr = item.Title.split("[ |\\-|\\.|\\?|\\,|\\)|\\(|\\{|\\}|\\+|\\']");
 		
 		for(String ele:arr)
 		{
@@ -126,6 +126,7 @@ public class Ebay extends MarketPlace
 			{
 				ele = ele.replace("'", "\\'");
 			}
+			System.out.println(ele);
 		}
 		
 		
@@ -135,11 +136,12 @@ public class Ebay extends MarketPlace
 			res.last();
 			if(res.getString(1).equals("1"))
 			{
-				System.out.println("Asin = "+item.SupplierCode+" Forbbiden word -> "+arr[i].toLowerCase());
+				System.out.println("Asin = "+item.SupplierCode+" Forbbiden word in title -> "+arr[i].toLowerCase());
 				item.ReadyToUpload = false;
-				return true;
+				/*return true;*/
 			}
 		}
+
 		}catch(Exception e)
 		{
 			System.out.println("Forbbiden words error");
@@ -186,6 +188,86 @@ public class Ebay extends MarketPlace
 		else return false;
 		}catch(Exception e){return true;}
 	}
+	
+	
+	public void BrandCheckInContent(Item item) 
+	{	   
+		if (item.Content == null)
+		{
+			return;
+		}
+		try {
+		ResultSet res;
+		con = DriverManager.getConnection(Connection,"root","root");
+		statement = con.createStatement();
+		
+		
+		item.Content = item.Content.replace("'", "\\'");
+		String[] arr = item.Content.split(" ");
+		
+		
+		for(int i=0;i<arr.length;i++)
+		{
+			res = statement.executeQuery("SELECT count(*) FROM amazon.forbiddenwords where Word = '"+arr[i].toLowerCase()+"';");
+			res.last();
+			if(res.getString(1).equals("1"))
+			{
+				System.out.println("Asin = "+item.SupplierCode+" Forbbiden word in content -> "+arr[i].toLowerCase());
+				item.ReadyToUpload = false;
+				return ;
+			}
+		}
+		}catch(Exception e)
+		{
+			System.out.println("Forbbiden words error");
+			System.out.println(e);
+		}
+		return ;
+	}
+
+	
+	
+
+	public void BrandCheckInFeatures(Item item) 
+	{	   
+		if (item.Content == null)
+		{
+			return;
+		}
+		try {
+		ResultSet res;
+		con = DriverManager.getConnection(Connection,"root","root");
+		statement = con.createStatement();
+		String temp = " ";
+		
+		for(String ele:item.Features)
+		{
+			temp+=ele;
+			temp+= " ";
+		}
+		temp = temp.replace("'", "\\'");
+		String[] arr = temp.split(" ");
+		
+		for(int i=0;i<arr.length;i++)
+		{
+			res = statement.executeQuery("SELECT count(*) FROM amazon.forbiddenwords where Word = '"+arr[i].toLowerCase()+"';");
+			res.last();
+			if(res.getString(1).equals("1"))
+			{
+				System.out.println("Asin = "+item.SupplierCode+" Forbbiden word features -> "+arr[i].toLowerCase());
+				item.ReadyToUpload = false;
+				return ;
+			}
+		}
+		}catch(Exception e)
+		{
+			System.out.println(e);
+		}
+		return ;
+	}
+
+	
+	
 	
 	public HashMap<String,Integer> DivideStringToWords(String str)
 	{

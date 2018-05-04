@@ -52,7 +52,7 @@ public class EbaySearch {
 	public  static java.sql.Statement statement ;
 	public  static String Connection = null;
 	public  static String scham = null;
-	public  String FILENAME = "C:\\keys\\ubuythebest4u-Keys.txt";
+	public  String FILENAME = "C:\\keys\\ConfigFile-Keys.txt";
 	public  String AWS_ACCESS_KEY_ID_FROM_FILE  = null;
 	public  String AWS_SECRET_KEY_FROM_FILE = null;
 	public  String ENDPOINT_FROM_FILE = null;
@@ -73,7 +73,7 @@ public class EbaySearch {
 	
 	public EbaySearch() {
 
-		FILENAME = "C:\\keys\\ubuythebest4u-Keys.txt";
+		FILENAME = "C:\\keys\\ConfigFile-Keys.txt";
 		System.out.println("File name that loaded = "+FILENAME);
 
 		BufferedReader br = null;
@@ -446,24 +446,4 @@ public class EbaySearch {
         return cal.getTime();
     }
 	
-	private static ApiContext getApiContext() throws IOException {
-		  
-		  String input;
-	      ApiContext apiContext = new ApiContext();
-	      
-	      //set Api Token to access eBay Api Server
-	      ApiCredential cred = apiContext.getApiCredential();
-	      input = ConsoleUtil.readString("AgAAAA**AQAAAA**aAAAAA**QI5uWA**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6ABkoOkCZiEowydj6x9nY+seQ**ro4DAA**AAMAAA**fMLY/HzOw6nZlCW6NMNc0ZF5yczH9Bzw9fGxoc900S9F8p40unY/UowNaFG0I83wT3EmRP0XI5nqEaYI/VRBDSi2NoHbNdpYlzEluruw305jIiDJoM17cA1B4kvwRuS2SIa6QRkAc/CF9YNJlq/SgtSqGwMoPNxBydVSB3k0X7bg6OdF2t1und4oDGk9cnQz6BMGJ4qjnZ6HikTePybzuyRaCo71dKNHEiyWCbm6HdG0ZoCPRO0w8WT42EjiJvaHmwbyQhscZ94jRqDL13RgeIYnlqq/1/JUJJHfKuuSjQDX0LWSMmKIDZdxvs9peofR6L7yxQfMpAbtpmZA2voBUM/LWEoCUmBa03b9J87tWoi7bs7zFWSNhjp8L+8rwFbofJar5qaPitqd0pZ9jkryVWzKLbsLV1MYIm9Mh35aA/LCGDNA+Fxd1CruFqSXUIDMle4px/PC/zBCx8FahjtaDISKyxcwjUIv+vd92Vxnpr0yN//qx8Hkep0qGFJDckgXe8uUt6RU+ZVQw2DiqS4pgBP/lUSikQrXzjMXy+Lm/LDmcz0PXBc62Yu++9yYIicfrligFJixfQ03RUIXo46Uuiju/r5iKYmt8yzjCZ7UpxW4FD4SOmnLdCTW6eaWqMe7LSQsiJozFsdq1rNAccz3Ujb5l0aLKXH6a5K7FE/Qgx7UO9kGfNnABYMsgpPLfPRP1on941pkqy6UytI/KijusS/3K8iQEeLtSTXl+EpTJXMiJ2Me6q7GwOLzHrTQnG5b");
-	      
-	    		  
-	      cred.seteBayToken(input);
-	     
-	      //set Api Server Url
-	     input = ConsoleUtil.readString("https://api.sandbox.ebay.com/wsapi");
-	      
-	      apiContext.setApiServerUrl(input);
-	      
-	      return apiContext;
-	  }
-
 }

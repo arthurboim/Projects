@@ -1,10 +1,6 @@
 import java.io.IOException;
 import java.sql.SQLException;
-
 import Control.MainControl;
-import Database.Database;
-import Files.*;
-import Parser.FileDecoder;
 
 public class MainRun {
 

@@ -10,8 +10,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.swing.Spring;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -39,12 +37,18 @@ public class FileDecoder implements Runnable
 		try {
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			Document doc = builder.parse(PathToFile);
-			/*NodeList list = doc.getElementsByTagName("mark-text");*/
+			NodeList list2 = doc.getElementsByTagName("mark-text");
 			NodeList list = doc.getElementsByTagName("mark-identification");
 			for(i=0;i<list.getLength();i++)
 			{
 				BrandsName.add(list.item(i).getTextContent());
 			}
+			
+			for(i=0;i<list.getLength();i++)
+			{
+				BrandsName.add(list2.item(i).getTextContent());
+			}
+			
 			RemoveDuplicatedBrands(BrandsName);
 			
 			System.out.println("Total TM: "+BrandsName.size());
@@ -95,8 +99,9 @@ public class FileDecoder implements Runnable
 	                		   BrandsName.add(str);
 	                	   }
 	                   }
-	                   System.out.println(counter);
+	                   System.out.println("Brands in file "+counter);
 	                   RemoveDuplicatedBrands(BrandsName);
+	                   bufRead.close();
 	           } catch (FileNotFoundException e) {
 	               e.printStackTrace();
 	           }

@@ -1,7 +1,6 @@
 package Vero;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
@@ -27,6 +26,7 @@ public class Vero {
 				addToDb(sCurrentLine);
 			}
 		}
+		br.close();
 	}
 	
 	public void addToDb(String VeroBand) throws SQLException

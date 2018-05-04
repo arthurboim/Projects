@@ -17,9 +17,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
-
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.xml.sax.SAXException;
 
 import Amazon.Amazon;
@@ -119,7 +116,7 @@ public class Control {
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:4444/amazon","root","root");
 			java.sql.Statement statement = con.createStatement();//
-			ResultSet res = statement.executeQuery("SELECT * FROM items where ebayResults=0 and (Uploaded = 0 or Uploaded is null)  and Amazon_Rank<100000 and Amazon_price>7 and Amazon_price<=30 GROUP BY asin;");
+			ResultSet res = statement.executeQuery("SELECT * FROM items where ebayResults=0 and (Uploaded = 0 or Uploaded is null)  and Amazon_Rank<10000 and Amazon_price>7 and Amazon_price<=30 GROUP BY asin;");
 
 			while(res.next())
 			{
@@ -141,7 +138,7 @@ public class Control {
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:4444/amazon","root","root");
 			java.sql.Statement statement = con.createStatement();//
-			ResultSet res = statement.executeQuery("SELECT * FROM items where ebayResults=0 and Amazon_Rank<100000 and (Uploaded = 0 or Uploaded is null)   and Amazon_price>30 and Amazon_price<=2000 GROUP BY asin;");
+			ResultSet res = statement.executeQuery("SELECT * FROM items where ebayResults=0 and Amazon_Rank<10000 and (Uploaded = 0 or Uploaded is null)   and Amazon_price>30 and Amazon_price<=2000 GROUP BY asin;");
 
 			while(res.next())
 			{
@@ -164,7 +161,7 @@ public class Control {
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:4444/amazon","root","root");
 			java.sql.Statement statement = con.createStatement();//
-			ResultSet res = statement.executeQuery("SELECT * FROM items where  placeinlowestprice = 1 and Uploaded = 0  and Amazon_Rank>0 and Amazon_Rank<50000 and Amazon_price>10 and Amazon_price<=30 GROUP BY asin;");
+			ResultSet res = statement.executeQuery("SELECT * FROM items where  placeinlowestprice = 1 and Uploaded = 0  and Amazon_Rank>0 and Amazon_Rank<10000 and Amazon_price>10 and Amazon_price<=30 GROUP BY asin;");
 
 			while(res.next())
 			{
@@ -188,7 +185,7 @@ public class Control {
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:4444/amazon","root","root");
 			java.sql.Statement statement = con.createStatement();//
-			ResultSet res = statement.executeQuery("SELECT * FROM items where  placeinlowestprice = 1 and Uploaded = 0 and Amazon_Rank>0 and Amazon_Rank<50000 and Amazon_price>30 and Amazon_price<=2000 GROUP BY asin;");
+			ResultSet res = statement.executeQuery("SELECT * FROM items where  placeinlowestprice = 1 and Uploaded = 0 and Amazon_Rank>0 and Amazon_Rank<10000 and Amazon_price>30 and Amazon_price<=2000 GROUP BY asin;");
 
 			while(res.next())
 			{
@@ -269,10 +266,10 @@ public class Control {
 		Lowestprice1_30AndHigher(ListOfItemsAsins);
 		ProductFromSellers_10to30(ListOfItemsAsins);
 		ProductFromSellers_30AndHigher(ListOfItemsAsins);
-		 
+		
 		/*
 		Item temp = new Item();
-		temp.SupplierCode = "B07BFW9RD2";
+		temp.SupplierCode = "B079L63LHG";
 		temp.PathFolder = "GetResults0_7to30";
 		ListOfItemsAsins.add(temp);
 		*/
@@ -307,25 +304,25 @@ public class Control {
 			switch(ele.PathFolder)
 			{
 			case "GetResults0_7to30":
-			saveImage(ele.PicturesString[0],"C:\\Users\\Noname\\Desktop\\ItemsPictures\\Ubuythebest4u\\GetResults0_7to30\\"+ele.SupplierCode+".png");
+			saveImage(ele.PicturesString[0],"C:\\Users\\Noname\\Desktop\\ItemsPictures\\ConfigFile\\GetResults0_7to30\\"+ele.SupplierCode+".png");
 			break;
 			
 			case "GetResults0_3030AndHigher":
-			saveImage(ele.PicturesString[0],"C:\\Users\\Noname\\Desktop\\ItemsPictures\\Ubuythebest4u\\GetResults0_3030AndHigher\\"+ele.SupplierCode+".png");
+			saveImage(ele.PicturesString[0],"C:\\Users\\Noname\\Desktop\\ItemsPictures\\ConfigFile\\GetResults0_3030AndHigher\\"+ele.SupplierCode+".png");
 			break;
 			
 			case "Lowestprice1_7to30":
-			saveImage(ele.PicturesString[0],"C:\\Users\\Noname\\Desktop\\ItemsPictures\\Ubuythebest4u\\Lowestprice1_7to30\\"+ele.SupplierCode+".png");
+			saveImage(ele.PicturesString[0],"C:\\Users\\Noname\\Desktop\\ItemsPictures\\ConfigFile\\Lowestprice1_7to30\\"+ele.SupplierCode+".png");
 			break;
 			
 			case "Lowestprice1_30AndHigher":
-			saveImage(ele.PicturesString[0],"C:\\Users\\Noname\\Desktop\\ItemsPictures\\Ubuythebest4u\\Lowestprice1_30AndHigher\\"+ele.SupplierCode+".png");
+			saveImage(ele.PicturesString[0],"C:\\Users\\Noname\\Desktop\\ItemsPictures\\ConfigFile\\Lowestprice1_30AndHigher\\"+ele.SupplierCode+".png");
 			break;
 			case "ProductFromSellers_10to30":
-			saveImage(ele.PicturesString[0],"C:\\Users\\Noname\\Desktop\\ItemsPictures\\Ubuythebest4u\\ProductFromSellers_10to30\\"+ele.SupplierCode+".png");
+			saveImage(ele.PicturesString[0],"C:\\Users\\Noname\\Desktop\\ItemsPictures\\ConfigFile\\ProductFromSellers_10to30\\"+ele.SupplierCode+".png");
 			break;
 			case "ProductFromSellers_30AndHigher":
-			saveImage(ele.PicturesString[0],"C:\\Users\\Noname\\Desktop\\ItemsPictures\\Ubuythebest4u\\ProductFromSellers_30AndHigher\\"+ele.SupplierCode+".png");
+			saveImage(ele.PicturesString[0],"C:\\Users\\Noname\\Desktop\\ItemsPictures\\ConfigFile\\ProductFromSellers_30AndHigher\\"+ele.SupplierCode+".png");
 			break;
 			default :
 				break;
@@ -412,6 +409,7 @@ public class Control {
 		{
 			AmazonApiCall.BulkInfoRequest(Codes,List,counter);
 		}
+		
 	}
 	
 	private void PrintReadyToUploadItems(ArrayList<Item> List)
@@ -432,9 +430,12 @@ public class Control {
 		{
 		try{
 			ebay.IsVeroBrand(ele);
-			ebay.ForbiddenWordsCheck(ele);
+			ebay.ForbiddenWordsCheck(ele); /* It's checking the title */
+			/*
+			ebay.BrandCheckInContent(ele);
+			ebay.BrandCheckInFeatures(ele);
+			*/
 			ebay.LinksCheck(ele);
-			/* Add here all the conditions !*/
 			if (ele.prime == false)
 			{
 				ele.ReadyToUpload = false;

@@ -17,7 +17,7 @@ public class Database {
 	public  static String  Pass= null;
 	public  static java.sql.Statement statement= null;
 	public  ResultSet res2 = null;
-	public  String FILENAME = "C:\\keys\\ubuythebest4u-Keys.txt";
+	public  String FILENAME = "C:\\keys\\ConfigFile-Keys.txt";
 	public  static String scham = null;
 	
 	public Database() throws IOException, SQLException 
