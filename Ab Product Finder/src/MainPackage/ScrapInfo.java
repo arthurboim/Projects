@@ -5,20 +5,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -33,7 +26,7 @@ public class ScrapInfo {
 	public  static String  Pass= null;
 	public  static java.sql.Statement statement= null;
 	public  ResultSet res2 = null;
-	public  String FILENAME = "C:\\keys\\ubuythebest4u-Keys.txt";
+	public  String FILENAME = "C:\\keys\\ConfigFile-Keys.txt";
 	public  static String scham = null;
 	
 	public ScrapInfo() throws IOException {

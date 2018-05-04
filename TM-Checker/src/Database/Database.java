@@ -39,13 +39,14 @@ public class Database {
 		res = statement.executeQuery("SELECT * FROM amazon.vero where Brand = '"+BrandName+"'");
 		}catch(Exception e)
 		{
-			/*System.out.println(e);*/
+			System.out.println(e);
 		}
 		
 		if(res == null)
 		{
 			return 1;
 		}
+		
 		return res.getRow();
 	}
 	
@@ -77,13 +78,11 @@ public class Database {
 		for(i=0;i<BrandsName.size();i++)
 		{
 			try{
-				//if(isExcist(BrandsName.get(i)) == 0)
-
-			if(BrandsName.get(i).contains("'"))	
+			if(isExcist(BrandsName.get(i)) == 0)
 			{
-				System.out.println(BrandsName.get(i));
-				counter+=AddToDb(BrandsName.get(i));
+				/*System.out.println(BrandsName.get(i));*/
 				
+				counter+=AddToDb(BrandsName.get(i));
 			}
 			}catch(Exception e){}
 		}

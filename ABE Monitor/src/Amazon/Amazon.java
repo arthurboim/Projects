@@ -1,12 +1,6 @@
 package Amazon;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -111,11 +105,11 @@ public class Amazon extends Supplier{
 		        item.PathFolder = List.get(GetItemIndex(List,item.SupplierCode)).PathFolder;
 		        List.set(GetItemIndex(List,item.SupplierCode), item);
 	        }catch(Exception e)
-	        	{
+	        {
 	        	item.ReadyToUpload = false;
 	        	item.AvailabilityType = "NOT AVAILABLE";
-	        	System.out.println("BulkInfoRequest -> bulkfetch error");
-	        	}
+	        	System.out.println("BulkInfoRequest error");
+	        }
         }
         doc = null;
         System.gc();
@@ -170,9 +164,9 @@ public class Amazon extends Supplier{
     	item.Title = node.getNodeValue();
     	}catch(Exception e)
     	{
-        	/*item.ReadyToUpload = false;*/
         	item.AvailabilityType = "NOT AVAILABLE";
-        	System.out.println("BulkInfoRequest -> GetTitle error");
+        	System.out.println("GetTitle Null");
+        	item.ReadyToUpload = false;
     	}
 		return Status;
 
@@ -189,8 +183,7 @@ public class Amazon extends Supplier{
     	}catch(Exception e)
     	{
         	item.ReadyToUpload = false;
-        	item.AvailabilityType = "NOT AVAILABLE";
-        	System.out.println("BulkInfoRequest -> GetAsin error");
+        	System.out.println("GetAsin Null");
         	Status = "Error";
     	}
 		return Status;
@@ -218,17 +211,14 @@ public class Amazon extends Supplier{
     				item.Content = item.Content+ " " +node.getTextContent();
     				counter++;
     			}
-    			/*System.out.println("-------------- Item Content -----------");*/
     		}
     		node = node.getNextSibling();
     	}
     	System.out.println();
     	}catch(Exception e)
     	{
-    		System.out.println(doc.getBaseURI());
-        	System.out.println("BulkInfoRequest -> GetContent error");
-        	System.out.println(e);
-        	Status = "Error";
+    		item.Content = null;
+    		System.out.println("Content is "+e.getMessage());
     	}
 		return Status;
 
@@ -242,7 +232,6 @@ public class Amazon extends Supplier{
     	
 		try{
 			Nodelist = doc.getElementsByTagName("ItemAttributes");
-			System.out.println(Nodelist.getLength());
 			
 			node = Nodelist.item(i).getFirstChild();
 			while(node.getNodeName()!=null)
@@ -257,15 +246,24 @@ public class Amazon extends Supplier{
 				if(node.getNodeName() == "Author" || node.getNodeName() == "ISBN")
 				{
 					item.Brand = node.getTextContent();
-					System.out.println(item.Brand);
+					System.out.println(item.SupplierCode +" = "+item.Brand);
 					break;
 				}
+		
+				if(node.getNodeName().equals("Label"))
+				{
+					item.Brand = node.getTextContent();
+					System.out.println("Label");
+					System.out.println(item.SupplierCode +" = "+item.Brand);
+					break;
+				}
+				
 				node = node.getNextSibling();
 			}
 			
 		}catch(Exception e1)
 		{  
-			System.out.println("Getting Item Attributes error "+e1);
+			System.out.println("Item attributes fail "+item.SupplierCode);
 		}
     		
     	try{
@@ -476,10 +474,9 @@ public class Amazon extends Supplier{
     	item.MaximumDaysToShip /=24;
     	}catch(Exception e)
     	{
-    		System.out.println(e); 
         	item.ReadyToUpload = false;
         	item.AvailabilityType = "NOT AVAILABLE";
-        	System.out.println("BulkInfoRequest -> GetShippingTime error");
+        	System.out.println("GetShippingTime null");
     		return "Error";
     	}
 		return Status;
@@ -488,14 +485,17 @@ public class Amazon extends Supplier{
     public static String IsPrime(Document doc,Item item,int i)
     {
     	String Status = "Ok";
-    	try{//
+    	try{										   
         NodeList Nodelist =  doc.getElementsByTagName("IsEligibleForPrime");
         Node node =  Nodelist.item(i);
-        if (node.getFirstChild().getTextContent().equals("1")) item.prime = true;
-        else item.prime = false;
+        if (node.getFirstChild().getTextContent().equals("1")) 
+        	item.prime = true;
+        else 
+        	item.prime = false;
     	}catch(Exception e)
     	{
-    		System.out.println(e); 
+    		System.out.println("IsEligibleForPrime Null"); 
+        	item.prime = false;
     		return "Error";
     	}
     	
@@ -504,7 +504,6 @@ public class Amazon extends Supplier{
 
     public static String Instock(Document doc,Item item,int i)
     {
-    	System.out.println();
     	try{
         NodeList Nodelist =  doc.getElementsByTagName("AvailabilityType");
         Node node =  Nodelist.item(i);
@@ -518,10 +517,9 @@ public class Amazon extends Supplier{
         }
     	}catch(Exception e)
     	{
-    		System.out.println(e); 
-        	item.ReadyToUpload = false;
+    		System.out.println("AvailabilityType null");
+    		item.ReadyToUpload = false;
         	item.AvailabilityType = "NOT AVAILABLE";
-        	System.out.println("BulkInfoRequest -> Instock error");
     		return "Error";
     	}
 		return "Ok";
@@ -533,10 +531,17 @@ public class Amazon extends Supplier{
     	try{
         NodeList Nodelist =  doc.getElementsByTagName("OfferAttributes");
         Node node =  Nodelist.item(i);
-        if (node.getFirstChild().getTextContent().equals("New")) item.IsNew = true;
-        else item.IsNew = false;
+        if (node.getFirstChild().getTextContent().equals("New")) 
+        {
+        		item.IsNew = true;
+        }
+        else 
+        {
+        	item.IsNew = false;
+        }
         }catch(Exception e)
     	{
+        	item.IsNew = false;
         	return "Error";
         }
     		return "Ok";
