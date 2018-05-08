@@ -850,9 +850,9 @@ public class AmazonOrder {
 		//if (Fees>0||((order_details.getAmountPaid().getValue()*0.871-0.3-Fees)<Price)) //here we need to change //
 		//ChangeSetingsAutoDsTool(Asin);
 		/*RiseItemPriceYaballe(Asin,Fees,MonitorUser,MonitorPassword);*/
-		SalesRecord SalesRecord = new SalesRecord(Asin);
+		//SalesRecord SalesRecord = new SalesRecord(Asin);
 		try{
-		SalesRecord.SalesRecordMain(Asin);
+		//SalesRecord.SalesRecordMain(Asin);
 		}catch(Exception e){System.out.println("Exception in sales record");}
 		
 		}catch(Exception e)
