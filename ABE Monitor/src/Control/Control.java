@@ -269,7 +269,7 @@ public class Control {
 		
 		/*
 		Item temp = new Item();
-		temp.SupplierCode = "B079L63LHG";
+		temp.SupplierCode = "B00VQW8NDW";
 		temp.PathFolder = "GetResults0_7to30";
 		ListOfItemsAsins.add(temp);
 		*/
@@ -304,25 +304,25 @@ public class Control {
 			switch(ele.PathFolder)
 			{
 			case "GetResults0_7to30":
-			saveImage(ele.PicturesString[0],"C:\\Users\\Noname\\Desktop\\ItemsPictures\\ConfigFile\\GetResults0_7to30\\"+ele.SupplierCode+".png");
+			saveImage(ele.PicturesString[0],"C:\\Users\\Noname\\Desktop\\ItemsPictures\\Ubuythebest4u\\GetResults0_7to30\\"+ele.SupplierCode+".png");
 			break;
 			
 			case "GetResults0_3030AndHigher":
-			saveImage(ele.PicturesString[0],"C:\\Users\\Noname\\Desktop\\ItemsPictures\\ConfigFile\\GetResults0_3030AndHigher\\"+ele.SupplierCode+".png");
+			saveImage(ele.PicturesString[0],"C:\\Users\\Noname\\Desktop\\ItemsPictures\\Ubuythebest4u\\GetResults0_3030AndHigher\\"+ele.SupplierCode+".png");
 			break;
 			
 			case "Lowestprice1_7to30":
-			saveImage(ele.PicturesString[0],"C:\\Users\\Noname\\Desktop\\ItemsPictures\\ConfigFile\\Lowestprice1_7to30\\"+ele.SupplierCode+".png");
+			saveImage(ele.PicturesString[0],"C:\\Users\\Noname\\Desktop\\ItemsPictures\\Ubuythebest4u\\Lowestprice1_7to30\\"+ele.SupplierCode+".png");
 			break;
 			
 			case "Lowestprice1_30AndHigher":
-			saveImage(ele.PicturesString[0],"C:\\Users\\Noname\\Desktop\\ItemsPictures\\ConfigFile\\Lowestprice1_30AndHigher\\"+ele.SupplierCode+".png");
+			saveImage(ele.PicturesString[0],"C:\\Users\\Noname\\Desktop\\ItemsPictures\\Ubuythebest4u\\Lowestprice1_30AndHigher\\"+ele.SupplierCode+".png");
 			break;
 			case "ProductFromSellers_10to30":
-			saveImage(ele.PicturesString[0],"C:\\Users\\Noname\\Desktop\\ItemsPictures\\ConfigFile\\ProductFromSellers_10to30\\"+ele.SupplierCode+".png");
+			saveImage(ele.PicturesString[0],"C:\\Users\\Noname\\Desktop\\ItemsPictures\\Ubuythebest4u\\ProductFromSellers_10to30\\"+ele.SupplierCode+".png");
 			break;
 			case "ProductFromSellers_30AndHigher":
-			saveImage(ele.PicturesString[0],"C:\\Users\\Noname\\Desktop\\ItemsPictures\\ConfigFile\\ProductFromSellers_30AndHigher\\"+ele.SupplierCode+".png");
+			saveImage(ele.PicturesString[0],"C:\\Users\\Noname\\Desktop\\ItemsPictures\\Ubuythebest4u\\ProductFromSellers_30AndHigher\\"+ele.SupplierCode+".png");
 			break;
 			default :
 				break;

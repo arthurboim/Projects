@@ -23,7 +23,7 @@ public class Ebay extends MarketPlace
 	public  static String  Pass= null;
 	public  static java.sql.Statement statement= null;
 	public  ResultSet res2 = null;
-	public  String FILENAME = "C:\\Users\\Noname\\Desktop\\ConfigFile-Keys.txt";
+	public  String FILENAME = "C:\\Keys\\ConfigFile-Keys.txt";
 	public  static String scham = null;
 	
 	public Ebay() throws IOException
