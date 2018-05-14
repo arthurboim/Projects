@@ -24,7 +24,6 @@ public class TaxUpDateNewItems {
 	public DatabasePriceChanger Db = null;
 	public ItemsPosition ItemsPosition = null;
 	
-
 	public TaxUpDateNewItems() throws InterruptedException, SQLException {
 		ItemsPosition = new ItemsPosition();
 		Db = new DatabasePriceChanger();

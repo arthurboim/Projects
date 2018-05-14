@@ -249,19 +249,25 @@ public class Tracking_number_amazon extends Thread
 	
 	
 	Db.Get_Orders_without_tracking(List);
-
+	if (List.size() ==0){
+		return;
+	}
+	
+	
+	
 	
 	for (Order ele:List)
 	{
 		temp = null;
-		try{ 						
+		try{ 
+		Driver.findElement(By.xpath("//*[@id='searchOrdersInput']")).click();
 		Driver.findElement(By.xpath("//*[@id='searchOrdersInput']")).clear();
 		Driver.findElement(By.xpath("//*[@id='searchOrdersInput']")).sendKeys(ele.Amazon_OrderNumber);
 		}catch(Exception e){}
 		
-		try{ // press to search // 
-		
-			Driver.findElement(By.xpath("//*[@id='a-autoid-0']/span/input")).click();
+		try{ 
+
+			Driver.findElement(By.xpath("//*[@id='a-autoid-7']/span/input")).click();
 
 		}catch(Exception e){
 		list = Driver.findElements(By.tagName("span"));

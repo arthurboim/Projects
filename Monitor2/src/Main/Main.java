@@ -27,6 +27,7 @@ public class Main {
 		Tracking_number_amazon Tracking_number_amazon = new Tracking_number_amazon();
 		while(true)
 		{
+			try{
 			for(Store ele:ListOfStores)
 			{
 			OrdersInfo OrdersInfo = new OrdersInfo(ele);
@@ -42,6 +43,7 @@ public class Main {
 			}
 			Thread.sleep(1000*60*10);
 			counter++;
+			}catch(Exception e){}
 		}
 
 	}
