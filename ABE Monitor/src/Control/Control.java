@@ -116,7 +116,7 @@ public class Control {
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:4444/amazon","root","root");
 			java.sql.Statement statement = con.createStatement();//
-			ResultSet res = statement.executeQuery("SELECT * FROM items where ebayResults=0 and (Uploaded = 0 or Uploaded is null)  and Amazon_Rank<10000 and Amazon_price>7 and Amazon_price<=30 GROUP BY asin;");
+			ResultSet res = statement.executeQuery("SELECT * FROM items where ebayResults=0 and (Uploaded = 0 or Uploaded is null)  and Amazon_Rank<50000 and Amazon_price>7 and Amazon_price<=30 GROUP BY asin;");
 
 			while(res.next())
 			{
@@ -138,7 +138,7 @@ public class Control {
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:4444/amazon","root","root");
 			java.sql.Statement statement = con.createStatement();//
-			ResultSet res = statement.executeQuery("SELECT * FROM items where ebayResults=0 and Amazon_Rank<10000 and (Uploaded = 0 or Uploaded is null)   and Amazon_price>30 and Amazon_price<=2000 GROUP BY asin;");
+			ResultSet res = statement.executeQuery("SELECT * FROM items where ebayResults=0 and Amazon_Rank<50000 and (Uploaded = 0 or Uploaded is null)   and Amazon_price>30 and Amazon_price<=2000 GROUP BY asin;");
 
 			while(res.next())
 			{
@@ -161,7 +161,7 @@ public class Control {
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:4444/amazon","root","root");
 			java.sql.Statement statement = con.createStatement();//
-			ResultSet res = statement.executeQuery("SELECT * FROM items where  placeinlowestprice = 1 and Uploaded = 0  and Amazon_Rank>0 and Amazon_Rank<10000 and Amazon_price>10 and Amazon_price<=30 GROUP BY asin;");
+			ResultSet res = statement.executeQuery("SELECT * FROM items where  placeinlowestprice = 1 and Uploaded = 0  and Amazon_Rank>0 and Amazon_Rank<50000 and Amazon_price>10 and Amazon_price<=30 GROUP BY asin;");
 
 			while(res.next())
 			{
@@ -185,7 +185,7 @@ public class Control {
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:4444/amazon","root","root");
 			java.sql.Statement statement = con.createStatement();//
-			ResultSet res = statement.executeQuery("SELECT * FROM items where  placeinlowestprice = 1 and Uploaded = 0 and Amazon_Rank>0 and Amazon_Rank<10000 and Amazon_price>30 and Amazon_price<=2000 GROUP BY asin;");
+			ResultSet res = statement.executeQuery("SELECT * FROM items where  placeinlowestprice = 1 and Uploaded = 0 and Amazon_Rank>0 and Amazon_Rank<50000 and Amazon_price>30 and Amazon_price<=2000 GROUP BY asin;");
 
 			while(res.next())
 			{
@@ -257,15 +257,15 @@ public class Control {
 		ArrayList<Item> ListOfItemsAsins = new ArrayList<Item>();
 		System.out.println("Reading files from database...");
 		
-		GetResults0_7to30(ListOfItemsAsins);
+		//GetResults0_7to30(ListOfItemsAsins);
 		
-		GetResults0_3030AndHigher(ListOfItemsAsins);
+		//GetResults0_3030AndHigher(ListOfItemsAsins);
 		
 		Lowestprice1_7to30(ListOfItemsAsins);
 		
 		Lowestprice1_30AndHigher(ListOfItemsAsins);
-		ProductFromSellers_10to30(ListOfItemsAsins);
-		ProductFromSellers_30AndHigher(ListOfItemsAsins);
+		//ProductFromSellers_10to30(ListOfItemsAsins);
+		//ProductFromSellers_30AndHigher(ListOfItemsAsins);
 		
 		/*
 		Item temp = new Item();

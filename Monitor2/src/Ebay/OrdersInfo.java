@@ -41,6 +41,7 @@ public class OrdersInfo extends Thread{
 	public static  String StoreName = null;
 	public static  String MonitorUser = null;
 	public static  String MonitorPassword = null;
+	
  	public OrdersInfo(Store store) {
  		MonitorUser = store.MonitorUser;
  		MonitorPassword = store.MonitorPassword;
@@ -52,8 +53,15 @@ public class OrdersInfo extends Thread{
 		Server_url = store.ServerUrl;
 		Application_id = store.ApplicationId;
 		Contry = store.Site;
-		if (Contry.equals("US")) SiteCode =  SiteCodeType.US;
-		if (Contry.equals("UK")) SiteCode =  SiteCodeType.UK; 
+		if (Contry.equals("US")) 
+		{
+			SiteCode =  SiteCodeType.US;
+		}
+		
+		if (Contry.equals("UK")) 
+		{
+			SiteCode =  SiteCodeType.UK; 
+		}
 	}
 
 	public synchronized void Get_Orders_Info() throws ApiException, SdkException, Exception
@@ -226,8 +234,4 @@ public class OrdersInfo extends Thread{
 		} catch (Exception e) {e.printStackTrace();}
 	}
 
-
-
-	  
-	  
 }

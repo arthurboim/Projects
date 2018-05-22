@@ -819,6 +819,7 @@ public class AmazonOrder {
 		Report.Code_place =14; //Update profit error//
 		try
 		{
+			
 		Db.Update_profit(order_details.getOrderID(),order_details.getAmountPaid().getValue(), Price, Fees);
 		Report.Database_update = "Order number + Profit database update success";
 		}catch(Exception e)

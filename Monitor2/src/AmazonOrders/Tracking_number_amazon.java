@@ -227,7 +227,6 @@ public class Tracking_number_amazon extends Thread
 		Driver.findElement(By.xpath("//*[@id='ap_email']")).clear();
 		Driver.findElement(By.xpath("//*[@id='ap_email']")).sendKeys(userName);
 		Driver.findElement(By.xpath("//*[@id='ap_password']")).clear();
-		System.out.println(Pass);
 		Driver.findElement(By.xpath("//*[@id='ap_password']")).sendKeys(Pass);
 		Driver.findElement(By.xpath("//*[@id='signInSubmit']")).click();
 		Thread.sleep(8000);
@@ -475,13 +474,12 @@ public class Tracking_number_amazon extends Thread
 	{
 										
 			Driver.findElementByXPath("//*[@id='ap_email']").click();
-			//Driver.findElementByXPath("//*[@id='ap_email']").clear();
+			Driver.findElementByXPath("//*[@id='ap_email']").clear();
 			Driver.findElementByXPath("//*[@id='ap_email']").sendKeys(userName);
 			Driver.findElementByXPath("//*[@id='continue']").click();
 			try {
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			Driver.findElementByXPath("//*[@id='ap_password']").click();
