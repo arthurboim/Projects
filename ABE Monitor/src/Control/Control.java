@@ -257,9 +257,9 @@ public class Control {
 		ArrayList<Item> ListOfItemsAsins = new ArrayList<Item>();
 		System.out.println("Reading files from database...");
 		
-		//GetResults0_7to30(ListOfItemsAsins);
+		GetResults0_7to30(ListOfItemsAsins);
 		
-		//GetResults0_3030AndHigher(ListOfItemsAsins);
+		GetResults0_3030AndHigher(ListOfItemsAsins);
 		
 		Lowestprice1_7to30(ListOfItemsAsins);
 		

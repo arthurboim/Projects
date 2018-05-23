@@ -1,11 +1,14 @@
 package Main;
 
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -115,6 +118,7 @@ public class Yaballe extends Thread{
 	{
 		try{								  
 			//while (Driver.findElement(By.xpath("//*[@id='page-content']/div/div/div/div/div[3]")).getText().length()<"Total Items: ".length());
+			Thread.sleep(2000);
 			String s  = Driver.findElement(By.xpath("//*[@id='page-content']/div/div/div/div/div[2]/div[2]")).getText();
 			System.out.println(s);
 			s = s.substring(s.indexOf("Items: ")+"Items: ".length(),s.indexOf("/")-1);
@@ -145,12 +149,20 @@ public class Yaballe extends Thread{
 		String ProfitPercent;
 		String BreakEven;
 		try{
+			Robot robot = new Robot();
+			robot.keyPress(KeyEvent.VK_ALT);
+			robot.keyPress(KeyEvent.VK_R);
+			robot.keyRelease(KeyEvent.VK_R);
+			robot.keyRelease(KeyEvent.VK_ALT);
+			Thread.sleep(1000);//											 
 		for(int i=0;i<ItemsPerPage && LoadedItems <ItemsNumber;i++)
 		{
 			if (LoadedItems==ItemsNumber) break;         
-			ProductOnline  temp = new ProductOnline();   					 
-			temp.AmazonPrice = Double.parseDouble(Driver.findElementByXPath("//*[@id='page-content']/div/div/md-content/div/table/tbody/tr["+(i+1)+"]/td[3]/div[3]").getText().replace("$", ""));
-			temp.AmazonAsin = Driver.findElementByXPath("//*[@id='page-content']/div/div/md-content/div/table/tbody/tr["+(i+1)+"]/td[3]/div[2]/a").getText();
+			ProductOnline  temp = new ProductOnline();
+			
+			temp.AmazonPrice = Double.parseDouble(Driver.findElementByXPath("//*[@id='page-content']/div/div/md-content/div/table/tbody/tr["+(i+1)+"]/td[3]/div/div[2]").getText().replace("$", ""));
+			temp.AmazonAsin = Driver.findElementByXPath("//*[@id='page-content']/div/div/md-content/div/table/tbody/tr["+(i+1)+"]/td[3]/div/div[1]/a").getText();
+													 
 			temp.EbayId = Driver.findElementByXPath("//*[@id='page-content']/div/div/md-content/div/table/tbody/tr["+(i+1)+"]/td[4]/div[1]/a").getText();
 			price = Driver.findElementByXPath("//*[@id='page-content']/div/div/md-content/div/table/tbody/tr["+(i+1)+"]/td[8]/a").getText().substring(1);
 			temp.Price = Double.parseDouble(price);
@@ -176,8 +188,8 @@ public class Yaballe extends Thread{
 	{
 		try{
 		if (LoadedItems==ItemsNumber)return 1;
-								   
-		Driver.findElementByXPath("//*[@id='page-content']/div/div/md-content/div/div/div/div/ul/li[11]/a").click();
+									
+		Driver.findElementByXPath("//*[@id='page-content']/div/div/md-content/div/div/div/div/ul/li[6]/a").click();
 		System.out.println("Loading page number "+(i+1));
 		Thread.sleep(4000);				
 		while (Driver.findElement(By.xpath("//*[@id='page-content']/div/div/div/div/div[2]/div[2]")).getText().length()<"Items: ".length());

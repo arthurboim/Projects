@@ -1,2 +1,54 @@
 [0912/110042.868:ERROR:process_info.cc(380)] UncheckedAllocate
 [0418/065405.828:ERROR:prune_crash_reports.cc(34)] PruneCrashReportDatabase: Failed to get pending reports
+[0523/173958.306:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.309:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.309:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.309:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.309:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.309:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.309:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.310:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.310:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.310:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.310:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0523/173958.311:ERROR:exception_snapshot_win.cc(88)] thread ID 16104 not found in process
+[0523/173958.311:WARNING:crash_report_exception_handler.cc(62)] ProcessSnapshotWin::Initialize failed
+[0523/173958.386:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.386:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.386:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.386:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.386:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.386:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.386:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.386:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.386:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.386:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.386:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0523/173958.387:ERROR:exception_snapshot_win.cc(88)] thread ID 12312 not found in process
+[0523/173958.387:WARNING:crash_report_exception_handler.cc(62)] ProcessSnapshotWin::Initialize failed
+[0523/173958.544:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.545:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.545:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.545:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.544:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.545:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.545:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.545:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.545:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.545:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.545:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.545:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.545:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.545:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.545:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.545:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.545:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.545:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.545:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.545:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0523/173958.545:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0523/173958.545:ERROR:exception_snapshot_win.cc(88)] thread ID 12628 not found in process
+[0523/173958.545:WARNING:crash_report_exception_handler.cc(62)] ProcessSnapshotWin::Initialize failed
+[0523/173958.545:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0523/173958.545:ERROR:exception_snapshot_win.cc(88)] thread ID 11804 not found in process
+[0523/173958.545:WARNING:crash_report_exception_handler.cc(62)] ProcessSnapshotWin::Initialize failed
