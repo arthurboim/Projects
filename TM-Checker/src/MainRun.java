@@ -13,7 +13,7 @@ public class MainRun {
 		Decoder.ParseFile("D:\\Downloads\\TM-XML\\tt160101.xml", null);
 		*/
 		MainControl Control = new MainControl();
-		Control.TMFilesParser(); // 20.05.18 last download //
+		Control.TMFilesParser(); // 25.05.18 last download //
 		
 		/*
 		Database db = new Database();
