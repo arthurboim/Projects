@@ -446,7 +446,10 @@ public class AmazonOrder {
 	   // Thread.sleep(2000);     
 		wait.until(ExpectedConditions.elementToBeClickable(	Driver.findElement(By.xpath("//*[@id='add-new-address-popover-link']"))));
 		Driver.findElement(By.xpath("//*[@id='add-new-address-popover-link']")).click();
-		//Thread.sleep(2000);														
+		//Thread.sleep(2000);
+		Driver.findElement(By.xpath("//*[@id='enterAddressFullName']")).click();
+		Driver.findElement(By.xpath("//*[@id='enterAddressFullName']")).clear();
+
 		Driver.findElement(By.xpath("//*[@id='enterAddressFullName']")).sendKeys(order_details.getShippingAddress().getName());
 		Report.BuyerName = order_details.getShippingAddress().getName();
 		//Thread.sleep(2000);

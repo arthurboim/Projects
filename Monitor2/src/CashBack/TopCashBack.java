@@ -13,6 +13,8 @@ public class TopCashBack {
 	public synchronized ChromeDriver MainTopCashBack(String Asin) throws InterruptedException
 	{
 		ChromeOptions options = new ChromeOptions();
+		
+		options.addArguments("user-data-dir=C:\\Users\\Noname\\AppData\\Local\\Google\\Chrome\\User");
 		options.addArguments("--start-maximized");
 		System.setProperty("webdriver.chrome.driver", "C:\\ChromeDriverFolder\\chromedriver.exe");
 		ChromeDriver Driver = new ChromeDriver(options);
@@ -25,24 +27,16 @@ public class TopCashBack {
 			Thread.sleep(2000);
 		if (Driver.findElementsByXPath("//*[@id='ctl00_GeckoTwoColSecondary_SignUpSideBar_txtEmail']").size()>0)
 		{
+			Driver.findElementByXPath("//*[@id='ctl00_ctl25_hypLogin']").click();
 			Thread.sleep(2000);
-			wait.until(ExpectedConditions.elementToBeClickable(Driver.findElementByXPath("//*[@id='ctl00_ctl23_hypLogin']")));
-			Driver.findElementByXPath("//*[@id='ctl00_ctl23_hypLogin']").click();
-			Thread.sleep(2000);
-			wait.until(ExpectedConditions.elementToBeClickable(Driver.findElementByXPath("//*[@id='ctl00_GeckoOneColPrimary_Login_txtEmail']")));
-
-			Driver.findElementByXPath("//*[@id='ctl00_GeckoOneColPrimary_Login_txtEmail']").clear();
-			Driver.findElementByXPath("//*[@id='ctl00_GeckoOneColPrimary_Login_txtEmail']").sendKeys("arthur.boim@gmail.com");
-			Thread.sleep(2000);
-			wait.until(ExpectedConditions.elementToBeClickable(Driver.findElementByXPath("//*[@id='ctl00_GeckoOneColPrimary_Login_txtPassword']")));
-
+			Driver.findElementByXPath("//*[@id='txtEmail']").click();				
+			Driver.findElementByXPath("//*[@id='txtEmail']").clear();
+			Driver.findElementByXPath("//*[@id='txtEmail']").sendKeys("arthur.boim@gmail.com");
+			Driver.findElementByXPath("//*[@id='ctl00_GeckoOneColPrimary_Login_txtPassword']").click();
 			Driver.findElementByXPath("//*[@id='ctl00_GeckoOneColPrimary_Login_txtPassword']").clear();
 			Driver.findElementByXPath("//*[@id='ctl00_GeckoOneColPrimary_Login_txtPassword']").sendKeys("b0104196");
-			Thread.sleep(2000);
-			wait.until(ExpectedConditions.elementToBeClickable(Driver.findElementByXPath("//*[@id='ctl00_GeckoOneColPrimary_Login_Loginbtn']")));
+			Driver.findElementByXPath("//*[@id='Loginbtn']").click();
 
-			Driver.findElementByXPath("//*[@id='ctl00_GeckoOneColPrimary_Login_Loginbtn']").click();
-		//	Thread.sleep(1000);
 		}
 		}catch(Exception e)
 		{
