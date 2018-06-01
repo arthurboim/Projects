@@ -188,8 +188,7 @@ public class Yaballe extends Thread{
 	{
 		try{
 		if (LoadedItems==ItemsNumber)return 1;
-								   
-		Driver.findElementByXPath("//*[@id='page-content']/div/div/md-content/div/div/div/div/ul/li[8]/a").click();
+		Driver.findElementByXPath("//a[@ng-switch-when='next']").click();
 		System.out.println("Loading page number "+(i+1));
 		Thread.sleep(4000);				
 		while (Driver.findElement(By.xpath("//*[@id='page-content']/div/div/div/div/div[2]/div[2]")).getText().length()<"Items: ".length());
