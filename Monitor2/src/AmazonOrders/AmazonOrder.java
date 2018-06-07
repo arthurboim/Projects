@@ -398,7 +398,7 @@ public class AmazonOrder {
 		
 		
 		
-		if (login ==0)	
+		//if (login ==0)	
 		Login2(Driver);
 		
 		Thread.sleep(3000);

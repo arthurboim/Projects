@@ -62,6 +62,8 @@ public class TopCashBack {
 
 		Driver.findElementByXPath("//*[@id='twotabsearchtextbox']").click();
 		Driver.findElementByXPath("//*[@id='twotabsearchtextbox']").sendKeys(Asin);
+		Driver.findElementByXPath("//input[@type='submit']").click();
+		/*
 		try{
 			Thread.sleep(1000);
 			Webelements = Driver.findElementsByTagName("input");
@@ -79,6 +81,7 @@ public class TopCashBack {
 				break;
 			}
 		}
+		*/
 		Thread.sleep(4000);
 		try{
 			

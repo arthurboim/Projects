@@ -492,7 +492,8 @@ public class Tracking_number_amazon extends Thread
 	public String GetStoreNameByAmazonOrderNumber(String AmazonOrderNumber)
 	{
 			try {
-				Connection con = DriverManager.getConnection("jdbc:mysql://localhost:4444/amazon","root","root");
+				
+				Connection con = DriverManager.getConnection(Connection,"root","root");
 				java.sql.Statement statement = con.createStatement();//
 				ResultSet res = statement.executeQuery("select * from amazon.orders where Amazon_OrderNumber = '"+AmazonOrderNumber+"';");
 				res.next();
