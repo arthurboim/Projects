@@ -1,8 +1,6 @@
 package Control;
 
-import java.io.BufferedReader;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -28,95 +26,51 @@ public class Control {
 
 	public static ArrayList<Item> ListOfItems = new ArrayList<Item>();
 	
-	public void CheckItemBeforeUpload(String Asin)
+	public void BulkCheckItemBeforeUpload() throws IOException, ParserConfigurationException, SAXException
 	{
+
+		ArrayList<Item> ListOfItemsAsins = new ArrayList<Item>();
+		System.out.println("Reading files from database...");
 		
-		Amazon AmazonApi = new Amazon();
-		Item Newitem = AmazonApi.BuildItem("B00LSP68KM");
+		GetResults0_7to30(ListOfItemsAsins);
 		
-		Newitem.ItemPrint();
-		Ebay ebay;
-		try {
-			ebay = new Ebay();
-			try{
-			if (!ebay.IsVeroBrand(Newitem)&&!ebay.IsAlreadyExcist(Newitem)&&Newitem.AvailabilityType.equals("now")&&Newitem.MaximumDaysToShip<=2)
-			{
-				Newitem.ReadyToUpload = true;
-				System.out.println(Asin);
-			}
-			}catch(Exception e){}
-			ListOfItems.add(Newitem);
-			/*
-			System.out.println("Checking Vero...");
-			System.out.println("Is Vero ? "+ebay.IsVeroBrand(Newitem));
-			System.out.println("Excisting list check...");
-			System.out.println("Is Excisting ? "+ebay.IsAlreadyExcist(Newitem));
-			*/
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		GetResults0_3030AndHigher(ListOfItemsAsins);
 		
-	}
-	
-	public void BulkCheckItemsBeforeUpload()
-	{
-		ArrayList<String> ListOfAsins = new ArrayList<String>();
-
-		System.out.println("Reading from file...");
-
-		BufferedReader br = null;
-		FileReader fr = null;
-		try {
-			fr = new FileReader("C:\\Users\\Noname\\Desktop\\AsinForUplode.txt");
-			br = new BufferedReader(fr);
-			String sCurrentLine;
-			while ((sCurrentLine = br.readLine()) != null) 
-			{
-				ListOfAsins.add(sCurrentLine);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-
-			try {
-
-				if (br != null)
-					br.close();
-
-				if (fr != null)
-					fr.close();
-
-			} catch (IOException ex) {
-
-				ex.printStackTrace();
-
-			}
-			}
-		System.out.println("Reading from file ended...");
+		//Lowestprice1_7to30(ListOfItemsAsins);
 		
+		//Lowestprice1_30AndHigher(ListOfItemsAsins);
+		//ProductFromSellers_10to30(ListOfItemsAsins);
+		//ProductFromSellers_30AndHigher(ListOfItemsAsins);
+		
+		System.out.println("Reading finished...");
 		System.out.println("Items checking start...");
-		for (String ele:ListOfAsins)
-		{
-			CheckItemBeforeUpload(ele);
-		}
-		
-		for (Item ele:ListOfItems)
-		{
-			if (ele.ReadyToUpload)
-				System.out.println(ele.SupplierCode);
-		}
-		
-		System.out.println("Items checking ended...");
-	
-	}
+		System.out.println("Amount of files before check is "+ListOfItemsAsins.size()); 
+		RemoveDuplicatedItems(ListOfItemsAsins);
 
+		RemoveAlreadyExcistitems(ListOfItemsAsins);
+		System.out.println("Items amount after duplicate and excist check "+ListOfItemsAsins.size()); 
+		AmazonApiCheck(ListOfItemsAsins);
+		//check forbidden category //
+		ItemsCheckingBeforeUpload(ListOfItemsAsins); /* BUG in preorder */
+		RemoveNotReadyFiles(ListOfItemsAsins);
+		PrintReadyToUploadItems(ListOfItemsAsins);
+		System.out.println("Amount of files after check is "+ListOfItemsAsins.size());
+		System.out.println("Items checking ended...");
+		
+		System.out.println("Getting images...");
+		SaveImagesInFolders(ListOfItemsAsins);
+		System.out.println("Getting images ended...");
+		
+	}
+	
+	
+	
 	private void GetResults0_7to30(ArrayList<Item> ListOfItemsAsins)
 	{
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:4444/amazon","root","root");
 			java.sql.Statement statement = con.createStatement();//
-			ResultSet res = statement.executeQuery("SELECT * FROM items where ebayResults=0 and (Uploaded = 0 or Uploaded is null)  and Amazon_Rank<50000 and Amazon_price>7 and Amazon_price<=30 GROUP BY asin;");
+			ResultSet res = statement.executeQuery("SELECT * FROM items where ebayResults=0 and (Uploaded = 0 or Uploaded is null)  and Amazon_Rank<50000  and Amazon_Rank>0 and Amazon_price>7 and Amazon_price<=30 GROUP BY asin;");
 
 			while(res.next())
 			{
@@ -138,7 +92,7 @@ public class Control {
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:4444/amazon","root","root");
 			java.sql.Statement statement = con.createStatement();//
-			ResultSet res = statement.executeQuery("SELECT * FROM items where ebayResults=0 and Amazon_Rank<50000 and (Uploaded = 0 or Uploaded is null)   and Amazon_price>30 and Amazon_price<=2000 GROUP BY asin;");
+			ResultSet res = statement.executeQuery("SELECT * FROM items where ebayResults=0 and Amazon_Rank<50000  and Amazon_Rank>0 and (Uploaded = 0 or Uploaded is null)   and Amazon_price>30 and Amazon_price<=2000 GROUP BY asin;");
 
 			while(res.next())
 			{
@@ -154,6 +108,7 @@ public class Control {
 		} catch (SQLException e) {System.out.println("GetResults0_3030AndHigher");}
 	
 	}
+	
 	private void Lowestprice1_7to30(ArrayList<Item> ListOfItemsAsins)
 	{
 
@@ -161,7 +116,7 @@ public class Control {
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:4444/amazon","root","root");
 			java.sql.Statement statement = con.createStatement();//
-			ResultSet res = statement.executeQuery("SELECT * FROM items where  placeinlowestprice = 1 and Uploaded = 0  and Amazon_Rank>0 and Amazon_Rank<50000 and Amazon_price>10 and Amazon_price<=30 GROUP BY asin;");
+			ResultSet res = statement.executeQuery("SELECT * FROM items where  placeinlowestprice = 1 and Uploaded = 0  and Amazon_Rank>0 and Amazon_Rank<30000 and Amazon_price>10 and Amazon_price<=30 GROUP BY asin;");
 
 			while(res.next())
 			{
@@ -179,13 +134,14 @@ public class Control {
 	
 		
 	}
+	
 	private void Lowestprice1_30AndHigher(ArrayList<Item> ListOfItemsAsins)
 	{
 
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:4444/amazon","root","root");
 			java.sql.Statement statement = con.createStatement();//
-			ResultSet res = statement.executeQuery("SELECT * FROM items where  placeinlowestprice = 1 and Uploaded = 0 and Amazon_Rank>0 and Amazon_Rank<50000 and Amazon_price>30 and Amazon_price<=2000 GROUP BY asin;");
+			ResultSet res = statement.executeQuery("SELECT * FROM items where  placeinlowestprice = 1 and Uploaded = 0 and Amazon_Rank>0 and Amazon_Rank<30000 and Amazon_price>30 and Amazon_price<=2000 GROUP BY asin;");
 
 			while(res.next())
 			{
@@ -226,6 +182,7 @@ public class Control {
 		} catch (SQLException e) {System.out.println("Lowestprice1_30AndHigher");}
 
 	}
+	
 	private void ProductFromSellers_30AndHigher(ArrayList<Item> ListOfItemsAsins)
 	{
 
@@ -248,51 +205,6 @@ public class Control {
 
 		} catch (SQLException e) {System.out.println("Lowestprice1_30AndHigher");}
 
-	}
-	
-	
-	public void BulkCheckItemBeforeUpload() throws IOException, ParserConfigurationException, SAXException
-	{
-
-		ArrayList<Item> ListOfItemsAsins = new ArrayList<Item>();
-		System.out.println("Reading files from database...");
-		
-		GetResults0_7to30(ListOfItemsAsins);
-		
-		GetResults0_3030AndHigher(ListOfItemsAsins);
-		
-		Lowestprice1_7to30(ListOfItemsAsins);
-		
-		Lowestprice1_30AndHigher(ListOfItemsAsins);
-		//ProductFromSellers_10to30(ListOfItemsAsins);
-		//ProductFromSellers_30AndHigher(ListOfItemsAsins);
-		
-		/*
-		Item temp = new Item();
-		temp.SupplierCode = "B00VQW8NDW";
-		temp.PathFolder = "GetResults0_7to30";
-		ListOfItemsAsins.add(temp);
-		*/
-		System.out.println("Reading finished...");
-		System.out.println("Items checking start...");
-		System.out.println("Amount of files before check is "+ListOfItemsAsins.size()); 
-		RemoveDuplicatedItems(ListOfItemsAsins);
-		
-		
-		RemoveAlreadyExcistitems(ListOfItemsAsins);
-		System.out.println("Items amount after duplicate and excist check "+ListOfItemsAsins.size()); 
-		AmazonApiCheck(ListOfItemsAsins);
-		//check forbidden category //
-		ItemsCheckingBeforeUpload(ListOfItemsAsins); /* BUG in preorder */
-		RemoveNotReadyFiles(ListOfItemsAsins);
-		PrintReadyToUploadItems(ListOfItemsAsins);
-		System.out.println("Amount of files after check is "+ListOfItemsAsins.size());
-		System.out.println("Items checking ended...");
-		
-		System.out.println("Getting images...");
-		SaveImagesInFolders(ListOfItemsAsins);
-		System.out.println("Getting images ended...");
-		
 	}
 	
 	private void SaveImagesInFolders(ArrayList<Item> ListOfItemsAsins) throws IOException
@@ -352,13 +264,11 @@ public class Control {
 	
 	private void RemoveNotReadyFiles(ArrayList<Item> ListOfItemsAsins) throws IOException
 	{
-		Ebay ebay = new Ebay();
 		Iterator<Item> i = ListOfItemsAsins.iterator();
-		while (i.hasNext()) {
+		while (i.hasNext()) 
+		{
 			if (i.next().ReadyToUpload==false) i.remove();
 		}
-		ebay = null;
-		System.gc();
 	}
 	
 	private void RemoveAlreadyExcistitems(ArrayList<Item> ListOfItemsAsins) throws IOException
@@ -396,6 +306,7 @@ public class Control {
 			if (counter==9)
 			{
 				counter++;	
+				Codes = Codes.substring(0, Codes.length()-1);
 				System.out.println(Codes);
 				AmazonApiCall.BulkInfoRequest(Codes,List,counter);
 				counter=0;
@@ -417,13 +328,15 @@ public class Control {
 		System.out.println("--------------------------Report---------------------------");
 		for(Item ele:List)
 		{
-			if (ele.ReadyToUpload)System.out.println(ele.SupplierCode);
-			//else ele.ItemPrint();
+			if (ele.ReadyToUpload)
+			{
+				System.out.println(ele.SupplierCode);
+			}
 		}
 		System.out.println("--------------------------Report---------------------------");
 	}
 	
-	private void ItemsCheckingBeforeUpload(ArrayList<Item> List) throws IOException
+	public void ItemsCheckingBeforeUpload(ArrayList<Item> List) throws IOException
 	{
 		Ebay ebay = new Ebay();
 		for (Item ele:List)//
@@ -441,7 +354,7 @@ public class Control {
 				ele.ReadyToUpload = false;
 			}
 			
-			if (ele.IsPreorder == true) /* BUG */ 
+			if (ele.IsPreorder == true) 
 			{
 				ele.ReadyToUpload = false;
 			}

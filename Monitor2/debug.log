@@ -52,3 +52,63 @@
 [0523/173958.545:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
 [0523/173958.545:ERROR:exception_snapshot_win.cc(88)] thread ID 11804 not found in process
 [0523/173958.545:WARNING:crash_report_exception_handler.cc(62)] ProcessSnapshotWin::Initialize failed
+[0626/083655.568:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/110724.089:ERROR:file_io_win.cc(170)] CreateFile C:\Users\Noname\AppData\Local\Temp\scoped_dir13192_31669\Crashpad\reports\07a79c3f-795c-4231-bea6-137772e836b7.dmp: The system cannot find the path specified. (0x3)
+[0626/110724.092:ERROR:crash_report_exception_handler.cc(97)] PrepareNewCrashReport failed
+[0626/112401.466:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/114908.365:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/114908.781:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/114909.198:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/114909.610:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/114911.280:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/115629.975:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/115644.112:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/115651.933:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/115651.937:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/115651.969:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/115700.009:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/115707.566:ERROR:filesystem_win.cc(148)] DeleteFile C:\Users\Noname\AppData\Local\Temp\scoped_dir29852_10133\Crashpad\reports\9bdb94b3-428e-4154-9f1b-73681e557930.dmp: The process cannot access the file because it is being used by another process. (0x20)
+[0626/115713.155:ERROR:file_io_win.cc(170)] CreateFile C:\Users\Noname\AppData\Local\Temp\scoped_dir18508_17813\Crashpad\reports\ba63ffb1-d47e-4cc9-ab40-12f8e497a942.dmp: The system cannot find the path specified. (0x3)
+[0626/115713.155:ERROR:crash_report_exception_handler.cc(97)] PrepareNewCrashReport failed
+[0626/115713.334:ERROR:file_io_win.cc(170)] CreateFile C:\Users\Noname\AppData\Local\Temp\scoped_dir13652_17319\Crashpad\reports\a08bf302-8a97-4c62-9c0c-765f6b485fdc.dmp: The system cannot find the path specified. (0x3)
+[0626/115713.334:ERROR:crash_report_exception_handler.cc(97)] PrepareNewCrashReport failed
+[0626/120737.835:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/121744.072:ERROR:file_io_win.cc(170)] CreateFile C:\Users\Noname\AppData\Local\Temp\scoped_dir13624_8570\Crashpad\reports\2d9003c7-8448-45d4-b33f-a7b5d6fd55e7.dmp: The system cannot find the path specified. (0x3)
+[0626/121744.072:ERROR:crash_report_exception_handler.cc(97)] PrepareNewCrashReport failed
+[0626/135825.616:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/135826.043:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/135847.810:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/141009.538:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/141009.886:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/141119.919:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/141226.672:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/141230.495:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/141230.559:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/141258.960:ERROR:file_io_win.cc(170)] CreateFile C:\Users\Noname\AppData\Local\Temp\scoped_dir27812_29195\Crashpad\reports\e2671fc5-4dce-411b-b63b-091e8eec9abe.dmp: The system cannot find the path specified. (0x3)
+[0626/141258.961:ERROR:crash_report_exception_handler.cc(97)] PrepareNewCrashReport failed
+[0626/141258.967:ERROR:file_io_win.cc(170)] CreateFile C:\Users\Noname\AppData\Local\Temp\scoped_dir22604_31709\Crashpad\reports\1edecca1-246d-4f22-a850-13ea9665659f.dmp: The system cannot find the path specified. (0x3)
+[0626/141258.968:ERROR:crash_report_exception_handler.cc(97)] PrepareNewCrashReport failed
+[0626/170723.978:ERROR:file_io_win.cc(170)] CreateFile C:\Users\Noname\AppData\Local\Temp\scoped_dir23432_2188\Crashpad\reports\431e0fb2-6e26-4f59-ad69-e44e37a4c7e7.dmp: The system cannot find the path specified. (0x3)
+[0626/170723.994:ERROR:crash_report_exception_handler.cc(97)] PrepareNewCrashReport failed
+[0626/171300.681:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/171300.875:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/171321.972:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/172326.311:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/172326.323:ERROR:filesystem_win.cc(148)] DeleteFile C:\Users\Noname\AppData\Local\Temp\scoped_dir29548_17434\Crashpad\reports\dd4ec0f6-5b52-4b7e-a6cb-0baec61d6ccc.dmp: The process cannot access the file because it is being used by another process. (0x20)
+[0626/173237.151:ERROR:file_io_win.cc(170)] CreateFile C:\Users\Noname\AppData\Local\Temp\scoped_dir20936_26994\Crashpad\reports\43a116c7-a9ec-4b95-b3c8-df354a184778.dmp: The system cannot find the path specified. (0x3)
+[0626/173237.152:ERROR:crash_report_exception_handler.cc(97)] PrepareNewCrashReport failed
+[0626/173244.791:ERROR:filesystem_win.cc(148)] DeleteFile C:\Users\Noname\AppData\Local\Temp\scoped_dir19300_30001\Crashpad\reports\401180f4-e941-400c-92ca-325523c90d04.dmp: The process cannot access the file because it is being used by another process. (0x20)
+[0626/173302.717:ERROR:file_io_win.cc(170)] CreateFile C:\Users\Noname\AppData\Local\Temp\scoped_dir18508_17813\Crashpad\reports\66989497-eaf0-47ca-b378-94607e61b9f8.dmp: The system cannot find the path specified. (0x3)
+[0626/173302.717:ERROR:crash_report_exception_handler.cc(97)] PrepareNewCrashReport failed
+[0626/173318.152:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/173331.947:ERROR:file_io_win.cc(170)] CreateFile C:\Users\Noname\AppData\Local\Temp\scoped_dir24724_1902\Crashpad\reports\867cfee1-7e38-4e93-a8a0-c2716b54d286.dmp: The system cannot find the path specified. (0x3)
+[0626/173331.959:ERROR:crash_report_exception_handler.cc(97)] PrepareNewCrashReport failed
+[0626/174338.552:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/175123.076:ERROR:file_io_win.cc(170)] CreateFile C:\Users\Noname\AppData\Local\Temp\scoped_dir21108_4371\Crashpad\reports\bf9df936-64c7-4a5d-9967-969ee8055ad2.dmp: The system cannot find the path specified. (0x3)
+[0626/175123.076:ERROR:crash_report_exception_handler.cc(97)] PrepareNewCrashReport failed
+[0626/180343.194:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/180352.838:ERROR:process_info.cc(359)] UncheckedAllocate
+[0626/185617.735:ERROR:file_io_win.cc(170)] CreateFile C:\Users\Noname\AppData\Local\Temp\scoped_dir13652_17319\Crashpad\reports\b470788d-ff97-42a0-8f8e-22b2c6ba6f58.dmp: The system cannot find the path specified. (0x3)
+[0626/185617.735:ERROR:crash_report_exception_handler.cc(97)] PrepareNewCrashReport failed
+[0626/185635.984:ERROR:file_io_win.cc(170)] CreateFile C:\Users\Noname\AppData\Local\Temp\scoped_dir20424_1583\Crashpad\reports\148a21ff-81e4-4100-9617-dcf4cde99724.dmp: The system cannot find the path specified. (0x3)
+[0626/185635.987:ERROR:crash_report_exception_handler.cc(97)] PrepareNewCrashReport failed

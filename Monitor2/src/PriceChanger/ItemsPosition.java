@@ -581,7 +581,6 @@ public class ItemsPosition implements Runnable  {
 	        try {
 	            int BestMatchPositioncounter =1;
 	            int LowestPricePositioncounter =1;
-	            int flag =0;
 	        	config.setApplicationId(Application_id);
 	            FindingServicePortType serviceClient = FindingServiceClientFactory.getServiceClient(config);
 	            FindItemsAdvancedRequest request = new FindItemsAdvancedRequest();
@@ -623,7 +622,6 @@ public class ItemsPosition implements Runnable  {
 		            if (SortType.equals("BestMatch"))
 		            {
 		            BestMatchPositioncounter = 0;
-		            flag = 0;
 		            for(SearchItem ele1:items)
 		            {
 		            	BestMatchPositioncounter++;
@@ -648,7 +646,6 @@ public class ItemsPosition implements Runnable  {
 		            System.out.println("Lowest price "+ele.EbayLowestprice);
 		            System.out.println("Second Lowest price "+ele.EbaySecondLowestprice);
 		            LowestPricePositioncounter = 0;
-		            flag = 0;
 		            for(SearchItem ele1:items)
 		            {
 		            	LowestPricePositioncounter++;

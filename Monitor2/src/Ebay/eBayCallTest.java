@@ -1,13 +1,11 @@
 package Ebay;
 
-import static org.junit.Assert.*;
+
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+
 
 import org.junit.Test;
 
@@ -21,10 +19,7 @@ import com.ebay.soap.eBLBaseComponents.PaginationType;
 import com.ebay.soap.eBLBaseComponents.SiteCodeType;
 import com.ebay.soap.eBLBaseComponents.TradingRoleCodeType;
 
-import AmazonOrders.AmazonOrder;
-import AmazonOrders.Order_report;
 import Main.DatabaseMain;
-import Main.Email;
 import Main.Store;
 
 public class eBayCallTest {

@@ -11,19 +11,6 @@ public class ABEMonitorMain {
 
 		Control Control = new Control();		
 		Control.BulkCheckItemBeforeUpload();
-		/*
-		ArrayList<Item> ListOfItemsAsins = new ArrayList<Item>();
-		Item item = new Item();
-		
-		Ebay Ebay = new Ebay();
-		item.SupplierCode = "B009IAA9DQ";
-		ListOfItemsAsins.add(item);
-		Control.AmazonApiCheck(ListOfItemsAsins);
-		Ebay.IsVeroBrand(ListOfItemsAsins.get(0));
-		 */
-		//Ebay.DivideStringToWords("#16,838 in Toys & Games (See Top 100 in Toys & Games) ");
-		
-		
 	}
 
 }

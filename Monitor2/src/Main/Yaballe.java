@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -54,6 +53,7 @@ public class Yaballe extends Thread{
 		Db.GetDatabase(database_list);
 
 		ChromeOptions options = new ChromeOptions();
+		options.addArguments("user-data-dir=C:\\Users\\Noname\\AppData\\Local\\Google\\Chrome\\User");
 		options.addArguments("--start-maximized");
 		System.setProperty("webdriver.chrome.driver", "C:\\ChromeDriverFolder\\chromedriver.exe");
 		ChromeDriver Driver = new ChromeDriver(options);
@@ -93,9 +93,14 @@ public class Yaballe extends Thread{
 		
 		try{
 			Driver.get("https://yaballe.com");
-			wait.until(ExpectedConditions.elementToBeClickable(Driver.findElementByXPath("//*[@id='modal_trigger']")));
-			Driver.findElement(By.xpath("//*[@id='modal_trigger']")).click();
+			//wait.until(ExpectedConditions.elementToBeClickable(Driver.findElementByXPath("//*[@id='modal_trigger']")));
+			Thread.sleep(2000);
+			wait.until(ExpectedConditions.elementToBeClickable(Driver.findElementByXPath("//*[@id='page-header-inner']/div/div/div/div/div[3]/div[2]/a[1]")));
+			Driver.findElement(By.xpath("//*[@id='page-header-inner']/div/div/div/div/div[3]/div[2]/a[1]")).click();
+			wait.until(ExpectedConditions.elementToBeClickable(Driver.findElementByXPath("/html/body/div[1]/ul/li[2]/a")));
+			Driver.findElement(By.xpath("/html/body/div[1]/ul/li[2]/a")).click();
 			wait.until(ExpectedConditions.elementToBeClickable(Driver.findElementByXPath("//*[@id='login_email']")));
+
 			System.out.println("Sending...");
 			Driver.findElement(By.xpath("//*[@id='login_email']")).click();
 			Driver.findElement(By.xpath("//*[@id='login_email']")).clear();

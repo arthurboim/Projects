@@ -59,7 +59,7 @@ public class TopCashBack {
 		
 		Thread.sleep(2000);
 		//wait.until(ExpectedConditions.elementToBeClickable(Driver.findElementByXPath("//*[@id='twotabsearchtextbox']")));
-
+		
 		Driver.findElementByXPath("//*[@id='twotabsearchtextbox']").click();
 		Driver.findElementByXPath("//*[@id='twotabsearchtextbox']").sendKeys(Asin);
 		Driver.findElementByXPath("//input[@type='submit']").click();

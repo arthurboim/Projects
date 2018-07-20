@@ -3,15 +3,9 @@ package MainPackage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 import com.ebay.sdk.ApiAccount;
 import com.ebay.sdk.ApiCall;
 import com.ebay.sdk.ApiContext;
@@ -20,18 +14,13 @@ import com.ebay.sdk.ApiException;
 import com.ebay.sdk.SdkException;
 import com.ebay.sdk.TimeFilter;
 import com.ebay.sdk.call.GetItemTransactionsCall;
-import com.ebay.sdk.helper.ConsoleUtil;
 import com.ebay.services.client.ClientConfig;
 import com.ebay.services.client.FindingServiceClientFactory;
-import com.ebay.services.finding.FindCompletedItemsRequest;
-import com.ebay.services.finding.FindCompletedItemsResponse;
 import com.ebay.services.finding.FindItemsAdvancedRequest;
 import com.ebay.services.finding.FindItemsAdvancedResponse;
 import com.ebay.services.finding.FindingServicePortType;
 import com.ebay.services.finding.ItemFilter;
 import com.ebay.services.finding.ItemFilterType;
-import com.ebay.services.finding.OutputSelectorType;
-import com.ebay.services.finding.PaginationInput;
 import com.ebay.services.finding.SearchItem;
 import com.ebay.services.finding.SortOrderType;
 import com.ebay.soap.eBLBaseComponents.GetItemRequestType;
@@ -40,41 +29,14 @@ import com.ebay.soap.eBLBaseComponents.NameValueListType;
 import com.ebay.soap.eBLBaseComponents.SiteCodeType;
 import com.ebay.soap.eBLBaseComponents.TransactionType;
 
-
-
-
 public class EbaySearch {
-	
-	
-
-	public  static Connection con ;
-	public  static java.sql.Statement statement_update ;
-	public  static java.sql.Statement statement ;
-	public  static String Connection = null;
-	public  static String scham = null;
 	public  String FILENAME = "C:\\keys\\ConfigFile-Keys.txt";
-	public  String AWS_ACCESS_KEY_ID_FROM_FILE  = null;
-	public  String AWS_SECRET_KEY_FROM_FILE = null;
-	public  String ENDPOINT_FROM_FILE = null;
 	public  ApiContext apiContext = new ApiContext();
-	public  ApiCredential cred = apiContext.getApiCredential(); //
 	public  String eBay_token = null;
 	public  String Server_url = null;
-	public  String Application_id= null;
 	public  SiteCodeType SiteCode = null;
-	public  String Contry = null;
-	public  ResultSet res = null;
-	public  ApiCredential cred2 = apiContext.getApiCredential(); //
-	public  ApiContext    apiContext2 = new ApiContext();
-	public  ApiCredential cred3 = apiContext.getApiCredential(); //
-	public  ApiContext    apiContext3 = new ApiContext();
-	
-	
-	
-	public EbaySearch() {
 
-		FILENAME = "C:\\keys\\ConfigFile-Keys.txt";
-		System.out.println("File name that loaded = "+FILENAME);
+	public EbaySearch() {
 
 		BufferedReader br = null;
 		FileReader fr = null;
@@ -85,64 +47,15 @@ public class EbaySearch {
 			while ((sCurrentLine = br.readLine()) != null) 
 			{
 
-
 				if (sCurrentLine.contains("eBay token:"))
 				{
 					eBay_token = sCurrentLine.substring(sCurrentLine.indexOf("eBay token:")+12);
-					
 				}
 				
 				if (sCurrentLine.contains("Server url:"))
 				{
 					Server_url = sCurrentLine.substring(sCurrentLine.indexOf("Server url:")+12);
 					
-				}
-				
-				if (sCurrentLine.contains("Application id:"))
-				{
-					Application_id = sCurrentLine.substring(sCurrentLine.indexOf("Application id:")+16);
-					
-				}
-				
-				if (sCurrentLine.contains("Site:")&&sCurrentLine.contains("US"))
-				{
-					
-					SiteCode =  SiteCodeType.US;
-					Contry = "US";
-				}
-				
-				if (sCurrentLine.contains("Site:")&&sCurrentLine.contains("UK"))
-				{
-					
-					SiteCode =  SiteCodeType.UK;
-					Contry = "UK";
-				}
-				
-			
-				if (sCurrentLine.contains("AWS_ACCESS_KEY_ID:"))
-				{
-					AWS_ACCESS_KEY_ID_FROM_FILE = sCurrentLine.substring(sCurrentLine.indexOf("AWS_ACCESS_KEY_ID:")+19);
-				}
-				
-				if (sCurrentLine.contains("AWS_SECRET_KEY:"))
-				{
-					AWS_SECRET_KEY_FROM_FILE = sCurrentLine.substring(sCurrentLine.indexOf("AWS_SECRET_KEY:")+16);
-				}
-				
-				if (sCurrentLine.contains("ENDPOINT:"))
-				{
-					ENDPOINT_FROM_FILE = sCurrentLine.substring(sCurrentLine.indexOf("ENDPOINT:")+10);
-				}
-				
-				if (sCurrentLine.contains("Connection:"))
-				{
-					Connection = sCurrentLine.substring(sCurrentLine.indexOf("Connection:")+12);
-				}
-				
-				if (sCurrentLine.contains("Schame:"))
-				{
-					scham = sCurrentLine.substring(sCurrentLine.indexOf("Schame:")+8);
-					Connection =Connection+scham;
 				}
 			}
 		} catch (IOException e) {
@@ -172,7 +85,7 @@ public class EbaySearch {
 	public void Finditem (List<product> ItemsList) throws IOException
 	{
 		ScrapInfo info1 = new ScrapInfo();
-	        try {
+	    
 	        	ClientConfig config = new ClientConfig();
 	        	config.setApplicationId("Arthurbo-Getprodu-PRD-c45f6444c-b98e8933");
 	            FindingServicePortType serviceClient = FindingServiceClientFactory.getServiceClient(config);
@@ -194,151 +107,58 @@ public class EbaySearch {
 	    		filter6.setName(ItemFilterType.LOCATED_IN);
 	    		filter6.getValue().add("US");
 	    		request.getItemFilter().add(filter6);  
+	    		request.setSortOrder(SortOrderType.PRICE_PLUS_SHIPPING_LOWEST);
 
-	    		
+	    	    
 	            for (product ele:ItemsList)
 	            {
-	            if (ele.getBestresult()!=null)
-	            {
+	            
 	            try
 	            {
-	            System.out.println("Key word = "+ele.getBestresult());
-	            request.setKeywords( ele.getBestresult());
-	            request.setSortOrder(SortOrderType.PRICE_PLUS_SHIPPING_LOWEST);
-	            FindItemsAdvancedResponse result = serviceClient.findItemsAdvanced(request);//
-	            System.out.println("Finditem = "+result.getAck());
-	            System.out.println("Finditem =  " + result.getSearchResult().getCount());
-	            ele.ebayResults = result.getSearchResult().getCount();
-	            List<SearchItem> items = result.getSearchResult().getItem();
-	            int counter=1;
-	            int  Flag = 0;
-	            for(SearchItem item : items) 
-	            {
-	            	try{
-	            	if (counter ==1&&item!=null) 
+	            	request.setKeywords(ele.getBestresult());
+	            	FindItemsAdvancedResponse result = serviceClient.findItemsAdvanced(request);
+	            	ele.ebayResults = result.getSearchResult().getCount();
+	            	if(0 == ele.ebayResults)
 	            	{
-	            		
-	            		ele.ebayLowestPrice = (double)(item.getSellingStatus().getCurrentPrice().getValue()+item.getShippingInfo().getShippingServiceCost().getValue());
-	            		ele.arbitraje = (ele.ebayLowestPrice + ele.Ebay_shipping) -info1.Min_price_to_sale(ele.price);
+	            		continue;
 	            	}
 	            	
-	            	
-	            	if (item.getSellingStatus().getCurrentPrice().getValue() +item.getShippingInfo().getShippingServiceCost().getValue()>info1.Min_price_to_sale(ele.price)&&item!=null&&Flag==0)
-	            		{
-	            		ele.PlaceInlowestprice = counter;
-	            		Flag = 1;
-	            		}
-	            	}catch (Exception e){}
-	            	
-	            	/*
-	            	if (counter<6)
-	            	{
-	            		if (item.getListingInfo().getBuyItNowPrice().getValue()>10 &&item.getListingInfo().getBuyItNowPrice().getValue()<30)
-	            			ele.sold+=GetItemTransactions(item.getItemId(),7);
-	            		if (item.getListingInfo().getBuyItNowPrice().getValue()>30 &&item.getListingInfo().getBuyItNowPrice().getValue()<70)
-	            			ele.sold+=GetItemTransactions(item.getItemId(),14);
-	            		if (item.getListingInfo().getBuyItNowPrice().getValue()>70 &&item.getListingInfo().getBuyItNowPrice().getValue()<1000)
-	            			ele.sold+=GetItemTransactions(item.getItemId(),30);
-	            	}
-	            	*/
-	            counter++;
+		            List<SearchItem> items = result.getSearchResult().getItem();
+		            int counter=1;
+		            
+		            ele.ebayLowestPrice = (double)(items.get(0).getSellingStatus().getCurrentPrice().getValue()+items.get(0).getShippingInfo().getShippingServiceCost().getValue());
+		            ele.arbitraje 		= (ele.ebayLowestPrice + ele.Ebay_shipping) - info1.Min_price_to_sale(ele.price);
+		            
+		            for(SearchItem item : items) 
+		            {
+			          try{
+		            	if (item.getSellingStatus().getCurrentPrice().getValue() +item.getShippingInfo().getShippingServiceCost().getValue()>info1.Min_price_to_sale(ele.price) && item != null )
+		            	{
+		            		ele.PlaceInlowestprice = counter;
+		            		break;
+		            	}
+			          }catch (Exception e){}
+			           counter++;
+			        }
 	            }
-	           
-	            
-	            }
-	            catch(Exception ex){ex.printStackTrace();}
-	            }
+	            catch(Exception ex){}
 	            
 	            if (ele.price>0)
 	            {
-	            ele.Breakevenlowestprice = ele.ebayLowestPrice/(ele.price+0.3);
-	            }else ele.Breakevenlowestprice = 0;
-	            
+	            	ele.Breakevenlowestprice = ele.ebayLowestPrice/(ele.price+0.3);
+	            }
+
 	            if (ele.ebayResults>0)
 	            {
-	            ele.Sale_true = (ele.sold/ele.ebayResults)*100;
-	            }else ele.Sale_true =  0;
+	            	ele.Sale_true = (ele.sold/ele.ebayResults)*100;
+	            }
 	            
 	            }
-	            } 
-	        	catch (Exception ex){System.out.println(ex);ex.printStackTrace();}
-	    }//FindItem
 
-	public void findCompletedItems(List<product> ItemsList) throws IOException, SQLException
-	{
-		ScrapInfo info1 = new ScrapInfo();
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		Date date = new Date();
-		Date date2 = new Date();
-		date2 = addDays(date,-45);// dateFormat
-		try{
-    	ClientConfig config = new ClientConfig();
-    	config.setApplicationId("Arthurbo-Getprodu-PRD-c45f6444c-b98e8933");
-    	FindingServicePortType serviceClient = FindingServiceClientFactory.getServiceClient(config);
-		FindCompletedItemsRequest request = new FindCompletedItemsRequest();
-		PaginationInput pi = new PaginationInput();
-		pi.setEntriesPerPage(200);
-		request.setPaginationInput(pi);
-        request.setSortOrder(SortOrderType.PRICE_PLUS_SHIPPING_LOWEST);
-		ItemFilter filter1 = new ItemFilter();
-		filter1.setName(ItemFilterType.SOLD_ITEMS_ONLY);
-		filter1.getValue().add("true");
-		ItemFilter filter2 = new ItemFilter();
-		filter2.setName(ItemFilterType.CONDITION);
-		filter2.getValue().add("1000");
-	    ItemFilter conditionFilter = new ItemFilter();
-	    conditionFilter.setName(ItemFilterType.AVAILABLE_TO);
-	    conditionFilter.getValue().add("US");
-	    ItemFilter conditionFilter3 = new ItemFilter();
-	    conditionFilter3.setName(ItemFilterType.END_TIME_FROM);
-	    conditionFilter3.getValue().add(dateFormat.format(date2)+"T00:00:00.768Z");
-	    request.getItemFilter().add(conditionFilter3);
-	    request.getItemFilter().add(conditionFilter);
-	    request.getItemFilter().add(filter1);
-	    request.getItemFilter().add(filter2);
-	    request.getOutputSelector().add(OutputSelectorType.STORE_INFO);
-	    request.getOutputSelector().add(OutputSelectorType.SELLER_INFO);
-	    request.getOutputSelector().add(OutputSelectorType.ASPECT_HISTOGRAM);
-    
-		for (product ele:ItemsList)
-		{
-		try{
-		request.setKeywords(ele.bestresult);
-	    if (ele.bestresult!=null)
-	    {
-		FindCompletedItemsResponse response = serviceClient.findCompletedItems(request); 
-		System.out.println(response.getAck().name());
-		ele.sold = response.getSearchResult().getCount(); //
-		System.out.println("Sold On ebay = "+ele.sold);
-		List<SearchItem> items = response.getSearchResult().getItem();
-		int counter =1;
-		int Flag =0;
-		for (SearchItem ele1:items)
-		{
-			if (counter ==1) ele.LowestSold = ele1.getSellingStatus().getCurrentPrice().getValue()+ele1.getShippingInfo().getShippingServiceCost().getValue();
-			try{
-			if (ele1.getSellingStatus().getCurrentPrice().getValue() +ele1.getShippingInfo().getShippingServiceCost().getValue()>info1.Min_price_to_sale(ele.price)&&Flag==0)
-    		{
-    		ele.PlaceInlowestpriceSold = counter;
-    		Flag = 1;
-    		}
-			}catch (Exception e){
-			}
-			counter++;
-		}
-	
-	    }
-		
-		}catch (Exception e){ System.out.println(e.getMessage());}
-		}
-		}catch (Exception e){System.out.println(e.getMessage());}
-		
-	}
+	    }//FindItem
 
 	public int GetItemTransactions(String EbayId,int days) throws ApiException, SdkException, Exception
 	{
-		cred = apiContext.getApiCredential();
-		cred.seteBayToken(eBay_token);
 		apiContext.setApiServerUrl(Server_url);     
 		apiContext.setSite(SiteCode); 
 		GetItemTransactionsCall call = new GetItemTransactionsCall(apiContext);

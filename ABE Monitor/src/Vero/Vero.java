@@ -44,11 +44,13 @@ public class Vero {
 		Connection con = DriverManager.getConnection("jdbc:mysql://localhost:4444/","root","root");
 		java.sql.Statement statement = con.createStatement();
 		ResultSet res = statement.executeQuery("SELECT * FROM amazon.vero;");
-
+		String tempBrand;
+		VeroBand = VeroBand.trim();
 		while(res.next())
 		{
-			
-			if (res.getString("Brand").toLowerCase().equals(VeroBand.replace("'", "").toLowerCase())) 
+			tempBrand = res.getString("Brand").toLowerCase();
+			tempBrand = tempBrand.trim();
+			if (tempBrand.equals(VeroBand.replace("'", "").toLowerCase())) 
 			{
 				return true;
 			}

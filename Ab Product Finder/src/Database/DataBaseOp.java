@@ -12,9 +12,7 @@ public class DataBaseOp
 {
 	public static  String FILENAME = "C:\\Keys\\ConfigFile-Keys.txt";
 	public static Connection con = null;
-	public static Connection con2 = null;
 	public static java.sql.Statement statement = null;
-	public static java.sql.Statement statement2 = null;
 	public static String Connection = null;
 	public static String scham = null;
 
@@ -72,8 +70,6 @@ public class DataBaseOp
 			statement = con.createStatement();//
 			ResultSet res = statement.executeQuery("SELECT count(*) FROM "+scham+".items where ebayResults=0 and  amazon_rank<100000 and Uploaded = 0;");
 			res.last();
-			//res.getRow();
-			System.out.println(res.getInt(1));
 			return res.getInt(1);
 		} catch (SQLException e) {System.out.println(e);e.printStackTrace();return -1;}
 		
@@ -86,7 +82,6 @@ public class DataBaseOp
 			statement = con.createStatement();//
 			ResultSet res = statement.executeQuery("SELECT count(*) FROM "+scham+".items where ebayResults>0 and amazon_rank>0 and amazon_rank<20000 and Placeinlowestprice=1 and Uploaded = 0;");
 			res.last();
-			System.out.println(res.getInt(1));
 			return res.getInt(1);
 		} catch (SQLException e) {System.out.println(e);e.printStackTrace();return -1;}
 	}
@@ -126,42 +121,80 @@ public class DataBaseOp
 	
 	}
 	
-	public void  GetResults0AbFinder(String ip)
+	public void  GetResults0AbFinder(String ip) throws InterruptedException, SQLException
 	{
-		try 
-		{				
-			System.out.println("GetResults0AbFinder Start...");
-			System.out.println("jdbc:mysql://"+ip+":3306/amazon");
-			con = DriverManager.getConnection("jdbc:mysql://"+ip+":3306/amazon","root","root");
-			statement = con.createStatement();//
-			ResultSet res = statement.executeQuery("SELECT * FROM items where Amazon_price>10 and amazon_rank>0 and amazon_rank<20000 and ebayResults = 0 and uploaded =0 GROUP BY asin");
-			while(res.next())
+		int flag = 0;
+		int counter =0;	
+		
+		while(flag == 0)
+		{
+			try 
+			{		
+				System.out.println("Get results 0 on ebay Start...");
+				System.out.println("Reading from "+ip);
+				Thread.sleep(25);
+				con = DriverManager.getConnection("jdbc:mysql://"+ip+":3306/amazon","root","root");
+				Thread.sleep(25);
+				statement = con.createStatement();//
+				ResultSet res = statement.executeQuery("SELECT * FROM items where Amazon_price>7 and ebayResults = 0 and uploaded =0 GROUP BY asin");
+				con = DriverManager.getConnection(Connection,"root","root");
+				statement = con.createStatement();
+				while(res.next())
+				{
+					try{
+					SetResultsAbFinder(res.getDouble("Amazon_price"),res.getString("ASIN"),res.getInt("Amazon_Rank"),res.getInt("ebayResults"),res.getInt("Placeinlowestprice"));
+					Thread.sleep(25);
+					counter++;
+					}catch(Exception e){}
+				}
+				res.close();
+				System.out.println("New items readed "+counter);
+				System.out.println("Read ended...");
+				res = null;
+				System.gc();
+				flag =1;
+			} catch (SQLException e) 
 			{
-				SetResultsAbFinder(res.getDouble("Amazon_price"),res.getString("ASIN"),res.getInt("Amazon_Rank"),res.getInt("ebayResults"),res.getInt("Placeinlowestprice"));
+				System.out.println(e.getMessage());
+		
 			}
-			res.close();
-			System.out.println("GetResults0AbFinder ended...");
-			res = null;
-			System.gc();
-		} catch (SQLException e) {System.out.println("GetResults0AbFinder");e.printStackTrace();}
+			con.close();
+		}
 	}
 	
-	public void  GetItemsThatIsCheapest(String ip)
+	public void  GetItemsThatIsCheapest(String ip) throws InterruptedException
 	{
+		int flag = 0;
+		int counter =0;	
+		
+		while(flag == 0)
+		{
 		try 
 		{
-			System.out.println("GetItemsThatIsCheapest start...");
-			System.out.println("jdbc:mysql://"+ip+":3306/amazon");
+			System.out.println("Get place in lowest price start...");
+			System.out.println("Reading from "+ip);
 			con = DriverManager.getConnection("jdbc:mysql://"+ip+":3306/amazon","root","root");
 			statement = con.createStatement();//
-			ResultSet res = statement.executeQuery("SELECT * FROM items where Amazon_price>10 and amazon_rank>0 and amazon_rank<20000 and Placeinlowestprice = 1 and uploaded =0 GROUP BY asin");
+			ResultSet res = statement.executeQuery("SELECT * FROM items where Amazon_price>7 and Placeinlowestprice = 1 and uploaded =0 GROUP BY asin");
+			con = DriverManager.getConnection(Connection,"root","root");
+			statement = con.createStatement();
 			while(res.next())
 			{
+				try{
 				SetResultsAbFinder(res.getDouble("Amazon_price"),res.getString("ASIN"),res.getInt("Amazon_Rank"),res.getInt("ebayResults"),res.getInt("Placeinlowestprice"));
+				Thread.sleep(10);
+				counter++;
+				}catch(Exception e){}
 			}
+			System.out.println("New items readed "+counter);
+			System.out.println("Read ended...");
 			res.close();
-		} catch (SQLException e) {System.out.println("GetItemsThatIsCheapest");e.printStackTrace();}
-
+			flag =1;
+		} catch (SQLException e) 
+		{
+			System.out.println("GetItemsThatIsCheapest");e.printStackTrace();
+		}
+		}
 		
 	}
 	
@@ -187,14 +220,11 @@ public class DataBaseOp
 	public void  SetResultsAbFinder(double Amazon_price ,String ASIN ,int Amazon_Rank,int ebayResults,int Placeinlowestprice) throws SQLException
 	{
 		
-		 con2 = DriverManager.getConnection(Connection,"root","root");
-		 statement2 = con2.createStatement();
 		try{
 				String WriteToData;
 				WriteToData = "INSERT INTO "+scham+".items (Amazon_price,ASIN,Amazon_Rank,ebayResults,Placeinlowestprice)"+
 				"VALUES ("+Amazon_price+",'"+ASIN+"',"+Amazon_Rank+","+ebayResults+","+Placeinlowestprice+");";
-				System.out.println(WriteToData);
-				statement2.executeUpdate(WriteToData);
+				statement.executeUpdate(WriteToData);
 		}catch(SQLException e){e.printStackTrace();}			
 	}
 }

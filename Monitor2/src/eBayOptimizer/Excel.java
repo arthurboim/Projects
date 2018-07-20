@@ -113,7 +113,7 @@ public class Excel {
 	            workbook.write(fileOut);
 	            fileOut.close();
 	            System.out.println("Your excel file has been generated!");
-
+	            workbook.close();
 	        } catch ( Exception ex ) {
 	            System.out.println(ex);
 	        }

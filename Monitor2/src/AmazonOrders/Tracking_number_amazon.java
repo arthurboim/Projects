@@ -19,7 +19,7 @@ import com.ebay.sdk.ApiContext;
 import com.ebay.sdk.ApiCredential;
 import com.ebay.soap.eBLBaseComponents.SiteCodeType;
 
-import Database.DatabaseOp;
+
 import Ebay.Tracking_number_ebay;
 import Main.DatabaseMain;
 import Main.Order;
@@ -201,11 +201,16 @@ public class Tracking_number_amazon extends Thread
 
 	DatabaseMain Db = new DatabaseMain();
 	
-	List<WebElement> list = new ArrayList<WebElement>();
-
 	ArrayList<Order> List = new ArrayList<Order>();
-	String temp= null;
+	Db.Get_Orders_without_tracking(List);
+	if (List.size() ==0)
+	{
+		System.out.println("List is empty");
+		return;
+	}
 	
+	List<WebElement> list = new ArrayList<WebElement>();
+	String temp= null;
 	ChromeOptions options = new ChromeOptions();
 	options.addArguments("--start-maximized");
 	//options.addArguments("user-data-dir=C:\\User Data2");
@@ -246,11 +251,7 @@ public class Tracking_number_amazon extends Thread
 		System.out.println("Exception can't loginto the orders");	
 	}
 	
-	
-	Db.Get_Orders_without_tracking(List);
-	if (List.size() ==0){
-		return;
-	}
+
 	
 	
 	
@@ -265,8 +266,8 @@ public class Tracking_number_amazon extends Thread
 		}catch(Exception e){}
 		
 		try{ 
-
-			Driver.findElement(By.xpath("//*[@id='a-autoid-7']/span/input")).click();
+										 
+			Driver.findElement(By.xpath("//*[@id='a-autoid-0']/span/input")).click();
 
 		}catch(Exception e){
 		list = Driver.findElements(By.tagName("span"));
@@ -280,28 +281,44 @@ public class Tracking_number_amazon extends Thread
 		}
 		}
 
+		Thread.sleep(1000);  						 				try{							     //*[@id="ordersContainer"]/div[1]/div[2]/div/div[1]/div[1]/div[2]/span[1]					   				 
 		try{
-		Thread.sleep(1000);  
-		try{							     		 			
-				try{							     							   				 
-				temp  = Driver.findElement(By.xpath("//*[@id='ordersContainer']/div[1]/div[2]/div/div[1]/div[1]/div[2]")).getText(); // here is possibly can be an error need to make the catch with loop //
-				}catch(Exception e){temp = null;}
-				try{
-				temp  = Driver.findElement(By.xpath("//*[@id='ordersContainer']/div[1]/div[3]/div/div[1]/div[1]/div[2]")).getText(); // here is possibly can be an error need to make the catch with loop //
-				}catch(Exception e){temp = null;}
-
-		}catch(Exception e1){temp = null;}       
-		if (temp == null)
+			temp  = Driver.findElement(By.xpath("//*[@id='ordersContainer']/div[1]/div[2]/div/div[1]/div[1]/div[2]/span[1]")).getText(); // here is possibly can be an error need to make the catch with loop //
+		}catch(Exception e)
 		{
-		try{		
-		temp  = Driver.findElement(By.xpath("//*[@id='ordersContainer']/div[1]/div[2]/div/div[1]/div[1]/div[2]/div")).getText(); 
-		}catch(Exception e1){temp = null;}
+			temp = null;
 		}
-		if (temp == null)
+	
+		
+		if (temp == null || temp.equals(""))
+		{
+		try{
+			temp  = Driver.findElement(By.xpath("//*[@id='ordersContainer']/div[1]/div[3]/div/div[1]/div[1]/div[2]/span[1]")).getText(); // here is possibly can be an error need to make the catch with loop //
+		}catch(Exception e)
+		{
+			temp = null;
+		}
+		
+		}
+				
+		if (temp == null || temp.equals(""))
+		{
+		try{								 
+			temp  = Driver.findElement(By.xpath("//*[@id='ordersContainer']/div[1]/div[3]/div/div[1]/div[1]/div[2]/div")).getText(); 
+		}catch(Exception e1)
+		{
+			temp = null;
+		}
+		
+		}
+		if (temp == null || temp.equals(""))
 		{
 		try{	
 		temp  = Driver.findElement(By.xpath("//*[@id='ordersContainer']/div[1]/div[3]/div/div[1]/div[1]/div/div/span")).getText(); 
-		}catch(Exception e1){temp = null;}
+		}catch(Exception e1)
+		{
+			temp = null;
+		}
 		}
 		
 		System.out.println(temp);
@@ -441,7 +458,10 @@ public class Tracking_number_amazon extends Thread
 			Thread.sleep(1000);
 			Driver.navigate().back();
 		}
-		}catch(Exception e){System.out.println("Error in Amazon_Order Number "+ele.Amazon_OrderNumber);}
+		}catch(Exception e){
+			System.out.println("Error in Amazon_Order Number "+ele.Amazon_OrderNumber);
+			
+		}
 
 		try{
 		if((temp!=null)&&(Driver.findElementByXPath("//*[@id='ordersContainer']/div[1]/div[3]/div/div[1]/div[1]/div/div/span").isDisplayed())) 
@@ -452,7 +472,10 @@ public class Tracking_number_amazon extends Thread
 				Db.Set_OrderStatus_Cancelled_to_database(ele.Amazon_OrderNumber);
 			}
 		}
-		}catch(Exception e){}
+		}catch(Exception e){
+			
+			
+		}
 		
 	}
 	System.out.println("Tracking update process ended!");

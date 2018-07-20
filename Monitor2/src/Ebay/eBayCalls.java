@@ -294,6 +294,4 @@ public class eBayCalls extends Thread {
 		return -1;
 	}
 	
-	
-	
 }

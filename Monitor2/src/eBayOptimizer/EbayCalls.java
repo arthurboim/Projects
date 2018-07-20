@@ -389,7 +389,6 @@ public class EbayCalls {
 	            List<SearchItem> items = result.getSearchResult().getItem();
 	            int counter =0;
 	            int soldlastweekcounter = 0;
-	            int SellersAmountSold = 0;
 	            for (SearchItem ele:items)
 	            {
 	            	Item TempItem = new Item();
@@ -397,7 +396,6 @@ public class EbayCalls {
 	            	Get_All_Items_Info(TempItem);
 	            	if (TempItem.QuantitySold>0) 
 	            	{
-	            	SellersAmountSold++;
 	            	GetItemTransactions(TempItem, 7);
 	            	soldlastweekcounter+=TempItem.TransactionsLastWeek;
 	            	if (counter>3) break;
@@ -607,7 +605,6 @@ public class EbayCalls {
 	
 	public String ChangeTitle(String EbayId,String NewTitle) throws ApiException, SdkException, Exception
 	{	
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		ApiContext apiContext = new ApiContext();
 		ApiCredential cred = apiContext.getApiCredential();
 		cred.seteBayToken(eBay_token);

@@ -1,6 +1,5 @@
 package AmazonOrders;
 
-
 import java.awt.AWTException;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -9,9 +8,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
@@ -23,7 +23,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import com.ebay.soap.eBLBaseComponents.OrderType;
 
 import CashBack.TopCashBack;
-import Ebay.SalesRecord;
 import Main.DatabaseMain;
 import Main.Email;
 import Main.Yaballe;
@@ -141,21 +140,16 @@ public class AmazonOrder {
 		Thread.sleep(2000);
 		CheckPopUpKindle(Driver);
 		CheckAvailableFromTheseSellers(Driver);
-		if (Driver==null)
-		{
-		ChromeOptions options = new ChromeOptions();
-		options.addArguments("--start-maximized");
-		//options.addArguments("--user-data-dir=C:\\User Data");
-		System.setProperty("webdriver.chrome.driver", "C:\\ChromeDriverFolder\\chromedriver.exe");
-		Driver = new ChromeDriver(options);
 
-		//Driver.manage().timeouts().implicitlyWait(40, TimeUnit.SECONDS);
-		Report.Code_place =1;// Here is the stage where we enter to the list//
-		//Driver.get("https://www.amazon.com/");
-		//Thread.sleep(2000);
-		Driver.get("https://www.amazon.com/dp/"+Asin);
-		Report.Asin = Asin;
-		//Thread.sleep(2000);	
+		if (Driver==null)
+			{
+			ChromeOptions options = new ChromeOptions();
+			options.addArguments("--start-maximized");
+			System.setProperty("webdriver.chrome.driver", "C:\\ChromeDriverFolder\\chromedriver.exe");
+			Driver = new ChromeDriver(options);
+			Report.Code_place =1;// Here is the stage where we enter to the list//
+			Driver.get("https://www.amazon.com/dp/"+Asin);
+			Report.Asin = Asin;
 		}
 		WebDriverWait wait = new WebDriverWait(Driver, 20);
 		JavascriptExecutor jse = (JavascriptExecutor)Driver;
@@ -167,17 +161,12 @@ public class AmazonOrder {
 		if (PrimeCheck.contains("Try Prime free for 30 days")) 
 		{
 			Driver.findElement(By.xpath("//*[@id='nav-link-accountList']")).click();
-			//Thread.sleep(2000);
 			wait.until(ExpectedConditions.elementToBeClickable(Driver.findElement(By.xpath("//*[@id='ap_email']"))));
-
 			Driver.findElement(By.xpath("//*[@id='ap_email']")).sendKeys(Acid);
-			//Thread.sleep(2000);
 			wait.until(ExpectedConditions.elementToBeClickable(Driver.findElement(By.xpath("//*[@id='ap_password']"))));
 			Driver.findElement(By.xpath("//*[@id='ap_password']")).sendKeys("a69fa2");
-			//Thread.sleep(2000);
 			wait.until(ExpectedConditions.elementToBeClickable(Driver.findElement(By.xpath("//*[@id='signInSubmit']"))));
 			Driver.findElement(By.xpath("//*[@id='signInSubmit']")).click();
-			//Thread.sleep(2000);
 			login = 1;
 		}else 
 		{
@@ -197,21 +186,14 @@ public class AmazonOrder {
 		if (Webelements.size()>0 && Driver.findElement(By.xpath("//*[@id='pe-bb-signup-button-announce']")).getText().contains("Try Prime free for 30 days"))
 		{
 			wait.until(ExpectedConditions.elementToBeClickable(Driver.findElement(By.xpath("//*[@id='pe-link-sign-in']"))));
-
-				Driver.findElement(By.xpath("//*[@id='pe-link-sign-in']")).click();
-				//Thread.sleep(2000);
-				wait.until(ExpectedConditions.elementToBeClickable(Driver.findElement(By.xpath("//*[@id='ap_email']"))));
-				Driver.findElement(By.xpath("//*[@id='ap_email']")).sendKeys(Acid);
-			//	Thread.sleep(2000);
-				wait.until(ExpectedConditions.elementToBeClickable(Driver.findElement(By.xpath("//*[@id='ap_password']"))));
-
-				Driver.findElement(By.xpath("//*[@id='ap_password']")).sendKeys("a69fa2");
-				//Thread.sleep(2000);
-				wait.until(ExpectedConditions.elementToBeClickable(Driver.findElement(By.xpath("//*[@id='signInSubmit']"))));
-
-				Driver.findElement(By.xpath("//*[@id='signInSubmit']")).click();
-				//Thread.sleep(2000);
-				login = 1;
+			Driver.findElement(By.xpath("//*[@id='pe-link-sign-in']")).click();
+			wait.until(ExpectedConditions.elementToBeClickable(Driver.findElement(By.xpath("//*[@id='ap_email']"))));
+			Driver.findElement(By.xpath("//*[@id='ap_email']")).sendKeys(Acid);
+			wait.until(ExpectedConditions.elementToBeClickable(Driver.findElement(By.xpath("//*[@id='ap_password']"))));
+			Driver.findElement(By.xpath("//*[@id='ap_password']")).sendKeys("a69fa2");
+			wait.until(ExpectedConditions.elementToBeClickable(Driver.findElement(By.xpath("//*[@id='signInSubmit']"))));
+			Driver.findElement(By.xpath("//*[@id='signInSubmit']")).click();
+			login = 1;
 		}
 		}catch(Exception e)
 		{
@@ -223,31 +205,28 @@ public class AmazonOrder {
 		
 		try{
 		CleanCard(Driver,wait);
-		}catch(Exception e){System.out.println("Clean crad exception");}
+		}catch(Exception e)
+		{
+			System.out.println("Clean crad exception");
+		}
 
-		
-		
-
-		
-		
 		Report.Code_place =2;// Here is the stage where add to card//
 		
 		try{
-		Checkcoupon(Driver);
-		}catch(Exception e){}
+			Checkcoupon(Driver);
+		}catch(Exception e)
+		{}
+		
 		Thread.sleep(2000);
 		if (Driver.findElementsByXPath("//*[@id='ap_email']").size()>0)
 		{
-		Login2(Driver);
-		login = 1;
+			Login2(Driver);
+			login = 1;
 		}
 		
 		
 		wait.until(ExpectedConditions.elementToBeClickable(Driver.findElement(By.xpath("//*[@id='add-to-cart-button']"))));
 		Driver.findElement(By.xpath("//*[@id='add-to-cart-button']")).click();
-		
-		//Thread.sleep(2000);
-		
 		
 		System.out.println("checking if No thanks pop up is displayed");
 		try{
@@ -257,17 +236,10 @@ public class AmazonOrder {
 			{
 				if (ele.getText().contains("No Thanks")) ele.click();
 			}
-			//Driver.findElementByXPath("//*[@id='siNoCoverage-announce']").click();
 		}catch(Exception e)
-		{
-			System.out.println("No Thanks exception");
-			//Driver.close();
-		}
-		 
+		{}
 
-		
 		try{
-			//Thread.sleep(2000);//*[@id="hlb-view-cart"]/span
 		Webelements = Driver.findElements(By.className("a-button-inner"));
 		for (WebElement ele:Webelements)
 		{
@@ -286,14 +258,14 @@ public class AmazonOrder {
 		try{
 		SetLogin(Driver);
 		SetPass(Driver);
-		}catch(Exception e){}
+		}catch(Exception e)
+		{}
 		
 		Report.Code_place =3; // Here is the stage where press card//
 
 		try{
 		wait.until(ExpectedConditions.elementToBeClickable(	Driver.findElement(By.xpath("//*[@id='hlb-view-cart-announce']"))));
 		Driver.findElement(By.xpath("//*[@id='hlb-view-cart-announce']")).click();
-		//Thread.sleep(100);
 		}catch(Exception e)
 		{
 			try{
@@ -367,10 +339,7 @@ public class AmazonOrder {
 			return Report;
 		}
 		
-		
-		
-		
-		
+
 		Thread.sleep(500);
 		Report.Code_place =6; // Here is the stage where we login to the account //
 		int flag =0;
@@ -441,11 +410,13 @@ public class AmazonOrder {
 		Thread.sleep(2000);
 		}
 	    catch(Exception ee){}
-		//if (order_details.isIsMultiLegShipping()==false)
-		//{
-	   // Thread.sleep(2000);     
-		wait.until(ExpectedConditions.elementToBeClickable(	Driver.findElement(By.xpath("//*[@id='add-new-address-popover-link']"))));
-		Driver.findElement(By.xpath("//*[@id='add-new-address-popover-link']")).click();
+		try{
+		if (Driver.findElement(By.xpath("//*[@id='add-new-address-popover-link']")).isDisplayed() == true)
+		{
+			wait.until(ExpectedConditions.elementToBeClickable(	Driver.findElement(By.xpath("//*[@id='add-new-address-popover-link']"))));
+			Driver.findElement(By.xpath("//*[@id='add-new-address-popover-link']")).click();
+		}
+		}catch(Exception e){}
 		//Thread.sleep(2000);
 		Driver.findElement(By.xpath("//*[@id='enterAddressFullName']")).click();
 		Driver.findElement(By.xpath("//*[@id='enterAddressFullName']")).clear();
@@ -478,46 +449,7 @@ public class AmazonOrder {
 		Driver.findElement(By.xpath("//*[@id='enterAddressPhoneNumber']")).sendKeys(order_details.getShippingAddress().getPhone());
 		Report.Buyer_Phone = order_details.getShippingAddress().getPhone();
 		}
-		//}else 
-		//{
-			/*
-		    //Thread.sleep(2000); 
-			wait.until(ExpectedConditions.elementToBeClickable(	Driver.findElement(By.xpath("//*[@id='add-new-address-popover-link']"))));
-			Driver.findElement(By.xpath("//*[@id='add-new-address-popover-link']")).click();
-			//Thread.sleep(2000);															
 
-			Driver.findElement(By.xpath("//*[@id='enterAddressFullName']")).sendKeys(order_details.getMultiLegShippingDetails().getSellerShipmentToLogisticsProvider().getShipToAddress().getName());
-			Report.BuyerName = order_details.getMultiLegShippingDetails().getSellerShipmentToLogisticsProvider().getShipToAddress().getName();
-			//Thread.sleep(2000);
-			Driver.findElement(By.xpath("//*[@id='enterAddressAddressLine1']")).sendKeys(order_details.getMultiLegShippingDetails().getSellerShipmentToLogisticsProvider().getShipToAddress().getStreet1());
-			
-			Report.Buyer_Street1 = order_details.getMultiLegShippingDetails().getSellerShipmentToLogisticsProvider().getShipToAddress().getStreet1();
-			//Thread.sleep(2000);
-			Driver.findElement(By.xpath("//*[@id='enterAddressAddressLine2']")).sendKeys(order_details.getMultiLegShippingDetails().getSellerShipmentToLogisticsProvider().getShipToAddress().getReferenceID());
-			Report.Buyer_Street2 = order_details.getMultiLegShippingDetails().getSellerShipmentToLogisticsProvider().getShipToAddress().getReferenceID();
-			//Thread.sleep(2000);
-			Driver.findElement(By.xpath("//*[@id='enterAddressCity']")).sendKeys(order_details.getMultiLegShippingDetails().getSellerShipmentToLogisticsProvider().getShipToAddress().getCityName());
-			
-			Report.Buyer_CityName = order_details.getShippingAddress().getCityName();
-			//Thread.sleep(2000);
-			Driver.findElement(By.xpath("//*[@id='enterAddressStateOrRegion']")).sendKeys(order_details.getMultiLegShippingDetails().getSellerShipmentToLogisticsProvider().getShipToAddress().getStateOrProvince());
-			Report.Buyer_StateOrProvince = order_details.getShippingAddress().getStateOrProvince();
-			//Thread.sleep(2000);
-			Driver.findElement(By.xpath("//*[@id='enterAddressPostalCode']")).sendKeys("41025");
-			Report.Buyer_PostalCode = order_details.getMultiLegShippingDetails().getSellerShipmentToLogisticsProvider().getShipToAddress().getPostalCode();
-			//Thread.sleep(2000);
-			if (order_details.getShippingAddress().getPhone().length()==0)
-			{
-				Driver.findElement(By.xpath("//*[@id='enterAddressPhoneNumber']")).sendKeys("054 780 5987");
-				Report.Buyer_Phone = "054 780 5987";
-
-			}else
-			{
-			Driver.findElement(By.xpath("//*[@id='enterAddressPhoneNumber']")).sendKeys(order_details.getShippingAddress().getPhone());
-			Report.Buyer_Phone = order_details.getShippingAddress().getPhone();
-			}
-			*/	
-		//}
 		}catch(Exception e1){
 			Report.ExceptionE = e1.getMessage();
 			Report.Message = "Error in setting order details";
@@ -529,77 +461,88 @@ public class AmazonOrder {
 			return (Report);
 		}
 		
-		//order_details.getOrderStatus().
-		
+
 		
 		Report.Code_place =8; // Here we press on use this address button//
 
 		try{
-			//Thread.sleep(100);	
 			int clicked = 0;
-			//Driver.findElement(By.xpath("//*[@id='newShippingAddressFormFromIdentity']/div[1]/div/form/div[6]/span/span/input")).click();
+			try{
 			wait.until(ExpectedConditions.elementToBeClickable(Driver.findElement(By.xpath("//*[@id='a-popover-1']/div/div[3]/div/span[1]/span/span/span"))));
 			if (Driver.findElement(By.xpath("//*[@id='a-popover-1']/div/div[3]/div/span[1]/span/span/span")).getText().contains("Use this address")) 
 			{
-			
-			Driver.findElement(By.xpath("//*[@id='a-popover-1']/div/div[3]/div/span[1]/span/span/input")).click(); 
-			clicked=1;
-			Thread.sleep(4000);	
-				
-				// here to put the second click
-			try{
-			Driver.findElement(By.xpath("//*[@id='a-popover-1']/div/div[3]/div/span[1]/span/span/input")).click(); 
-			clicked=2;
-			}catch(Exception e1){
-
-				Webelements = Driver.findElements(By.className("input"));
-				for (WebElement ele:Webelements)
-				{
-					if (ele.getText().contains("Use this address"))
+				Driver.findElement(By.xpath("//*[@id='a-popover-1']/div/div[3]/div/span[1]/span/span/input")).click(); 
+				clicked=1;
+				Thread.sleep(4000);	
+					
+					// here to put the second click
+				try{
+				Driver.findElement(By.xpath("//*[@id='a-popover-1']/div/div[3]/div/span[1]/span/span/input")).click(); 
+				clicked=2;
+				}catch(Exception e1){
+	
+					Webelements = Driver.findElements(By.className("input"));
+					for (WebElement ele:Webelements)
 					{
-						ele.click();
-						clicked=2;
-						break;
-					}
-				}	
-
-			}
-			
-			try{
-			if (clicked==1)
-			{
-			Driver.findElement(By.xpath("//*[@id='a-popover-2']/div/div[3]/div/span[1]/span/span/input")).click(); 
-			}
-			}catch(Exception e1){
-			try{
-			Webelements = Driver.findElements(By.className("input"));
-			for (WebElement ele:Webelements)
-			{
-				if (ele.getText().contains("Use this address"))
-				{
-					ele.click();
-					break;
+						if (ele.getText().contains("Use this address"))
+						{
+							ele.click();
+							clicked=2;
+							break;
+						}
+					}	
+	
 				}
-			}// end of for //	
-			}catch(Exception e){}
+				
+
+				
+				
+				try{
+				if (clicked==1)
+				{
+					Driver.findElement(By.xpath("//*[@id='a-popover-2']/div/div[3]/div/span[1]/span/span/input")).click(); 
+				}
+				
+				}catch(Exception e1)
+				{
+					try{
+					Webelements = Driver.findElements(By.className("input"));
+					for (WebElement ele:Webelements)
+					{
+						if (ele.getText().contains("Use this address"))
+						{
+							ele.click();
+							break;
+						}
+					}// end of for //	
+					}catch(Exception e){}
+				}
+				
+
+				
+				Thread.sleep(4000);	
+				if (clicked==0 && Driver.findElement(By.xpath("//*[@id='a-popover-2']/div/div[3]/div/span[1]/span/span/span")).getText().contains("Use this address")) 
+				{
+					Driver.findElement(By.xpath("//*[@id='a-popover-2']/div/div[3]/div/span[1]/span/span/input")).click(); 
+				}
 			}
-			
-			Thread.sleep(4000);	
-			if (clicked==0&&Driver.findElement(By.xpath("//*[@id='a-popover-2']/div/div[3]/div/span[1]/span/span/span")).getText().contains("Use this address")) 
-			{
-			Driver.findElement(By.xpath("//*[@id='a-popover-2']/div/div[3]/div/span[1]/span/span/input")).click(); 
+			}catch(Exception e22){
+				try{
+					Driver.findElement(By.xpath("//*[@id='newShippingAddressFormFromIdentity']/div[1]/div/form/div[6]/span/span/input")).click(); 
+					clicked =2;
+				}catch(Exception e3){}
 			}
-			}
-		}catch(Exception e1){
-			
-			Report.ExceptionE = e1.getMessage();
-			Report.Message = "Message in Use this address button";
-			for(String handle : Driver.getWindowHandles()) 
-			{
-			 Driver.switchTo().window(handle);
-			 Driver.close();
-			}
-			return (Report);
+
+		}catch(Exception e1)
+		{
+				Report.ExceptionE = e1.getMessage();
+				Report.Message = "Message in Use this address button";
+				for(String handle : Driver.getWindowHandles()) 
+				{
+				 Driver.switchTo().window(handle);
+				 Driver.close();
+				}
+				return (Report);
 		}
 		
 
@@ -638,60 +581,56 @@ public class AmazonOrder {
 		{
 			SetThankYou(Driver, Report,order_details);
 		}
-		//System.out.println(" after  FBA = 0");
+		
 		Report.Code_place =10; // Credit card check selected //
-		try{ //here need a change //
+		try{ 
 		Thread.sleep(5000);
 		if (Driver.findElements(By.xpath("//*[@id='pm_gc_radio']")).size()>0)
-		{
-		if (Driver.findElement(By.xpath("//*[@id='pm_gc_radio']")).isSelected()==false)
-		{
-		if (Driver.findElements(By.xpath("//*[@id='pm_0']")).size()>0)
-		{
-		if (Driver.findElement(By.xpath("//*[@id='pm_0']")).isSelected()==false) 
-		{
-	//	wait.until(ExpectedConditions.elementToBeClickable(Driver.findElement(By.xpath("//*[@id='pm_0']"))));
-		Driver.findElement(By.xpath("//*[@id='pm_0']")).click();
-		Thread.sleep(100);
-	//	wait.until(ExpectedConditions.elementToBeClickable(Driver.findElement(By.xpath("//*[@id='addCreditCardNumber']"))));
-		try{
-		Driver.findElement(By.xpath("//*[@id='addCreditCardNumber']")).sendKeys(Cid);
-		Thread.sleep(1000);
-		}catch(Exception e){Thread.sleep(1000);}
-		//wait.until(ExpectedConditions.elementToBeClickable(Driver.findElement(By.xpath("//*[@id='confirm-card']"))));
-		Driver.findElement(By.xpath("//*[@id='confirm-card']")).click();
-		Thread.sleep(3000);
-		}
-		}
-		}
+				{
+				if (Driver.findElement(By.xpath("//*[@id='pm_gc_radio']")).isSelected()==false)
+				{
+					if (Driver.findElements(By.xpath("//*[@id='pm_0']")).size()>0)
+					{
+						if (Driver.findElement(By.xpath("//*[@id='pm_0']")).isSelected()==false) 
+						{
+							Driver.findElement(By.xpath("//*[@id='pm_0']")).click();
+							Thread.sleep(100);
+							try{
+							Driver.findElement(By.xpath("//*[@id='addCreditCardNumber']")).sendKeys(Cid);
+							Thread.sleep(1000);
+							}catch(Exception e){Thread.sleep(1000);}
+							Driver.findElement(By.xpath("//*[@id='confirm-card']")).click();
+							Thread.sleep(3000);
+						}
+					}
+				}
 		}else
 		{
-		if (Driver.findElements(By.xpath("//*[@id='pm_0']")).size()>0)
-		{
-		if (Driver.findElement(By.xpath("//*[@id='pm_0']")).isSelected()==false) 
-		{
-		//wait.until(ExpectedConditions.elementToBeClickable(Driver.findElement(By.xpath("//*[@id='pm_0']"))));
-		Driver.findElement(By.xpath("//*[@id='pm_0']")).click();
-		Thread.sleep(100);
-	//	wait.until(ExpectedConditions.elementToBeClickable(Driver.findElement(By.xpath("//*[@id='addCreditCardNumber']"))));
-		try{
-		Driver.findElement(By.xpath("//*[@id='addCreditCardNumber']")).sendKeys(Cid);
-		Thread.sleep(1000);
-		}catch(Exception e){Thread.sleep(1000);}
-	//	wait.until(ExpectedConditions.elementToBeClickable(Driver.findElement(By.xpath("//*[@id='confirm-card']"))));
-		Driver.findElement(By.xpath("//*[@id='confirm-card']")).click();
+			if (Driver.findElements(By.xpath("//*[@id='pm_0']")).size()>0)
+				{
+				if (Driver.findElement(By.xpath("//*[@id='pm_0']")).isSelected()==false) 
+				{
+					Driver.findElement(By.xpath("//*[@id='pm_0']")).click();
+					Thread.sleep(100);
+					try{
+						Driver.findElement(By.xpath("//*[@id='addCreditCardNumber']")).sendKeys(Cid);
+						Thread.sleep(1000);
+					}catch(Exception e)
+					{
+						Thread.sleep(1000);
+					}
+					Driver.findElement(By.xpath("//*[@id='confirm-card']")).click();
+					Thread.sleep(3000);
+				}
+			}
+				
+		}
 		Thread.sleep(3000);
-		}
-		}
-			
-		}
-		Thread.sleep(3000);
-	//	wait.until(ExpectedConditions.elementToBeClickable(Driver.findElementByXPath("//*[@id='continue-top']")));
 
 		if (Driver.findElementsByXPath("//*[@id='continue-top']").size()>0)
 		Driver.findElement(By.xpath("//*[@id='continue-top']")).click();
-		//Thread.sleep(3000);
-		}catch(Exception e){
+		}catch(Exception e)
+		{
 			System.out.println("###");
 			Report.ExceptionE = e.getMessage();
 			Report.Message = "Credit card step error";
@@ -703,12 +642,10 @@ public class AmazonOrder {
 			return (Report);
 		}
 		
-		} // gift card fix test //
+		} 
 		
 		
 		Report.Code_place =11; // Fba = 1 send keys //
-		//Thread.sleep(2000);
-		//System.out.println("FBA = "+FBA);
 		if (FBA==1) 
 		{
 			try{
@@ -847,6 +784,7 @@ public class AmazonOrder {
 		 Driver.switchTo().window(handle);
 		 Driver.close();
 		}
+	
 		//Driver.close();
 		try{
 		//ChangeSetings(Asin);
@@ -873,7 +811,7 @@ public class AmazonOrder {
 		 Db = null;
 		 Price = null;
 		 Fees = null;
-		 TopCashBack = null;
+		// TopCashBack = null;
 		 Driver = null;
 		 System.gc();
 		 return Report;
@@ -1353,11 +1291,22 @@ public class AmazonOrder {
 	public void  CheckPopUpKindle(ChromeDriver Driver) throws InterruptedException
 	{
 		Thread.sleep(1000);
-		try{
-		if (Driver.findElementByXPath("//*[@id='a-popover-3']/div/div[3]/div/span[1]").isDisplayed())
-		{
-			Driver.findElementByXPath("//*[@id='a-popover-3']/div/div[3]/div/span[1]").click();
+		
+		try{							
+		String parentWindowHandler = Driver.getWindowHandle(); // Store your parent window
+		String subWindowHandler = null;
+
+		Set<String> handles = Driver.getWindowHandles(); // get all window handles
+		Iterator<String> iterator = handles.iterator();
+		while (iterator.hasNext()){
+		    subWindowHandler = iterator.next();
 		}
+		Driver.switchTo().window(subWindowHandler); // switch to popup window
+
+		// Now you are in the popup window, perform necessary actions here
+
+		Driver.findElementByXPath("//*[@id=\'a-popover-2\']/div/div[1]/button/i").click();
+		Driver.switchTo().window(parentWindowHandler);  // switch back to parent window
 		}catch(Exception e)
 		{
 			System.out.println("No kindle pop up");

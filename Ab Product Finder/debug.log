@@ -1,1 +1,7 @@
 [1102/221211.375:ERROR:prune_crash_reports.cc(35)] PruneCrashReportDatabase: Failed to get pending reports
+[0627/020811.629:ERROR:file_io_win.cc(170)] CreateFile C:\Users\Noname\AppData\Local\Temp\scoped_dir2124_30234\Crashpad\reports\69f07b9c-9855-4aa3-bfed-7393601d7660.dmp: The system cannot find the path specified. (0x3)
+[0627/020811.630:ERROR:crash_report_exception_handler.cc(97)] PrepareNewCrashReport failed
+[0704/220043.870:ERROR:file_io_win.cc(170)] CreateFile C:\Users\Noname\AppData\Local\Temp\scoped_dir13324_6372\Crashpad\reports\23cf9665-4244-487b-8ad9-5b3048968dae.dmp: The system cannot find the path specified. (0x3)
+[0704/220050.508:ERROR:crash_report_exception_handler.cc(97)] PrepareNewCrashReport failed
+[0704/220200.757:ERROR:file_io_win.cc(170)] CreateFile C:\Users\Noname\AppData\Local\Temp\scoped_dir4900_8305\Crashpad\reports\733faf0f-a9da-4ec4-8e4a-f311eb2e23ad.dmp: The system cannot find the path specified. (0x3)
+[0704/220202.917:ERROR:crash_report_exception_handler.cc(97)] PrepareNewCrashReport failed

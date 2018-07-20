@@ -78,23 +78,17 @@ public class Ebay extends MarketPlace
 		con = DriverManager.getConnection(Connection,"root","root");
 		statement = con.createStatement();
 		item.Brand = item.Brand.trim();
+		item.Brand = item.Brand.toLowerCase();
 		if (item.Brand.contains("'"))
 		{
 			item.Brand = item.Brand.replace("'", "\\'");
-		}
-		res = statement.executeQuery("SELECT count(*) FROM amazon.vero where Brand = '"+item.Brand.toLowerCase()+"';");
-		res.last();
-		if(res.getString(1).equals("1"))
-		{
-			System.out.println("Asin = "+item.SupplierCode+" "+item.Brand+" ? True");
-			item.ReadyToUpload = false;
-			return true;
 		}
 		
 		if (item.Brand.contains("*"))
 		{
 			item.Brand = item.Brand.replace("*", "'");
 		}
+		
 		res = statement.executeQuery("SELECT count(*) FROM amazon.vero where Brand = '"+item.Brand.toLowerCase()+"';");
 		res.last();
 		if(res.getString(1).equals("1"))
@@ -118,7 +112,7 @@ public class Ebay extends MarketPlace
 		con = DriverManager.getConnection(Connection,"root","root");
 		statement = con.createStatement();
 		System.out.println(item.Title);
-		String[] arr = item.Title.split("[ |\\-|\\.|\\?|\\,|\\)|\\(|\\{|\\}|\\+|\\']");
+		String[] arr = item.Title.split("[ |\\-|\\.|\\?|\\,|\\)|\\(|\\{|\\}|\\+|\\:|\\']");
 		
 		for(String ele:arr)
 		{
@@ -126,6 +120,8 @@ public class Ebay extends MarketPlace
 			{
 				ele = ele.replace("'", "\\'");
 			}
+			ele = ele.trim();
+			ele = ele.toLowerCase();
 			System.out.println(ele);
 		}
 		
@@ -138,6 +134,7 @@ public class Ebay extends MarketPlace
 			{
 				System.out.println("Asin = "+item.SupplierCode+" Forbbiden word in title -> "+arr[i].toLowerCase());
 				item.ReadyToUpload = false;
+				break;
 				/*return true;*/
 			}
 		}
