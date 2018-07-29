@@ -5,5 +5,11 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="C:/aws-java-sdk-1.11.87/commons-codec-1.11.jar"/>
+	<classpathentry kind="lib" path="C:/JarInclude/finding.jar"/>
+	<classpathentry kind="lib" path="C:/JarInclude/log4j-1.2.16.jar"/>
+	<classpathentry kind="lib" path="C:/JarInclude/ebaycalls.jar"/>
+	<classpathentry kind="lib" path="C:/JarInclude/ebaysdkcore.jar"/>
+	<classpathentry kind="lib" path="C:/FinditemEbay/slf4j-api-1.6.1.jar"/>
+	<classpathentry kind="lib" path="C:/FinditemEbay/slf4j-jdk14-1.6.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -63,8 +63,6 @@ public class AmazonSupplier implements SupplierInterface{
 
 	private void ReadFileConfigurations(String KeysFilePath) throws IOException
 	{
-
-		
 		BufferedReader br = null;
 		FileReader fr = null;
 		try {
@@ -154,7 +152,6 @@ public class AmazonSupplier implements SupplierInterface{
 		
 		do
 		{
-
 			numberOfRuns = (RunUntillIndex(ListOfItems)/(numberOfItemsInCall+1));
 			for(i=0;numberOfRuns>0;i+=(numberOfItemsInCall+1))
 			{
@@ -164,6 +161,14 @@ public class AmazonSupplier implements SupplierInterface{
 					AmazonLookUpCall(params,ListOfItems,i,i+numberOfItemsInCall);
 				} catch (Exception e) {
 					System.out.println(e.toString());
+					
+					try {
+						System.out.println("Wating...");
+						Thread.sleep(2000);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 				numberOfRuns--;
 			}
@@ -184,8 +189,8 @@ public class AmazonSupplier implements SupplierInterface{
 			
 			attampt++;
 			//Manager.PrintItems(ListOfItems);
-			
-		}while(CheckIfAllItemsUpdated(ListOfItems) == false && attampt<7);
+			System.out.println("attampt = " +attampt);
+		}while(CheckIfAllItemsUpdated(ListOfItems) == false && attampt<20);
 		
 	}
 	
@@ -290,7 +295,13 @@ public class AmazonSupplier implements SupplierInterface{
         
         }catch(Exception e)
         {
-        	System.out.println(e.toString());
+        	//System.out.println(e.toString());
+        	try {
+				System.out.println("Watting...");
+				Thread.sleep(5000);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
         	return CallStatus.FAIL;
         }
     
@@ -367,7 +378,7 @@ public class AmazonSupplier implements SupplierInterface{
     	item.setSupplierCode(Nodelist.item(0).getTextContent());
     	}catch(Exception e)
     	{
-    		
+    		item.setSupplyerRequestSuccess(false);
     	}
     	
 		return;
@@ -381,6 +392,7 @@ public class AmazonSupplier implements SupplierInterface{
 		item.setItemRank(Integer.parseInt(Nodelist.item(0).getTextContent()));
 		}catch(Exception e)
 		{
+    		item.setSupplyerRequestSuccess(false);
 		}
 		
 		return;
@@ -402,6 +414,7 @@ public class AmazonSupplier implements SupplierInterface{
     	}catch(Exception e)
     	{
         	item.setPrime(false);
+    		item.setSupplyerRequestSuccess(false);
     	}
     	
 		return;
@@ -423,6 +436,7 @@ public class AmazonSupplier implements SupplierInterface{
     	}catch(Exception e)//
     	{
     		item.setInStock(false);
+    		item.setSupplyerRequestSuccess(false);
     	}
     	
 		return;
@@ -446,8 +460,9 @@ public class AmazonSupplier implements SupplierInterface{
 				}
 				node = node.getNextSibling();
 			}
-		}catch(Exception e){
-			
+		}catch(Exception e)
+		{
+    		item.setSupplyerRequestSuccess(false);
 		}
 		
 		return;
@@ -475,7 +490,7 @@ public class AmazonSupplier implements SupplierInterface{
 
     	}catch(Exception e)
     	{
-
+    		item.setSupplyerRequestSuccess(false);
     	}
 		return;
     }
@@ -501,14 +516,20 @@ public class AmazonSupplier implements SupplierInterface{
 
     	}catch(Exception e)
     	{
-
+    		item.setSupplyerRequestSuccess(false);
     	}
 		return;
     }
     
     
 
-    
+    protected void SetAllCallSuccessStatus(ArrayList<Item> listOfItems)
+    {
+    	for(Item ele:listOfItems)
+    	{
+    		ele.setSupplyerRequestSuccess(true);
+    	}
+    }
     
   
 	/*
@@ -523,7 +544,7 @@ public class AmazonSupplier implements SupplierInterface{
 	 * 
 	 * Test status: Tested.
 	 */
-	protected  String BuildCodesString(ArrayList<Item> ListOfItems, int startIndex, int endIndex)
+	protected  static String BuildCodesString(ArrayList<Item> ListOfItems, int startIndex, int endIndex)
 	{
 		String codeString = new String();
 		
@@ -540,14 +561,21 @@ public class AmazonSupplier implements SupplierInterface{
 	
 	protected  boolean CheckIfAllItemsUpdated(ArrayList<Item> List)
 	{
+		int counter = 0;
 		for(Item  ele:List)
 		{
 			if(ele.getPrice() == -1)
 			{
-				return false;
+				counter++;
 			}
 		}
 		
+		if ( counter >0 )
+		{
+			System.out.println("Left = "+counter);
+			return false;
+		}
+		System.out.println("Left = "+counter);
 		return true;
 	}
 	

@@ -21,6 +21,7 @@ public class Manager {
 		ArrangeResultSet(res,ListOfItems);
 		Amazon.GetItemsUpdate(ListOfItems);
 		PrintItems(ListOfItems);
+
 	}
 	
 	
@@ -32,6 +33,7 @@ public class Manager {
 				Item tempItem = new Item();
 				tempItem.setSupplierCode(res.getString("AmazonAsin"));
 				tempItem.setMarketPlaceCode(res.getString("EbayId"));	
+				tempItem.setUniversalCode(res.getString("Bestresults"));	
 				ListOfItems.add(tempItem);
 			}
 		} catch (SQLException e) {
@@ -44,7 +46,16 @@ public class Manager {
 	{
 		for(Item ele:ListOfItems)
 		{
-			if (ele.isPreorder() || ele.isInStock() == false)
+			if ((ele.isPrime() == false ||ele.isPreorder() == true || ele.isInStock() == false) )
+			{
+				System.out.println(ele.toString());
+			}
+		}
+		
+		System.out.println("Fail to call");
+		for(Item ele:ListOfItems)
+		{
+			if (ele.isSupplyerRequestSuccess() == false && ele.getPrice() == -1)
 			{
 				System.out.println(ele.toString());
 			}
