@@ -23,22 +23,16 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import Config.Config;
 import Item.Item;
-import WebDriver.JSOPWebDriver;
-import WebDriver.SelenumWebDriver;
-import WebDriver.WebDriverInterface;
-
 
 public class AmazonSupplier implements SupplierInterface {
 	
 	static int numberOfItemsInCall = 9;
 	private static int  NItemsInstock = 10;
-	
 	enum CallStatus
 	{
 	    SUCCESS, 
 	    FAIL;
 	}
-	
 	static enum StockStatusEnum
 	{
 		InStock,
@@ -52,8 +46,6 @@ public class AmazonSupplier implements SupplierInterface {
 		PreOrder,
 		Unknown
 	};
-	
-	
 	private String AWS_ACCESS_KEY_ID;
 	private String AWS_SECRET_KEY;
 	private String AssociateTag;
@@ -63,6 +55,7 @@ public class AmazonSupplier implements SupplierInterface {
 	private String AmazonUser;
 	private String AmazonPass;
 
+	
 	/* Contractors */
 	
 	public AmazonSupplier() {
@@ -169,8 +162,6 @@ public class AmazonSupplier implements SupplierInterface {
 	}
 
 
-	
-	
 	
 	/* Interface implementations */
 	

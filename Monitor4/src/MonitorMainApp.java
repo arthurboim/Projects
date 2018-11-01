@@ -10,8 +10,8 @@ public class MonitorMainApp {
 	public static void main(String[] args) 
 	{
 		Config.GetPlatform();
-		//Manager AmazonToeBayManager = new Manager();
-		//AmazonToeBayManager.AmazonToeBay();
+		Manager AmazonToeBayManager = new Manager();
+		AmazonToeBayManager.AmazonToeBay();
 	}
 	
 	

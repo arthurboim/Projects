@@ -26,20 +26,28 @@ public class Manager {
 	private static int size = 100;
 	private static int threadAmount = 1;
 	private static int OutOfStockLimit = 2;
+	
 	MarketPlaceInterface ebay; 
-	
-	
-	
+	IDataBase 	  		 SQLDb;
+	ArrayList<Item> 	 ListOfItems;
+	List<List<Item>> 	 alist;
 	
  	public Manager() {
+ 		
  		try {
+ 			// Read configurations
 			ReadFileConfigurations(Config.KeysFilePath);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+ 		// List to hold the items from database
+ 		ListOfItems = new ArrayList<Item>();
+ 		alist = new ArrayList<List<Item>>();
  		
- 		InitDatabase();
+		SQLDb  = new SQLDataBase();
+ 		UpdateDatabase();
+ 		
  		ebay = new eBayMarketPlace();
 	}
  	
@@ -90,20 +98,21 @@ public class Manager {
 	}
 
 	/* Sync universal codes */
-	protected void InitDatabase()
+	protected void UpdateDatabase()
 	{
 		/* Variables */
-		IDataBase 	  SQLDb	    = new SQLDataBase();
 		ResultSet res; 
 		String EANCode;
 		String UPCCode;
 		String ISBNCode;
 		String supplierCode;
 		
-		
 		/* Body of function */
-		res = SQLDb.Read("SELECT * FROM amazon.online;");
+		
 		try {
+			
+			SQLDb.OpenConnection();
+			res = SQLDb.Read("SELECT * FROM amazon.online;");
 			
 			while(res.next())
 			{
@@ -119,138 +128,39 @@ public class Manager {
 				}
 			}
 			
-		} catch (SQLException e) {
+		} catch (SQLException e) 
+		{
 			e.printStackTrace();
 		}
 		
-		/* Release resources */
-		SQLDb = null;
-		System.gc();
 	}
 
-	
 	
 	
 	/* Public functions */
 	
 	public void AmazonToeBay()
 	{
-		ArrayList<Item> ListOfItems = new ArrayList<Item>();
-		List<List<Item>> alist = new ArrayList<List<Item>>();
-
-		
-		IDataBase 	  SQLDb	    = new SQLDataBase();
+		// Read data from database
 		ResultSet res = SQLDb.Read("SELECT * FROM amazon.online;");
 		
+		// Arrange results
 		ArrangeResultSet(res,ListOfItems);
 		DevideArrayList(ListOfItems,alist);
 		
-		//Thread for marketplace scan
-
-		Thread t2 = null;
-		t2 = new Thread(new Runnable() {
-	         @Override
-	         public void run() {
-	        	 WrapFunctionForMarketPlaceInterface(ListOfItems);
-	         }
-		});
-		t2.start();
+		// Execute scan marketplace and supplier
+		MultiThreadScanner();
 		
-		
-
-		//Thread branch for supplier scan 
-		Iterator<List<Item>> it = alist.listIterator();
-		Thread t = null;
-		for(int i = 0; i < threadAmount ;i++)
-		{
-			 t = new Thread(new Runnable() {
-		         @Override
-		         public void run() {
-		        	 new AmazonSupplier().GetItemsUpdate(it.next());
-		         }
-			});
-			t.start();
-		}
-		
-		try {
-			t.join();
-			t2.join();
-		} catch (InterruptedException e) 
-		{
-			e.printStackTrace();
-		}
-		
-		
+		// Make change decision
 		StockChangingDecision(ListOfItems);
 		PriceChangingDecision(ListOfItems);
+		
+		// Execute changes
 		UpdateChanges(ListOfItems);
 		
 		//printList(ListOfItems);
-		SQLDb = null;
-		System.gc();
 	}
-	
-	public void AmazonToeBay(ArrayList<Item> ListOfItems)
-	{
-		List<List<Item>> alist = new ArrayList<List<Item>>();
-		DevideArrayList(ListOfItems,alist);
-		
-		//Thread for marketplace scan
 
-		Thread t2 = null;
-		t2 = new Thread(new Runnable() {
-	         @Override
-	         public void run() {
-	        	 WrapFunctionForMarketPlaceInterface(ListOfItems);
-	         }
-		});
-		t2.start();
-		
-		
-
-		//Thread branch for supplier scan 
-		Iterator<List<Item>> it = alist.listIterator();
-		Thread t = null;
-		if (alist.size() >= threadAmount)
-		{
-			for(int i = 0; i < threadAmount ;i++)
-			{
-				 t = new Thread(new Runnable() {
-			         @Override
-			         public void run() {
-			        	 new AmazonSupplier().GetItemsUpdate(it.next());
-			         }
-				});
-				t.start();
-			}
-		}else
-		{
-			 t = new Thread(new Runnable() {
-		         @Override
-		         public void run() {
-		        	 new AmazonSupplier().GetItemsUpdate(it.next());
-		         }
-			});
-			t.start();
-		}
-		
-		try {
-			t.join();
-			t2.join();
-		} catch (InterruptedException e) 
-		{
-			e.printStackTrace();
-		}
-		
-		
-		StockChangingDecision(ListOfItems);
-		PriceChangingDecision(ListOfItems);
-		UpdateChanges(ListOfItems);
-
-		System.gc();
-	}
-	
-	
 	public void printList(ArrayList<Item> ListOfItems)
 	{
 		for(Item ele:ListOfItems)
@@ -261,8 +171,9 @@ public class Manager {
 	
 
 	
-	/* Inner functions */
 	
+	
+	/* Inner functions */
 	
 	protected  void PriceChangingDecision(ArrayList<Item> ListOfItems)
 	{
@@ -361,7 +272,6 @@ public class Manager {
 	
 	private void UpdateUniversalCode(String supplierCode)
 	{
-		IDataBase 	  SQLDb	    = new SQLDataBase();
 		ResultSet 	  res; 
 		String 		  codeType;
 		String 		  code;
@@ -400,19 +310,51 @@ public class Manager {
 			System.out.println("Exception in UpdateUniversalCode: "+e.getMessage());
 		}
 		
-		/* Release resources */
-		SQLDb = null;
-		System.gc();
 	}
 
 	private void WrapFunctionForMarketPlaceInterface(ArrayList<Item> ListOfItems)
 	{
-
 		for(Item ele:ListOfItems)
 		{
 			ebay.PlaceInSearchLowestFirst(ele);
 		}
 	}
 
-
+	private void MultiThreadScanner()
+	{
+		//Thread for marketplace scan
+		Thread marketplaceScanThread = new Thread(new Runnable() {
+	         @Override
+	         public void run() {
+	        	 WrapFunctionForMarketPlaceInterface(ListOfItems);
+	         }
+		});
+		marketplaceScanThread.start();
+		
+		
+		//Thread branch for supplier scan 
+		Iterator<List<Item>> it = alist.listIterator();
+		Thread supplierScanThread = null;
+		for(int i = 0; i < threadAmount ;i++)
+		{
+			supplierScanThread = new Thread(new Runnable() {
+		         @Override
+		         public void run() {
+		        	 new AmazonSupplier().GetItemsUpdate(it.next());
+		         }
+			});
+			supplierScanThread.start();
+		}
+		
+		
+		// Join the threads (supplier and marketplace)
+		try {
+			supplierScanThread.join();
+			marketplaceScanThread.join();
+		} catch (InterruptedException e) 
+		{
+			e.printStackTrace();
+		}
+		
+	}
 }
