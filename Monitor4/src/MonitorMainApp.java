@@ -1,3 +1,4 @@
+import Config.Config;
 import DataBase.SQLDataBase;
 import Monitor.Manager;
 import Supplier.AmazonSupplier;
@@ -8,8 +9,9 @@ public class MonitorMainApp {
 
 	public static void main(String[] args) 
 	{
-		Manager AmazonToeBayManager = new Manager();
-		AmazonToeBayManager.AmazonToeBay();
+		Config.GetPlatform();
+		//Manager AmazonToeBayManager = new Manager();
+		//AmazonToeBayManager.AmazonToeBay();
 	}
 	
 	

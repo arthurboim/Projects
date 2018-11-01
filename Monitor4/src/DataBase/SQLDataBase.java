@@ -28,7 +28,10 @@ public class SQLDataBase implements IDataBase{
 		try{
 		ReadDataBaseConfigurations(Config.KeysFilePath);
 		}catch(Exception e)
-		{};
+		{
+			System.out.println("Exception in SQLDataBase: "+e.getMessage() );
+		};
+		
 		OpenConnection();
 	}
 	
@@ -36,7 +39,9 @@ public class SQLDataBase implements IDataBase{
 		try{
 			ReadDataBaseConfigurations(KeysFilePath);
 		}catch(Exception e)
-		{};
+		{
+			System.out.println("Exception in SQLDataBase: "+e.getMessage() );
+		};
 		OpenConnection();
 	}
 	
@@ -97,7 +102,7 @@ public class SQLDataBase implements IDataBase{
 
 		Connection+=Port;
 		Connection+="/";
-		//Connection+=Scham;
+	
 	}
 	
 	
@@ -151,6 +156,15 @@ public class SQLDataBase implements IDataBase{
 	
 	public ResultSet getRes() {
 		return res;
+	}
+
+
+	
+	/* Destractor override */
+	
+	@Override
+	protected void finalize() throws Throwable {
+		CloseConnection();
 	}
 	
 }

@@ -8,10 +8,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -19,26 +23,46 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import Config.Config;
 import Item.Item;
-import Monitor.Manager;
+import WebDriver.JSOPWebDriver;
+import WebDriver.SelenumWebDriver;
+import WebDriver.WebDriverInterface;
 
 
-
-public class AmazonSupplier implements SupplierInterface{
-
-	 static int numberOfItemsInCall = 9;
-	 
+public class AmazonSupplier implements SupplierInterface {
+	
+	static int numberOfItemsInCall = 9;
+	private static int  NItemsInstock = 10;
+	
 	enum CallStatus
 	{
 	    SUCCESS, 
 	    FAIL;
 	}
 	
+	static enum StockStatusEnum
+	{
+		InStock,
+		NotInStock,
+		OnlyNLeftOrderSoon,
+		OnlyNLeftOrderMoreOntheWay,
+		UsuallyShipsWithinN,
+		AvailableToShip,
+		AvailableFromTheseSellers,
+		OOS,
+		PreOrder,
+		Unknown
+	};
+	
+	
 	private String AWS_ACCESS_KEY_ID;
 	private String AWS_SECRET_KEY;
 	private String AssociateTag;
 	private String AWSAccessKeyId;
 	private String ENDPOINT;
-		
+	private ChromeDriver Driver;
+	private String AmazonUser;
+	private String AmazonPass;
+
 	/* Contractors */
 	
 	public AmazonSupplier() {
@@ -48,8 +72,6 @@ public class AmazonSupplier implements SupplierInterface{
 			e.printStackTrace();
 			System.exit(0);
 		}
-		
-		
 	}
 	
 	public AmazonSupplier(String KeysFilePath)  {
@@ -61,6 +83,16 @@ public class AmazonSupplier implements SupplierInterface{
 		}
 	}
 
+	public AmazonSupplier(List<Item> ListOfItems)
+	{
+		try {
+			ReadFileConfigurations(null);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+	}
+	
 	private void ReadFileConfigurations(String KeysFilePath) throws IOException
 	{
 		BufferedReader br = null;
@@ -103,6 +135,16 @@ public class AmazonSupplier implements SupplierInterface{
 				{
 					AWSAccessKeyId = sCurrentLine.substring(sCurrentLine.indexOf("AWSAccessKeyId: ")+"AWSAccessKeyId: ".length());
 				}
+
+				if (sCurrentLine.contains("Acid: ")) 
+				{
+					AmazonUser = sCurrentLine.substring(sCurrentLine.indexOf("Acid: ")+ "Acid: ".length());
+				}
+				
+				if (sCurrentLine.contains("APass: ")) 
+				{
+					AmazonPass = sCurrentLine.substring(sCurrentLine.indexOf("APass: ")+ "APass: ".length());
+				}
 				
 			}
 		} catch (IOException e) {
@@ -127,6 +169,9 @@ public class AmazonSupplier implements SupplierInterface{
 	}
 
 
+	
+	
+	
 	/* Interface implementations */
 	
 	/*
@@ -142,9 +187,263 @@ public class AmazonSupplier implements SupplierInterface{
 	 */
 	
 	@Override
-	public void GetItemsUpdate(ArrayList<Item> ListOfItems) 
+	public void GetItemsUpdate(List<Item> ListOfItems) 
 	{
+		UpdateItemViaWebSelenum(ListOfItems);
+	}
+	
+	
+	
+	
+	
+	
+	/* Inner use functions */
+	
+	/*------------------------------ AMAZON WEB ------------------------------*/
+
+	
+	protected void UpdateItemViaWebSelenum(List<Item> listOfItems)
+	{
+		System.setProperty("webdriver.chrome.driver", "C:\\ChromeDriverFolder\\chromedriver.exe");
+		Driver = new ChromeDriver();
 		
+		Login(Driver);
+		
+		for(Item ele:listOfItems)
+		{
+			System.out.println("Item number: "+listOfItems.indexOf(ele));
+			Driver.get("https://www.amazon.com/dp/"+ele.getSupplierCode()+"/");
+			
+			//ele.setInStock(GetInstock(Driver,ele));
+			ele.setTitle(GetTitle(Driver));
+			
+			Driver.get("https://www.amazon.com/gp/offer-listing/"+ele.getSupplierCode()+"/ref=olp_f_new?ie=UTF8&f_all=true&f_new=true&f_primeEligible=true");
+			ele.setCurrentTax(GetTax(Driver));
+			ele.setCurrentPrice(GetPrice(Driver));
+			if (ele.getCurrentTax() == -1 || ele.getCurrentPrice() == -1)
+			{
+				ele.setInStock(false);
+			}else
+			{
+				ele.setInStock(true);
+
+			}
+		}
+		
+		Driver.close();
+		Driver.quit();
+	}
+	
+	private void Login(ChromeDriver Driver)
+	{
+		Driver.get("https://www.amazon.com/");
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		Driver.findElement(By.id("nav-link-accountList")).click();
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		Driver.findElementByXPath("//*[@id='ap_email']").click();
+		Driver.findElementByXPath("//*[@id='ap_email']").clear();
+		Driver.findElementByXPath("//*[@id='ap_email']").sendKeys(AmazonUser);
+		Driver.findElementByXPath("//*[@id='continue']").click();
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		Driver.findElementByXPath("//*[@id='ap_password']").click();
+		Driver.findElementByXPath("//*[@id='ap_password']").sendKeys(AmazonPass);
+		Driver.findElementByXPath("//*[@id='signInSubmit']").click();
+	}
+	
+	private boolean GetInstock(ChromeDriver Driver, Item ele)
+	{
+		IsPrime(Driver,ele);
+		List<WebElement> Webelements = Driver.findElements(By.id("availability"));
+		for(WebElement ele1:Webelements)
+		{
+			if ( InStockFilter(ele1.getText()) == true)
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private boolean InStockFilter(String text)
+	{
+		StockStatusEnum StockStatus =  null;
+		StockStatus = StockStatusEnum.Unknown;
+		boolean status = false;
+		int N = -1;
+		
+		if (text.contains("In Stock"))
+		{
+			StockStatus = StockStatusEnum.InStock;
+		}else if(text.contains("Only") && text.contains("left in stock") && text.contains("more on the way"))
+		{
+			StockStatus = StockStatusEnum.OnlyNLeftOrderMoreOntheWay;
+		}else if (text.contains("Only") && text.contains("left in stock") && text.contains("order soon"))
+		{
+			StockStatus = StockStatusEnum.OnlyNLeftOrderSoon;
+		}else if(text.contains("Usually ships within"))
+		{
+			StockStatus = StockStatusEnum.UsuallyShipsWithinN;
+		}else if(text.contains("Available to ship in"))
+		{
+			StockStatus = StockStatusEnum.AvailableToShip;
+		}else if(text.contains("Available from these sellers"))
+		{
+			StockStatus = StockStatusEnum.AvailableFromTheseSellers;
+		}else if(text.contains("Temporarily out of stock"))
+		{
+			StockStatus = StockStatusEnum.OOS;
+		}else if (text.contains("This title will be released on"))
+		{
+			StockStatus = StockStatusEnum.PreOrder;
+		}else if (text.contains("Currently unavailable"))
+		{
+			StockStatus = StockStatusEnum.OOS;
+		}
+
+		if (StockStatusEnum.Unknown == StockStatus)
+		{
+			System.out.println("Parsing failes...");
+			System.out.println("Text = \n"+text);
+		}
+		
+		switch (StockStatus)
+		{
+			case InStock:
+				status = true;
+				break;
+				
+			case OnlyNLeftOrderMoreOntheWay:  
+				text = text.substring(text.indexOf("Only ")+"Only ".length(), text.indexOf(" left in stock (more on the way)."));
+				N = Integer.parseInt(text);
+				if (N < NItemsInstock )
+				{
+					status = false;
+				}else
+				{
+					status = true;
+				}
+				break;
+				
+			case OnlyNLeftOrderSoon:
+				text = text.substring(text.indexOf("Only ")+"Only ".length(), text.indexOf(" left in stock - order soon."));
+				N = Integer.parseInt(text);
+				if (N < NItemsInstock )
+				{
+					status = false;
+				}else
+				{
+					status = true;
+				}
+				break;
+				
+			case UsuallyShipsWithinN:
+					status = false;
+				break;
+				
+			case NotInStock:
+					status = false;
+				break;
+				
+			case AvailableToShip:
+				status = false;
+				break;
+			case AvailableFromTheseSellers:
+				status = false;
+				break;
+			case OOS:
+				status = false;
+				break;
+			case PreOrder:
+				status = false;
+				break;
+			case Unknown:
+					status = false;
+				break;
+		}
+		
+		return status;		
+	}
+	
+	private boolean IsPrime(ChromeDriver Driver,Item ele)
+	{
+		boolean status = false;
+		List<WebElement> Webelements = Driver.findElements(By.xpath("//*[@id='priceBadging_feature_div']/i"));
+		if (Webelements.size() > 0)
+		{
+			if (Driver.findElement(By.xpath("//*[@id='priceBadging_feature_div']/i")).getAttribute("class").equals("a-icon a-icon-prime"))
+			{
+				status = true;
+			}else
+			{
+				status = false;
+			}
+		}
+		ele.setPrime(status); 
+		
+		return status;
+	}
+	
+	private double GetPrice(ChromeDriver driver)
+	{
+		try{
+			return Double.parseDouble(driver.findElementByXPath("//*[@id='olpOfferList']/div/div/div[2]/div[1]/span[1]").getText().replace("$",""));
+		}catch(Exception e)
+		{
+			return -1;
+		}
+	}
+	
+	private double GetTax(ChromeDriver driver)
+	{
+		try{
+		String CurrenteTax = driver.findElement(By.xpath("//*[@id='olpOfferList']/div/div/div[2]/div[1]/p/span/span")).getText();
+		CurrenteTax = CurrenteTax.substring(CurrenteTax.indexOf("+")+3, CurrenteTax.indexOf("estimated tax")-1);
+		return Double.parseDouble(CurrenteTax);
+		}catch(Exception e)
+		{
+			return -1;
+		}
+	}
+	
+	private String GetTitle(ChromeDriver Driver)
+	{
+		List<WebElement> Webelements = new ArrayList<WebElement>();
+		
+		Webelements = Driver.findElements(By.cssSelector("span[id='productTitle']"));
+		for(WebElement ele:Webelements)
+		{
+			if (ele.getAttribute("id").equals("productTitle"))
+			{
+				return ele.getText();
+			}
+		}
+		
+		return null;
+	}
+	
+	
+	
+	
+	
+	
+	
+	/*------------------------------ AMAZON API ------------------------------*/
+	
+	protected void UpdateItemViaAPI(ArrayList<Item> ListOfItems)
+	{
 		int numberOfRuns =0; 
 		int i,attampt=0;
 		String Codes = null;
@@ -166,7 +465,6 @@ public class AmazonSupplier implements SupplierInterface{
 						System.out.println("Wating...");
 						Thread.sleep(2000);
 					} catch (InterruptedException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 				}
@@ -192,11 +490,8 @@ public class AmazonSupplier implements SupplierInterface{
 			System.out.println("attampt = " +attampt);
 		}while(CheckIfAllItemsUpdated(ListOfItems) == false && attampt<20);
 		
+	
 	}
-	
-	
-	
-	/* Inner use functions */
 	
 	/*
 	 * PORPUSE	  : Initialize Amazon API Call.
@@ -250,10 +545,8 @@ public class AmazonSupplier implements SupplierInterface{
 			} catch (InterruptedException e1)
 	        {
 				try {
-					System.out.println("Watting...");
 					Thread.sleep(5000);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				return CallStatus.FAIL;
@@ -295,7 +588,6 @@ public class AmazonSupplier implements SupplierInterface{
         
         }catch(Exception e)
         {
-        	//System.out.println(e.toString());
         	try {
 				System.out.println("Watting...");
 				Thread.sleep(5000);
@@ -521,8 +813,6 @@ public class AmazonSupplier implements SupplierInterface{
 		return;
     }
     
-    
-
     protected void SetAllCallSuccessStatus(ArrayList<Item> listOfItems)
     {
     	for(Item ele:listOfItems)
@@ -575,7 +865,9 @@ public class AmazonSupplier implements SupplierInterface{
 			System.out.println("Left = "+counter);
 			return false;
 		}
+		
 		System.out.println("Left = "+counter);
+		
 		return true;
 	}
 	
@@ -601,6 +893,10 @@ public class AmazonSupplier implements SupplierInterface{
 		
 		return i;
 	}
+	
+	
+	
+	
 	
 	
 	/* Getters and setters */
