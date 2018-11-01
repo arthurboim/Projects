@@ -93,14 +93,16 @@ public class Ebay extends MarketPlace
 		res.last();
 		if(res.getString(1).equals("1"))
 		{
-			System.out.println("Asin = "+item.SupplierCode+" "+item.Brand+" ? True");
+			//System.out.println("Asin = "+item.SupplierCode+" "+item.Brand+" ? True");
 			item.ReadyToUpload = false;
+			item.isVero = true;
 			return true;
 		}
 
 		} catch (SQLException e) {e.printStackTrace();}
-		System.out.println("Asin = "+item.SupplierCode+" "+item.Brand+" ? False");
+		//System.out.println("Asin = "+item.SupplierCode+" "+item.Brand+" ? False");
 		item.ReadyToUpload = true;
+		item.isVero = false;
 		return false;
 	}
 
@@ -111,7 +113,6 @@ public class Ebay extends MarketPlace
 		ResultSet res;
 		con = DriverManager.getConnection(Connection,"root","root");
 		statement = con.createStatement();
-		System.out.println(item.Title);
 		String[] arr = item.Title.split("[ |\\-|\\.|\\?|\\,|\\)|\\(|\\{|\\}|\\+|\\:|\\']");
 		
 		for(String ele:arr)
@@ -122,7 +123,6 @@ public class Ebay extends MarketPlace
 			}
 			ele = ele.trim();
 			ele = ele.toLowerCase();
-			System.out.println(ele);
 		}
 		
 		
@@ -153,21 +153,27 @@ public class Ebay extends MarketPlace
 
 		for(String ele:item.Features)
 		{
-			if(ele.toLowerCase().contains("http") || ele.toLowerCase().contains(".com") ||ele.toLowerCase().contains("www.")
-					|| ele.toLowerCase().contains("www.amazon.com"))
+			if (ele != null)
 			{
-				System.out.println("------Link contenet found ------");
-				System.out.println(ele);
-				item.ReadyToUpload = false;
+				if(ele.toLowerCase().contains("http") || ele.toLowerCase().contains(".com") ||ele.toLowerCase().contains("www.")
+						|| ele.toLowerCase().contains("www.amazon.com"))
+				{
+					System.out.println("------Link contenet found ------");
+					System.out.println(ele);
+					item.ReadyToUpload = false;
+				}
 			}
 		}
 		
-		if(item.Content.toLowerCase().contains("http") || item.Content.toLowerCase().contains(".com") ||item.Content.toLowerCase().contains("www.")
-				|| item.Content.toLowerCase().contains("www.amazon.com"))
+		if (item.Content != null)
 		{
-			System.out.println("------Link contenet found ------");
-			System.out.println(item.Content);
-			item.ReadyToUpload = false;
+			if(item.Content.toLowerCase().contains("http") || item.Content.toLowerCase().contains(".com") ||item.Content.toLowerCase().contains("www.")
+					|| item.Content.toLowerCase().contains("www.amazon.com"))
+			{
+				System.out.println("------Link contenet found ------");
+				System.out.println(item.Content);
+				item.ReadyToUpload = false;
+			}
 		}
 		
 	}

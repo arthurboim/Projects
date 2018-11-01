@@ -508,8 +508,7 @@ public class Tracking_number_amazon extends Thread
 			Driver.findElementByXPath("//*[@id='ap_password']").click();
 			Driver.findElementByXPath("//*[@id='ap_password']").sendKeys(Pass);
 			Driver.findElementByXPath("//*[@id='signInSubmit']").click();
-		
-		
+
 	}
 	
 	public String GetStoreNameByAmazonOrderNumber(String AmazonOrderNumber)

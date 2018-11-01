@@ -278,7 +278,11 @@ public class AbFinderGui {
 			public void run() {
 				DataBaseOp Db = new DataBaseOp();
 				try {
-					Db.GetItemsFromAbFinder();
+					while(true)
+					{
+						Db.GetItemsFromAbFinder();	
+						Thread.sleep(1000*60*5);
+					}
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

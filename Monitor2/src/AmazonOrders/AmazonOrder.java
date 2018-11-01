@@ -134,13 +134,13 @@ public class AmazonOrder {
 		//Ebates Ebats = new Ebates();
 		//ChromeDriver Driver = Ebats.EbatesMain(Asin);
 		
-		TopCashBack TopCashBack = new TopCashBack();
-		ChromeDriver Driver = TopCashBack.MainTopCashBack(Asin);
+		//TopCashBack TopCashBack = new TopCashBack();
+		//ChromeDriver Driver = TopCashBack.MainTopCashBack(Asin);
 
-		Thread.sleep(2000);
-		CheckPopUpKindle(Driver);
-		CheckAvailableFromTheseSellers(Driver);
-
+		//Thread.sleep(2000);
+		//CheckPopUpKindle(Driver);
+		//CheckAvailableFromTheseSellers(Driver);
+		ChromeDriver Driver = null;
 		if (Driver==null)
 			{
 			ChromeOptions options = new ChromeOptions();
@@ -154,6 +154,15 @@ public class AmazonOrder {
 		WebDriverWait wait = new WebDriverWait(Driver, 20);
 		JavascriptExecutor jse = (JavascriptExecutor)Driver;
 
+		
+		Boolean success = Login(Driver);
+		if (false == success)
+		{
+			Login3(Driver);
+		}
+		
+		Driver.get("https://www.amazon.com/dp/"+Asin);
+		
 		login = 1;
 		try{
 		try{
@@ -213,7 +222,7 @@ public class AmazonOrder {
 		Report.Code_place =2;// Here is the stage where add to card//
 		
 		try{
-			Checkcoupon(Driver);
+			//Checkcoupon(Driver);
 		}catch(Exception e)
 		{}
 		
@@ -373,39 +382,47 @@ public class AmazonOrder {
 		Thread.sleep(3000);
 		System.out.println("Before Order summery");
 		int giftcardpayment = 0;
-		try{
+		try{							
 		if (Driver.findElementByXPath("//*[@id='payment-information']/div[2]/span[2]").isDisplayed())
 		giftcardpayment = CheckIfGiftCard(Driver);
-		}catch(Exception e){System.out.println("CheckIfGiftCard");}
+		}catch(Exception e)
+		{
+			System.out.println("CheckIfGiftCard");
+		}
+		
+		
 		
 		try
 		{	
 		if (FBA==1)
 		{
-		if (Driver.findElementByXPath("//*[@id='spc-order-summary']/h3").getText().equals("Order Summary"))
-		{
-			Driver.findElementByXPath("//*[@id='addressChangeLinkId']").click();
-		}
+			try{
+			if (Driver.findElementByXPath("//*[@id='spc-order-summary']/h3").getText().equals("Order Summary") &&
+				(Driver.findElementByXPath("//*[@id='shipaddress']/div[3]/div/div[2]/div/div[1]/div/h3").getText() != "Choose a shipping address"))
+			{					
+				Driver.findElementByXPath("//*[@id='addressChangeLinkId']").click();
+			}
+			}catch(Exception e){}
 		}
 		}catch(Exception e)
 		{
 			System.out.println("Exception Order summery");
 
-			Report.ExceptionE = e.getMessage();
-			Report.Message = "Error in setting order details";
-			for(String handle : Driver.getWindowHandles()) 
-			{
-			 Driver.switchTo().window(handle);
-			 Driver.close();
-			}
-			return (Report);
+			//Report.ExceptionE = e.getMessage();
+			//Report.Message = "Error in setting order details";
+			//for(String handle : Driver.getWindowHandles()) 
+			//{
+			 //Driver.switchTo().window(handle);
+			 //Driver.close();
+			//}
+			//return (Report);
 		
 		}
-		
+
 		Report.Code_place =7; // Here is the stage where we set order details //
 		try{
 		try{
-		Thread.sleep(6000);
+		Thread.sleep(7000);
 	    jse.executeScript("window.scrollBy(0,document.body.scrollHeight)", "");
 		Thread.sleep(2000);
 		}
@@ -467,17 +484,17 @@ public class AmazonOrder {
 
 		try{
 			int clicked = 0;
-			try{
-			wait.until(ExpectedConditions.elementToBeClickable(Driver.findElement(By.xpath("//*[@id='a-popover-1']/div/div[3]/div/span[1]/span/span/span"))));
-			if (Driver.findElement(By.xpath("//*[@id='a-popover-1']/div/div[3]/div/span[1]/span/span/span")).getText().contains("Use this address")) 
+			try{//*[@id="a-popover-1"]/div/div[2]/div/span[1]/span/span/input
+			wait.until(ExpectedConditions.elementToBeClickable(Driver.findElement(By.xpath("//*[@id='a-popover-1']/div/div[2]/div/span[1]/span/span/input"))));
+			if (Driver.findElement(By.xpath("//*[@id='a-popover-1']/div/div[2]/div/span[1]/span/span/span")).getText().contains("Use this address")) 
 			{
-				Driver.findElement(By.xpath("//*[@id='a-popover-1']/div/div[3]/div/span[1]/span/span/input")).click(); 
+				Driver.findElement(By.xpath("//*[@id='a-popover-1']/div/div[2]/div/span[1]/span/span/input")).click(); 
 				clicked=1;
 				Thread.sleep(4000);	
 					
 					// here to put the second click
 				try{
-				Driver.findElement(By.xpath("//*[@id='a-popover-1']/div/div[3]/div/span[1]/span/span/input")).click(); 
+				Driver.findElement(By.xpath("//*[@id='a-popover-1']/div/div[2]/div/span[1]/span/span/input")).click(); 
 				clicked=2;
 				}catch(Exception e1){
 	
@@ -816,7 +833,30 @@ public class AmazonOrder {
 		 System.gc();
 		 return Report;
 	}
-
+	
+	private boolean Login(ChromeDriver Driver)
+	{
+		try {
+			Thread.sleep(1000);
+			Driver.findElement(By.id("nav-link-accountList")).click();
+			Thread.sleep(500);
+			Driver.findElementByXPath("//*[@id='ap_email']").click();
+			Driver.findElementByXPath("//*[@id='ap_email']").clear();
+			Driver.findElementByXPath("//*[@id='ap_email']").sendKeys("arthur.boim6@gmail.com");
+			Driver.findElementByXPath("//*[@id='continue']").click();
+			Thread.sleep(2000);
+			Driver.findElementByXPath("//*[@id='ap_password']").click();
+			Driver.findElementByXPath("//*[@id='ap_password']").sendKeys("a69fa2");
+			Driver.findElementByXPath("//*[@id='signInSubmit']").click();
+		}
+		catch(Exception e)
+		{
+			return false;
+		}
+		
+		return true;
+}
+	
 	public synchronized double GetBreakEven(String Asin)
 	{
 
@@ -1231,6 +1271,19 @@ public class AmazonOrder {
 		SetLogin(Driver);
 		SetPass(Driver);
 		return 0;
+	}
+	
+	public void  Login3(ChromeDriver Driver)
+	{
+										
+			Driver.findElementByXPath("//*[@id='ap_email']").click();
+			Driver.findElementByXPath("//*[@id='ap_email']").clear();
+			Driver.findElementByXPath("//*[@id='ap_email']").sendKeys(Acid);
+			//Driver.findElementByXPath("//*[@id='continue']").click();
+			Driver.findElementByXPath("//*[@id='ap_password']").click();
+			Driver.findElementByXPath("//*[@id='ap_password']").sendKeys("a69fa2");
+			Driver.findElementByXPath("//*[@id='signInSubmit']").click();
+
 	}
 	
 	public void  SetLogin(ChromeDriver Driver)

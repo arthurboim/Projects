@@ -12,6 +12,8 @@ public class DataBaseOp
 {
 	public static  String FILENAME = "C:\\Keys\\ConfigFile-Keys.txt";
 	public static Connection con = null;
+	public static Connection conOut = null;
+	public static java.sql.Statement statementOut = null;
 	public static java.sql.Statement statement = null;
 	public static String Connection = null;
 	public static String scham = null;
@@ -59,64 +61,79 @@ public class DataBaseOp
 			}
 	
 		
-	
+		try {
+			con = DriverManager.getConnection(Connection,"root","root");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			statement = con.createStatement();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}//
 
 	}
 
 	public int Get_eBay_Results_0()
 	{
 		try {
-			con = DriverManager.getConnection(Connection,"root","root");
-			statement = con.createStatement();//
+			int local;
 			ResultSet res = statement.executeQuery("SELECT count(*) FROM "+scham+".items where ebayResults=0 and  amazon_rank<100000 and Uploaded = 0;");
 			res.last();
-			return res.getInt(1);
-		} catch (SQLException e) {System.out.println(e);e.printStackTrace();return -1;}
+			local = res.getInt(1);
+			res.close();
+			return local;
+		} catch (SQLException e) 
+		{
+			e.printStackTrace();
+			return -1;
+		}
 		
 	}
 	
 	public int Get_eBay_Results_More_Than_0_Results_And_Place_In_lowest_Price_1()
 	{
 		try {
-			con = DriverManager.getConnection(Connection,"root","root");
-			statement = con.createStatement();//
+			int local;
 			ResultSet res = statement.executeQuery("SELECT count(*) FROM "+scham+".items where ebayResults>0 and amazon_rank>0 and amazon_rank<20000 and Placeinlowestprice=1 and Uploaded = 0;");
 			res.last();
-			return res.getInt(1);
+			local = res.getInt(1);
+			res.close();
+			return local;
 		} catch (SQLException e) {System.out.println(e);e.printStackTrace();return -1;}
 	}
 
 	public void UpdateUploadedSet1()
 	{
 		try {
-			con = DriverManager.getConnection(Connection,"root","root");
-			statement = con.createStatement();//
 			statement.executeUpdate("update "+scham+".items set Uploaded = 1;");
-		} catch (SQLException e) {e.printStackTrace();}
+		} catch (SQLException e) 
+		{
+			e.printStackTrace();	
+		}
 	}
 	
 	public void  GetItemsFromAbFinder () throws InterruptedException
 	{
-	try 
-	{
-		Connection con3 = DriverManager.getConnection(Connection,"root","root");
-		java.sql.Statement statement3 = con3.createStatement();//
-		ResultSet res3 = statement3.executeQuery("SELECT * FROM "+scham+".abfinderips;");
-		String s = null;
-		
-		while(res3.next())
+		try 
 		{
-			s = res3.getString("Ip");
-			System.out.println("Getting items from "+s);
-			GetResults0AbFinder(s);
-			GetItemsThatIsCheapest(s);
-			UpdateRemoteDBWith1(s);
+			ResultSet res = statement.executeQuery("SELECT * FROM "+scham+".abfinderips;");
+			String s = null;
+			while(res.next())
+			{
+				s = res.getString("Ip");
+				System.out.println("Getting items from "+s);
+				GetResults0AbFinder(s);
+				GetItemsThatIsCheapest(s);
+				UpdateRemoteDBWith1(s);
+			}
+			res.close();
+		} catch (SQLException e) 
+		{
+			System.out.println(e);
 		}
-		
-		res3.close();
-		res3 = null;
-		System.gc();
-	} catch (SQLException e) {System.out.println("GetItemsFromAbFinder");System.out.println(e);}
 
 	
 	}
@@ -124,93 +141,86 @@ public class DataBaseOp
 	public void  GetResults0AbFinder(String ip) throws InterruptedException, SQLException
 	{
 		int flag = 0;
-		int counter =0;	
+		conOut = DriverManager.getConnection("jdbc:mysql://"+ip+":3306/amazon","root","root");
+		statementOut = conOut.createStatement();//
 		
 		while(flag == 0)
 		{
 			try 
 			{		
-				System.out.println("Get results 0 on ebay Start...");
-				System.out.println("Reading from "+ip);
-				Thread.sleep(25);
-				con = DriverManager.getConnection("jdbc:mysql://"+ip+":3306/amazon","root","root");
-				Thread.sleep(25);
-				statement = con.createStatement();//
-				ResultSet res = statement.executeQuery("SELECT * FROM items where Amazon_price>7 and ebayResults = 0 and uploaded =0 GROUP BY asin");
-				con = DriverManager.getConnection(Connection,"root","root");
-				statement = con.createStatement();
+				System.out.println("Reading from Remote DB -> "+ip);
+				ResultSet res = statementOut.executeQuery("SELECT * FROM items where Amazon_price>7 and ebayResults = 0 and uploaded =0 GROUP BY asin");
+				while(res.next())
+				{
+					try{
+					
+					SetResultsAbFinder(res.getDouble("Amazon_price"),res.getString("ASIN"),res.getInt("Amazon_Rank"),res.getInt("ebayResults"),res.getInt("Placeinlowestprice"));
+					Thread.sleep(15);
+					}catch(Exception e)
+					{
+					}
+				}
+				System.out.println("Reading from Remote DB success");
+				res.close();
+				conOut.close();
+				statementOut.close();
+				flag =1;
+			} catch (SQLException e) 
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void  GetItemsThatIsCheapest(String ip) throws InterruptedException, SQLException
+	{
+		int flag = 0;
+		conOut = DriverManager.getConnection("jdbc:mysql://"+ip+":3306/amazon","root","root");
+		statementOut = conOut.createStatement();//
+		
+		while(flag == 0)
+		{
+			try 
+			{
+				System.out.println("Reading from Remote DB -> "+ip);
+				ResultSet res = statementOut.executeQuery("SELECT * FROM items where Amazon_price>7 and Placeinlowestprice = 1 and uploaded =0 GROUP BY asin");
 				while(res.next())
 				{
 					try{
 					SetResultsAbFinder(res.getDouble("Amazon_price"),res.getString("ASIN"),res.getInt("Amazon_Rank"),res.getInt("ebayResults"),res.getInt("Placeinlowestprice"));
-					Thread.sleep(25);
-					counter++;
-					}catch(Exception e){}
+					Thread.sleep(10);
+					}catch(Exception e)
+					{
+						System.out.println(e.getMessage());
+					}
 				}
-				res.close();
-				System.out.println("New items readed "+counter);
-				System.out.println("Read ended...");
-				res = null;
-				System.gc();
+				System.out.println("Reading from Remote DB success");
 				flag =1;
+				res.close();
+				conOut.close();
+				statementOut.close();
 			} catch (SQLException e) 
 			{
-				System.out.println(e.getMessage());
-		
+				System.out.println("Reading from Remote DB Fail");
+				e.printStackTrace();
+				flag =1;
 			}
-			con.close();
-		}
-	}
-	
-	public void  GetItemsThatIsCheapest(String ip) throws InterruptedException
-	{
-		int flag = 0;
-		int counter =0;	
-		
-		while(flag == 0)
-		{
-		try 
-		{
-			System.out.println("Get place in lowest price start...");
-			System.out.println("Reading from "+ip);
-			con = DriverManager.getConnection("jdbc:mysql://"+ip+":3306/amazon","root","root");
-			statement = con.createStatement();//
-			ResultSet res = statement.executeQuery("SELECT * FROM items where Amazon_price>7 and Placeinlowestprice = 1 and uploaded =0 GROUP BY asin");
-			con = DriverManager.getConnection(Connection,"root","root");
-			statement = con.createStatement();
-			while(res.next())
-			{
-				try{
-				SetResultsAbFinder(res.getDouble("Amazon_price"),res.getString("ASIN"),res.getInt("Amazon_Rank"),res.getInt("ebayResults"),res.getInt("Placeinlowestprice"));
-				Thread.sleep(10);
-				counter++;
-				}catch(Exception e){}
-			}
-			System.out.println("New items readed "+counter);
-			System.out.println("Read ended...");
-			res.close();
-			flag =1;
-		} catch (SQLException e) 
-		{
-			System.out.println("GetItemsThatIsCheapest");e.printStackTrace();
-		}
 		}
 		
 	}
 	
-	public void  UpdateRemoteDBWith1(String ip)
+	public void  UpdateRemoteDBWith1(String ip) throws SQLException
 	{
 		try 
 		{
-			System.out.println("Setting 1 to "+ip);
-			System.out.println("jdbc:mysql://"+ip+":3306/amazon");
-			con = DriverManager.getConnection("jdbc:mysql://"+ip+":3306/amazon","root","root");
-			statement = con.createStatement();//
-			statement.executeUpdate("update "+scham+".items set Uploaded = 1;");
-
+			conOut = DriverManager.getConnection("jdbc:mysql://"+ip+":3306/amazon","root","root");
+			statementOut = conOut.createStatement();//
+			System.out.println("Updating Remote DB -> "+ip);
+			statementOut.executeUpdate("update "+scham+".items set Uploaded = 1;");
+			System.out.println("Updating Remote DB success");
 		} catch (SQLException e) 
 		{
-			System.out.println("UpdateRemoteDBWith1");
+			System.out.println("Updating Remote DB Fail");
 			e.printStackTrace();
 		}
 
@@ -219,12 +229,13 @@ public class DataBaseOp
 	
 	public void  SetResultsAbFinder(double Amazon_price ,String ASIN ,int Amazon_Rank,int ebayResults,int Placeinlowestprice) throws SQLException
 	{
-		
 		try{
-				String WriteToData;
-				WriteToData = "INSERT INTO "+scham+".items (Amazon_price,ASIN,Amazon_Rank,ebayResults,Placeinlowestprice)"+
-				"VALUES ("+Amazon_price+",'"+ASIN+"',"+Amazon_Rank+","+ebayResults+","+Placeinlowestprice+");";
-				statement.executeUpdate(WriteToData);
-		}catch(SQLException e){e.printStackTrace();}			
+			String WriteToData = "INSERT INTO "+scham+".items (Amazon_price,ASIN,Amazon_Rank,ebayResults,Placeinlowestprice)"+
+			"VALUES ("+Amazon_price+",'"+ASIN+"',"+Amazon_Rank+","+ebayResults+","+Placeinlowestprice+");";
+			statement.executeUpdate(WriteToData);
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}			
 	}
 }

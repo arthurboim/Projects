@@ -57,28 +57,15 @@ public class ScrapInfo {
 
 	public void Items_info(List<product> ItemsList,String Path1) throws InterruptedException, SQLException, IOException {
 		ArrayList<product> ItemsList_new = new ArrayList<product>();
-		ArrayList<product> ItemsListToAmazon = new ArrayList<product>();
 		System.setProperty("webdriver.chrome.driver", "C:\\ChromeDriverFolder\\chromedriver.exe");
 		FileInputStream fis = null;
-		int SearchCodesCounter=1;	
-		String SearchCodes = "";
 		Database Db = new Database();
 		BufferedReader reader = null;
-		AmazonAdvertisingApi AmazonApi = new  AmazonAdvertisingApi();
 		EbaySearch Search = new EbaySearch();
 		ChromeDriver Driver = new ChromeDriver();
 		Driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		String path = Path1;
 		FileOp Op = new FileOp();
-		
-		if (path.contains("Movers-and-shakers")) 
-		category = path.substring(path.indexOf("Shakers\\")+8,path.indexOf(".txt") );
-		else
-		{
-		try{
-		category = path.substring(path.indexOf("Sellers-")+8,path.indexOf(".txt") );
-		 }catch(Exception e) {}
-		}
 		
 		try {
 			fis = new FileInputStream(path);
@@ -114,37 +101,13 @@ public class ScrapInfo {
 				ItemsList_new.removeAll(ItemsList_new);
 				Amazon_Get_Items_Movers_And_Shakers_Items_info(Driver,line,ItemsList_new);
 				try{
-					for (product ele:ItemsList_new)
-					{
-						if ((SearchCodesCounter % 11)==0)
-						{
-							AmazonApi.Get_Items_LookUp(SearchCodes,"ASIN",ItemsListToAmazon);
-							SearchCodes = "";
-							SearchCodesCounter = 1;
-						}
-					   else {
-				     			SearchCodes = SearchCodes+ele.ASIN+",";
-				     			SearchCodesCounter++;
-							}
-						}
-					
-						if (SearchCodesCounter>0) // if the is a tail //
-						{
-							AmazonApi.Get_Items_LookUp(SearchCodes,"ASIN",ItemsListToAmazon);
-							SearchCodes = "";
-							SearchCodesCounter = 1;
-						}
-						
-						Search.Finditem(ItemsListToAmazon);
-
-					}catch(Exception e)
-					{
-						System.out.println("eBay search faild");
-					}
+					Search.Finditem(ItemsList_new);
+				}catch(Exception e)
+				{
+					System.out.println("eBay search faild");
+				}
 				
-				System.out.println("Adding "+ItemsListToAmazon.size()+" elements");
-				Db.Set_product_from_database(ItemsListToAmazon);
-
+				Db.Set_product_from_database(ItemsList_new);
 				Op.RemoveHere(path,line);
 				line = reader.readLine();
 				if (line == null)
@@ -156,8 +119,9 @@ public class ScrapInfo {
 					Op = new FileOp();
 					line = reader.readLine();
 				}
+				
 				Op.SetHere(path, line);
-				ItemsListToAmazon.removeAll(ItemsListToAmazon);
+				ItemsList_new.removeAll(ItemsList_new);
 			}
 			line = null;
 			System.gc();
@@ -171,7 +135,7 @@ public class ScrapInfo {
 	}
 }
 
-	public  double Min_price_to_sale(double price) {
+	public  static double Min_price_to_sale(double price) {
 		double ebay_fees = 0.09;
 		double paypal_fees = 0.039;
 		double paypal_fixed = 0.3;
@@ -208,8 +172,10 @@ public class ScrapInfo {
 
 	}
 	
-	void Add_Product_To_List(ChromeDriver Driver,List<product> ItemsList_new) throws InterruptedException {
+	void Add_Product_To_List(ChromeDriver Driver,List<product> ItemsList_new) throws InterruptedException 
+	{
 		List<WebElement> Webelements = new ArrayList<WebElement>();
+
 		product temp_product = new product();//
 		Thread.sleep(1000);
 
@@ -221,19 +187,90 @@ public class ScrapInfo {
 		
 		for (WebElement ele : Webelements) 
 		{
-			
 			try{
 				temp_product.link = ele.findElement(By.tagName("a")).getAttribute("href");
-				temp_product.ASIN = temp_product.link.substring(temp_product.link.indexOf("/dp/") + 4,temp_product.link.indexOf("/ref"));
-			
-			if (!IsItemExist(temp_product)) 
+				temp_product.ASIN = temp_product.link.substring(temp_product.link.indexOf("/dp/") + 4,temp_product.link.indexOf("/ref"));	
+				temp_product.bestresult = temp_product.link.substring(temp_product.link.indexOf(".com/") + ".com/".length(),temp_product.link.indexOf("/dp/"));
+				temp_product.bestresult = temp_product.bestresult.replace("-", " ");
+				temp_product.price  = GetPrice(ele);
+				temp_product.prime  = isPrime(ele);
+				
+				if ((temp_product.prime == 1) && !IsItemExist(temp_product)) 
+				{
+					ItemsList_new.add(temp_product);
+					temp_product = new product();
+				}
+			}catch(Exception e)
 			{
-				ItemsList_new.add(temp_product);
-				temp_product = new product();
 			}
-			
-			}catch(Exception e){}
 		}
+		
+		Webelements = Driver.findElements(By.className("zg_itemImmersion"));
+	}
+
+	int isPrime(WebElement outerele)
+	{
+		List<WebElement> Webelements = new ArrayList<WebElement>();
+		Webelements = outerele.findElements(By.tagName("i"));
+		for(WebElement ele : Webelements)
+		{
+			if (ele.getAttribute("class").equals("a-icon a-icon-prime a-icon-small"))
+			{
+				return 1;
+			}
+		}
+		
+		return 0;
+	}
+	
+	double GetPrice(WebElement outerele)
+	{
+		List<WebElement> Webelements = new ArrayList<WebElement>();
+		Webelements = outerele.findElements(By.tagName("span"));
+		String price = null;
+		double finalPrice = -1;
+		
+		for(WebElement ele : Webelements)
+		{
+			if (ele.getAttribute("class").equals("p13n-sc-price"))
+			{
+				price = ele.getText();
+				break;
+			}
+		}
+		
+		if (price.contains("-"))
+		{
+			return -1;
+		}
+		
+		if (price.contains("$"))
+		{
+			price = price.replace("$", " ");
+		}
+		
+		try{
+			finalPrice = Double.parseDouble(price);
+		}catch(Exception e)
+		{	
+		}
+		
+		return finalPrice;
+	}
+
+	String GetLink(WebElement outerele)
+	{
+		List<WebElement> Webelements = new ArrayList<WebElement>();
+		Webelements = outerele.findElements(By.tagName("a"));
+		
+		for(WebElement ele : Webelements)
+		{
+			if (ele.getAttribute("class").equals("a-link-normal"))
+			{
+				return ele.getAttribute("href");
+			}
+		}
+		return null;
 	}
 
 	boolean IsItemExist(product temp_product) throws SQLException 
@@ -269,7 +306,6 @@ public class ScrapInfo {
 		}
 	}
 	
-	
 	public void GetNextPageBackUp(ChromeDriver Driver)
 	{
 		String s = Driver.getCurrentUrl();
@@ -285,9 +321,6 @@ public class ScrapInfo {
 		Driver.get(Temp);
 	
 	}
-	
-	
-	
 	
 	void Next_Page_Amazon1(ChromeDriver Driver, int pageIndex) 
 	{

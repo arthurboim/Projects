@@ -20,15 +20,13 @@ public class VeroCheck {
 		Control control = new Control();
 		ArrayList<Item> ListOfItemsAsins = new ArrayList<Item>();
 		Item temp = new Item();
-		temp.SupplierCode = "1985310309";
+		temp.SupplierCode = "B019YJRZO6";
 		ListOfItemsAsins.add(temp);
 		control.AmazonApiCheck(ListOfItemsAsins);
 		control.ItemsCheckingBeforeUpload(ListOfItemsAsins);
 		System.out.println("Ready to upload? "+ListOfItemsAsins.get(0).ReadyToUpload);
 		assertEquals("Ready to upload ", ListOfItemsAsins.get(0).ReadyToUpload, false);
 	}
-	
-
 	
 	public void testAmazonCall() throws IOException, ParserConfigurationException, SAXException {
 		//B06XWB7DPS

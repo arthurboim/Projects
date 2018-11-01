@@ -6,11 +6,12 @@ import java.util.ArrayList;
 public class Item{
 
 		public String Title = null;
-		public boolean ReadyToUpload = false;
+		public boolean ReadyToUpload = true;
 		public String SupplierCode = null;
 		public double AmazonPrice = -1;
 		public double AmazonSalePrice = -1;
 		public int Rank = -1;
+		public int eBayResults = -1;
 		public ArrayList<String> Imeges = new ArrayList<String>();
 		public ArrayList<String> Features  = new ArrayList<String>();
 		public String EAN = null;
@@ -47,7 +48,10 @@ public class Item{
 		public String Condition= null;
 		public String PathFolder= null;
 		public String SupplierCategory = null;
+		public boolean inStock = false;
+		public boolean isVero = false;
 		public String[] PicturesString =  new String[1];
+		
 		public void ItemPrint() 
 		{
 			System.out.println();

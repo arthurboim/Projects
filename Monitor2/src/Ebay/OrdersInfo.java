@@ -70,7 +70,7 @@ public class OrdersInfo extends Thread{
 
         GetOrdersCall orders = new GetOrdersCall(apiContext);
         Email email = new Email();
-        int NumOfDays = 3;
+        int NumOfDays = 30;
         
         orders.setNumberOfDays(NumOfDays);
         orders.setOrderRole(TradingRoleCodeType.SELLER);
