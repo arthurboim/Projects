@@ -17,13 +17,13 @@ public class ManagerTest {
 	}
 	
 	public void Test() {
-		manager.AmazonToeBay();
+		manager.AmazonToeBayScanner();
 	}
 	
 
 	public void test_InitDatabase()
 	{
-		manager.InitDatabase();
+		manager.UpdateDatabase();
 	}
 	
 	
@@ -53,14 +53,5 @@ public class ManagerTest {
 		manager.printList(list);
 	}
 	
-	@Test
-	public void test_MakeChange()
-	{
-		ArrayList<Item> list = new ArrayList<Item>();
-		Item item = new Item();
-		item.setSupplierCode("B01G5AXR3K");
-		item.setMarketPlaceCode("223179492175");
-		list.add(item);
-		manager.AmazonToeBay(list);
-	}
+
 }

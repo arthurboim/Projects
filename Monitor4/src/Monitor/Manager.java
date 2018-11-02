@@ -138,8 +138,15 @@ public class Manager {
 	
 	
 	/* Public functions */
+	public void MonitorScannerRun()
+	{
+		AmazonToeBayScanner();
+		//OptimizerChange();
+		//NormalChanges();
+	}
 	
-	public void AmazonToeBay()
+	
+	public void AmazonToeBayScanner()
 	{
 		// Read data from database
 		ResultSet res = SQLDb.Read("SELECT * FROM amazon.online;");
@@ -150,17 +157,32 @@ public class Manager {
 		
 		// Execute scan marketplace and supplier
 		MultiThreadScanner();
-		
-		// Make change decision
-		StockChangingDecision(ListOfItems);
-		PriceChangingDecision(ListOfItems);
-		
-		// Execute changes
-		UpdateChanges(ListOfItems);
-		
+
 		//printList(ListOfItems);
 	}
 
+	public void OptimizerChange()
+	{
+//		// Make change decision
+//		StockChangingDecision(ListOfItems);
+//		PriceChangingDecision(ListOfItems);
+//		
+//		// Execute changes
+//		UpdateChanges(ListOfItems);
+	}
+	
+	public void NormalChanges()
+	{
+		// Make change decision
+//		StockChangingDecision(ListOfItems);
+//		PriceChangingDecision(ListOfItems);
+//		
+//		 Execute changes
+//		UpdateChanges(ListOfItems);
+	}
+	
+	
+	
 	public void printList(ArrayList<Item> ListOfItems)
 	{
 		for(Item ele:ListOfItems)

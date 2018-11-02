@@ -1,17 +1,20 @@
+
 import Config.Config;
-import DataBase.SQLDataBase;
 import Monitor.Manager;
-import Supplier.AmazonSupplier;
-import Supplier.SupplierInterface;
+
 
 public class MonitorMainApp {
 
 
 	public static void main(String[] args) 
 	{
-		Config.GetPlatform();
+		// Application Initialization
+		Config AppConfigurations = new Config();
 		Manager AmazonToeBayManager = new Manager();
-		AmazonToeBayManager.AmazonToeBay();
+		AppConfigurations.Initialization();
+		
+		// Application start
+		AmazonToeBayManager.MonitorScannerRun();
 	}
 	
 	
