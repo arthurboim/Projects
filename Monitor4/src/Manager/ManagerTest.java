@@ -1,11 +1,6 @@
 package Monitor;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
-
-import org.junit.Test;
-
 import Item.Item;
 
 public class ManagerTest {
@@ -20,12 +15,10 @@ public class ManagerTest {
 		manager.AmazonToeBayScanner();
 	}
 	
-
 	public void test_InitDatabase()
 	{
 		manager.UpdateDatabase();
 	}
-	
 	
 	public void test_PriceChangingDecision()
 	{
