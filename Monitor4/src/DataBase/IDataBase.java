@@ -14,4 +14,8 @@ public interface IDataBase {
 	
 	public ResultSet Read(String statment);
 
+	public int GetResultsAmount(String statment);
+	
+	public Boolean IsExcist(String statment);
+	
 }

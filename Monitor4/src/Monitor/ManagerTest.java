@@ -2,6 +2,7 @@ package Monitor;
 
 import java.util.ArrayList;
 import Item.Item;
+import Monitor.Manager;
 
 public class ManagerTest {
 

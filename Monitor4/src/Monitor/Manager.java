@@ -145,52 +145,6 @@ public class Manager {
 		//NormalChanges();
 	}
 	
-	
-	public void AmazonToeBayScanner()
-	{
-		// Read data from database
-		ResultSet res = SQLDb.Read("SELECT * FROM amazon.online;");
-		
-		// Arrange results
-		ArrangeResultSet(res,ListOfItems);
-		DevideArrayList(ListOfItems,alist);
-		
-		// Execute scan marketplace and supplier
-		MultiThreadScanner();
-
-		//printList(ListOfItems);
-	}
-
-	public void OptimizerChange()
-	{
-//		// Make change decision
-//		StockChangingDecision(ListOfItems);
-//		PriceChangingDecision(ListOfItems);
-//		
-//		// Execute changes
-//		UpdateChanges(ListOfItems);
-	}
-	
-	public void NormalChanges()
-	{
-		// Make change decision
-//		StockChangingDecision(ListOfItems);
-//		PriceChangingDecision(ListOfItems);
-//		
-//		 Execute changes
-//		UpdateChanges(ListOfItems);
-	}
-	
-	
-	
-	public void printList(ArrayList<Item> ListOfItems)
-	{
-		for(Item ele:ListOfItems)
-		{
-			System.out.println(ele.toString());
-		}
-	}
-	
 
 	
 	
@@ -287,7 +241,6 @@ public class Manager {
 				ListOfItems.add(tempItem);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -379,4 +332,51 @@ public class Manager {
 		}
 		
 	}
+
+
+	private void OptimizerChange()
+	{
+//		// Make change decision
+//		StockChangingDecision(ListOfItems);
+//		PriceChangingDecision(ListOfItems);
+//		
+//		// Execute changes
+//		UpdateChanges(ListOfItems);
+	}
+	
+	private void NormalChanges()
+	{
+		// Make change decision
+//		StockChangingDecision(ListOfItems);
+//		PriceChangingDecision(ListOfItems);
+//		
+//		 Execute changes
+//		UpdateChanges(ListOfItems);
+	}
+	
+	void printList(ArrayList<Item> ListOfItems)
+	{
+		for(Item ele:ListOfItems)
+		{
+			System.out.println(ele.toString());
+		}
+	}
+	
+	void AmazonToeBayScanner()
+	{
+		// Read data from database
+		ResultSet res = SQLDb.Read("SELECT * FROM amazon.online;");
+		
+		// Arrange results
+		ArrangeResultSet(res,ListOfItems);
+		DevideArrayList(ListOfItems,alist);
+		
+		// Execute scan marketplace and supplier
+		MultiThreadScanner();
+
+		//printList(ListOfItems);
+	}
+
+
+
 }

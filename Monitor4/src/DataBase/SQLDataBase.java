@@ -115,7 +115,6 @@ public class SQLDataBase implements IDataBase{
 			con = DriverManager.getConnection(Connection,User,Pass);
 			statement = con.createStatement();//
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -125,7 +124,6 @@ public class SQLDataBase implements IDataBase{
 		try {
 			con.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -150,7 +148,36 @@ public class SQLDataBase implements IDataBase{
 		return res;
 	}
 	
+	@Override
+	public int GetResultsAmount(String statment) {
+		int ResultsAmount = 0;
+		
+		try {
+			res = Read(statment);
+			res.beforeFirst();
+			res.last();  
+			ResultsAmount = res.getRow();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}  
+		
+		return ResultsAmount;
+	}
 	
+	@Override
+	public Boolean IsExcist(String statment) 
+	{
+		int size = 0;
+		Boolean isExcist = false;
+		size = GetResultsAmount(statment);
+		if (size > 0)
+		{
+			isExcist = true;
+		}
+		
+		return isExcist;
+	}
+
 	
 	/* Getters and Setters */
 	
@@ -166,5 +193,9 @@ public class SQLDataBase implements IDataBase{
 	protected void finalize() throws Throwable {
 		CloseConnection();
 	}
+
+
+
+
 	
 }
