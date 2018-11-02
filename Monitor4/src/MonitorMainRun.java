@@ -3,7 +3,7 @@ import Config.Config;
 import Monitor.Manager;
 
 
-public class MonitorMainApp {
+public class MonitorMainRun {
 
 
 	public static void main(String[] args) 
