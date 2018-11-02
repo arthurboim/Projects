@@ -23,7 +23,10 @@ public class Config {
 	public static String KeysFilePath = "C:\\Keys\\ConfigFile-Keys-New.txt";
 	public static platform currentPlatform;
 	public static MonitorMode currentMonitorMode;
-	
+	public static int Version  = 0x0101;
+	public static int Month	   = (02);
+	public static int Day	   = (11);
+	public static int Year	   = (2018);
 	
 	/* Contractor */
 	
