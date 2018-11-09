@@ -62,6 +62,7 @@ public class eBayCalls implements Runnable{
 	private  static TimeFilter tf;
 	private  static Calendar calFrom;
 	private  static Calendar calTo;
+	public   static int threadCounter = 0;
 	private  FindingServicePortType serviceClient;
 	private  GetSellerListCall GetSellerListCall;
 	private  GetItemCall GetItemCall;
@@ -72,7 +73,6 @@ public class eBayCalls implements Runnable{
 	private  FindItemsByKeywordsResponse  FindItemsbykeywordRespond;
 	private  IDataBase DB; 
 	private  ResultSet Res;
-	private  static int threadCounter = 0;
 	
 	
 	/* Contractor */
@@ -156,6 +156,7 @@ public class eBayCalls implements Runnable{
 			}
 
 	}
+	
 	private void eBayAPIGeneralinitialization()
 	{
 		/*eBay API calls general initialization*/
@@ -282,7 +283,7 @@ public class eBayCalls implements Runnable{
 					if ((DB.isExistInDataBase("select * from "+scham+".productfromsellers where Code = '"+newItem.getUniversalCode()+"';") == false) && 
 						newItem.getAmountSoldByTheSeller() > 0)
 					{
-						GetAndUpdateSearchResults(newItem);
+						UpdateSoldAmount(newItem);
 					}
 					
 					if(true == newItem.IsEnoughDemand())
@@ -303,6 +304,7 @@ public class eBayCalls implements Runnable{
 		}
 		
 		sellerItemsList.removeAll(sellerItemsList);
+		System.out.println("Number of eBay live threads = "+threadCounter);
 	}
 	
 	public void GetSellerItems(String sellerName, ArrayList<ItemType> sellerItemsList)
@@ -470,81 +472,106 @@ public class eBayCalls implements Runnable{
 	}
 
 	// Using of findbykeyword request (in oder to change the service remove the 1 in GetAndUpdateSearchResults1)
-	public void GetAndUpdateSearchResults(Item newItem)
+	public void UpdateSoldAmount(Item newItem)
 	{
-
 		int soldAmount = 0;
 		String WriteToData = null;
 		
-		/* eBay call */
-		FindItemsbykeywordRequest.setKeywords(newItem.getUniversalCode());
-		try{
-		FindItemsbykeywordRespond = serviceClient.findItemsByKeywords(FindItemsbykeywordRequest);
-		
-		if (AckValue.SUCCESS == FindItemsbykeywordRespond.getAck()) 
-		{
-		    List<SearchItem> items = FindItemsbykeywordRespond.getSearchResult().getItem();
+		GetSearchResults(newItem);
+	    List<SearchItem> items = FindItemsbykeywordRespond.getSearchResult().getItem();
 
-		    /* Set lowest price */
-	    	if(items.size() > 0)
-	    	{
-	    		newItem.setMarketPlaceLowestPrice(items.get(0).getSellingStatus().getCurrentPrice().getValue()+items.get(0).getShippingInfo().getShippingServiceCost().getValue());	    		
-	    	}
-	    	
-	    	for(int index = 0; index < items.size() && index < 8; index++) 
-	        {
-	    		/* Checking if he seller is Exist if not add to db */
-	        	if (DB.isExistInDataBase("select 1 from amazon.sellers where SellerId = '"+items.get(index).getSellerInfo().getSellerUserName()+"';")== false &&
-	        			items.get(index).getSellerInfo().getFeedbackScore().intValue() > 200) 
-	    		{
-	        		WriteToData = "INSERT INTO "+scham+".sellers (SellerId,Feedbackscore,PositiveFeedbackPercent,Scaned)"+
-	        		"VALUES ('"+items.get(index).getSellerInfo().getSellerUserName()+"',"+items.get(index).getSellerInfo().getFeedbackScore().intValue()+","+items.get(index).getSellerInfo().getPositiveFeedbackPercent().doubleValue()+","+0+");";
-	    			DB.Write(WriteToData);
-	    		}
-	    		
-        		/* Get the amount of sold items according to price and days range */
-	        	if (items.get(0).getSellingStatus().getCurrentPrice().getValue()<30)
-	        	{
-	        		soldAmount = GetItemTrasactions(items.get(index).getItemId(),7);
-	        	}else if (items.get(0).getSellingStatus().getCurrentPrice().getValue() >=30 &&
-	        			  items.get(0).getSellingStatus().getCurrentPrice().getValue() <70)
-	        	{
-	        		soldAmount = GetItemTrasactions(items.get(index).getItemId(),14);
-	        	}
-	        	else if (items.get(0).getSellingStatus().getCurrentPrice().getValue()>=70)
-	        	{
-	        		soldAmount = GetItemTrasactions(items.get(index).getItemId(),14);
-	        	}
-	        	
-        		/* Update the amount of total amount of sells for this item */
-        		newItem.setQuantitySold(soldAmount + newItem.getQuantitySold());
-        		
-        		/* Update the amount of sellers that sold the item */
-	        	if (soldAmount > 0)  
-	        	{
-	        		newItem.setSellerSoldTheItem(newItem.getSellerSoldTheItem()+1);
-	        	}
-	        }
-	    	
-	    	DB.Write("UPDATE "+scham+".productfromsellers SET SellersAmountSold="+newItem.getSellerSoldTheItem()+" , SoldLastWeekAll="+newItem.getQuantitySold()+" WHERE Code='"+newItem.getUniversalCode()+"' and Codetype = '"+newItem.getCodeType()+"';");
-	    	items = null;
-			
-		
-		}
-		}catch(Exception e)
-		{
-			System.out.println("Exception in GetAndUpdateSearchResults");
-			System.out.println(e.getMessage());
-			StackTraceElement[] elements = e.getStackTrace(); 
-			for (int iterator=1; iterator<=elements.length; iterator++)  
-                System.out.println("Class Name:"+elements[iterator-1].getClassName()+" Method Name:"+elements[iterator-1].getMethodName()+" Line Number:"+elements[iterator-1].getLineNumber());
-		
-		}
-		
+	    /* Set lowest price */
+    	if(items.size() > 0)
+    	{
+    		try{
+    			newItem.setMarketPlaceLowestPrice(items.get(0).getSellingStatus().getCurrentPrice().getValue()+items.get(0).getShippingInfo().getShippingServiceCost().getValue());	    		
+    		}
+    		catch(Exception e1)
+    		{
+    			FindItemsbykeywordRespond = null;
+    			System.gc();
+    			return;
+    		}
+    	}
+    	
+    	for(int index = 0; index < items.size() && index < 8; index++) 
+        {
+    		/* Checking if he seller is Exist if not add to db */
+        	if (DB.isExistInDataBase("select 1 from amazon.sellers where SellerId = '"+items.get(index).getSellerInfo().getSellerUserName()+"';")== false &&
+        			items.get(index).getSellerInfo().getFeedbackScore().intValue() > 200) 
+    		{
+        		WriteToData = "INSERT INTO "+scham+".sellers (SellerId,Feedbackscore,PositiveFeedbackPercent,Scaned)"+
+        		"VALUES ('"+items.get(index).getSellerInfo().getSellerUserName()+"',"+items.get(index).getSellerInfo().getFeedbackScore().intValue()+","+items.get(index).getSellerInfo().getPositiveFeedbackPercent().doubleValue()+","+0+");";
+    			DB.Write(WriteToData);
+    		}
+    		
+    		/* Get the amount of sold items according to price and days range */
+        	if (items.get(0).getSellingStatus().getCurrentPrice().getValue()<30)
+        	{
+        		soldAmount = GetItemTrasactions(items.get(index).getItemId(),7);
+        	}else if (items.get(0).getSellingStatus().getCurrentPrice().getValue() >=30 &&
+        			  items.get(0).getSellingStatus().getCurrentPrice().getValue() <70)
+        	{
+        		soldAmount = GetItemTrasactions(items.get(index).getItemId(),14);
+        	}
+        	else if (items.get(0).getSellingStatus().getCurrentPrice().getValue()>=70)
+        	{
+        		soldAmount = GetItemTrasactions(items.get(index).getItemId(),14);
+        	}
+        	
+    		/* Update the amount of total amount of sells for this item */
+    		newItem.setQuantitySold(soldAmount + newItem.getQuantitySold());
+    		
+    		/* Update the amount of sellers that sold the item */
+        	if (soldAmount > 0)  
+        	{
+        		newItem.setSellerSoldTheItem(newItem.getSellerSoldTheItem()+1);
+        	}
+        }
+    	
+    	DB.Write("UPDATE "+scham+".productfromsellers SET SellersAmountSold="+newItem.getSellerSoldTheItem()+" , SoldLastWeekAll="+newItem.getQuantitySold()+" WHERE Code='"+newItem.getUniversalCode()+"' and Codetype = '"+newItem.getCodeType()+"';");
+    	
+    	items = null;
 		FindItemsbykeywordRespond = null;
 		System.gc();
-		
+	}
 	
+	// Update the item position in eBay search
+	public void UpdateItemPosition(Item newItem)
+	{
+		int counter = 1;
+		GetSearchResults(newItem);
+		
+		if (AckValue.FAILURE == FindItemsbykeywordRespond.getAck())
+		{
+			// Do nothing
+		}
+		else
+		{
+		    List<SearchItem> items = FindItemsbykeywordRespond.getSearchResult().getItem();
+		    newItem.setMarketPlaceResults(items.size());
+		    newItem.setMarketPlaceLowestPrice(items.get(0).getSellingStatus().getCurrentPrice().getValue()+items.get(0).getShippingInfo().getShippingServiceCost().getValue());
+		    newItem.setArbitraje(newItem.getMarketPlaceLowestPrice() - newItem.getMinPriceToSale());
+	
+	        for(SearchItem item : items) 
+	        {
+	        	if (item.getSellingStatus().getCurrentPrice().getValue() < newItem.getMinPriceToSale())
+	        	{
+	        		counter++;
+	        	}
+	        	else 
+	        	{
+	        		newItem.setPlaceInLowestPrice(counter);
+	        		break;
+	        	}
+	        }
+	        
+	        // Don't know if this is needed
+	        if (newItem.getPlaceInLowestPrice() == 0) 
+	        {
+	        	newItem.setPlaceInLowestPrice(++counter);
+	        }   
+		}
 	}
 	
 	/* Protected functions */
@@ -596,6 +623,22 @@ public class eBayCalls implements Runnable{
 		return sellerName;
 	}
 
+	private void GetSearchResults(Item newItem)
+	{
+		try{
+			/* eBay call */
+			FindItemsbykeywordRequest.setKeywords(newItem.getUniversalCode());
+			FindItemsbykeywordRespond = serviceClient.findItemsByKeywords(FindItemsbykeywordRequest);
+		}catch(Exception e)
+		{
+			System.out.println("Exception in GetSearchResults");
+			System.out.println(e.getMessage());
+			StackTraceElement[] elements = e.getStackTrace(); 
+			for (int iterator=1; iterator<=elements.length; iterator++)  
+                System.out.println("Class Name:"+elements[iterator-1].getClassName()+" Method Name:"+elements[iterator-1].getMethodName()+" Line Number:"+elements[iterator-1].getLineNumber());
+		}
+	}
+	
 	@Override
 	public void run() {
 		

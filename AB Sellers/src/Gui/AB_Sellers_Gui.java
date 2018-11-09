@@ -13,7 +13,6 @@ import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import Amazon.AmazonCalls;
-import Ebay.Ebay;
 import Ebay.eBayCalls;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -44,7 +43,7 @@ public class AB_Sellers_Gui {
 	private JTextField scham;
 	private JTextField Pathfiled;
 	public static String Path = null;
-	private int ebayThreadNumber = 0;
+	private static int ebayThreadNumber = 0;
 	private int AmazonThreadNumber = 0;
 	private JTextField Ip_input;
 	private JTextField Port_input;
@@ -188,7 +187,7 @@ public class AB_Sellers_Gui {
 		final JLabel lblAmazonThreadCount = new JLabel("Thread count = ");
 		lblAmazonThreadCount.setBounds(152, 71, 117, 14);
 		panel_6.add(lblAmazonThreadCount);
-		JButton btnNewButton_2 = new JButton("Tax Check");
+		JButton btnNewButton_2 = new JButton("Tax Check"); 
 		btnNewButton_2.setBounds(265, 23, 117, 35);
 		panel_6.add(btnNewButton_2);
 		btnNewButton_2.addActionListener(new ActionListener() {
@@ -404,7 +403,6 @@ public class AB_Sellers_Gui {
 				System.out.println(FILENAMEIPS);
 				Pathfiled.setText(Path);
 				frmProductFromSellers.repaint();
-				//"C:\\Users\\Noname\\Desktop\\ConfigFile-Keys.txt";
 			}
 		});
 		
@@ -538,7 +536,7 @@ public class AB_Sellers_Gui {
 				eBayCalls eBay = new eBayCalls();
 				eBay.run();
 	        }
-	    		}.start();
+	    	}.start();
 	}
 
 

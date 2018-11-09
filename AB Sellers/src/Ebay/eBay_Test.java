@@ -1,23 +1,14 @@
 package Ebay;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
-
 import org.junit.Test;
-
 import com.ebay.soap.eBLBaseComponents.ItemType;
-
 import Item.Item;
 
 
 public class eBay_Test {
 
-	public void test_GetAlltransactions() {
-		Ebay ebay_caller = new Ebay();
-		ebay_caller.GetAlltransactions("702373937890");
-	}
-	
+
 
 	public void test_GetSellerItems() {
 		ArrayList<ItemType> sellerItemsList = new ArrayList<ItemType>();
@@ -53,7 +44,6 @@ public class eBay_Test {
 		while(true)
 		{
 			System.out.println("Counter: "+counter++);
-			ebay_caller.GetAndUpdateSearchResults(item);
 		}
 	}
 

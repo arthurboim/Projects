@@ -49,6 +49,8 @@ public class Item {
 	private int 		sellerSoldTheItem;
 	private int 		amountSoldByTheSeller;
 	private double		sellerPrice;
+	private double		arbitraje;
+
 	
 	/* Constructor */
 	
@@ -78,6 +80,7 @@ public class Item {
 		this.amountSoldByTheSeller			= 0;
 		this.myProfitPercent				= 1.00;
 		this.supplyerRequestSuccess 		= true;
+		this.arbitraje						= -1;
 		this.quantitiyStatus				= QuantitiyChangeStatus.NoChange;
 		this.priceStatus					= PriceChangeStatus.NoChange;
 	}
@@ -417,6 +420,14 @@ public class Item {
 
 	public void setSellerPrice(double sellerPrice) {
 		this.sellerPrice = sellerPrice;
+	}
+
+	public double getArbitraje() {
+		return arbitraje;
+	}
+
+	public void setArbitraje(double arbitraje) {
+		this.arbitraje = arbitraje;
 	}
 
 }
