@@ -47,6 +47,8 @@ public class AB_Sellers_Gui {
 	private int AmazonThreadNumber = 0;
 	private JTextField Ip_input;
 	private JTextField Port_input;
+	eBayCalls[] eBayArrayClass = new eBayCalls[15];
+	
 	/**
 	 * Launch the application.
 	 */
@@ -533,8 +535,9 @@ public class AB_Sellers_Gui {
 	    new Thread() {
 
 			public void run() {
-				eBayCalls eBay = new eBayCalls();
-				eBay.run();
+				eBayArrayClass[ebayThreadNumber] = new eBayCalls();
+				eBayArrayClass[ebayThreadNumber].run();
+				
 	        }
 	    	}.start();
 	}

@@ -155,7 +155,39 @@ public class Item {
 	}
 
 	
+	public void rest()
+	{
+
+		this.supplierCode 					= null;
+		this.universalCode					= null;
+		this.marketPlaceCode				= null;
+		this.title							= null;
+		this.CodeType						= null;
+		this.inStock 						= false;
+		this.isPrime						= false;
+		this.isPreorder						= false;
+		this.currentSupplierPrice			= -1;
+		this.currentMarketPlacePrice		= -1;
+		this.currentTax						= -1;
+		this.placeInLowestPrice 			= -1;
+		this.placeInbestMatch 				= -1;
+		this.marketPlaceLowestPrice 		= -1;
+		this.marketPlaceSecondLowestPrice 	= -1;
+		this.itemRank						= -1;
+		this.marketPlaceResults				= -1;
+		this.minPriceToSale					= -1;
+		this.quantity						= -1;
+		this.sellerPrice					= -1;
+		this.quantitySold					= 0;
+		this.sellerSoldTheItem				= 0;
+		this.amountSoldByTheSeller			= 0;
+		this.myProfitPercent				= 1.00;
+		this.supplyerRequestSuccess 		= true;
+		this.arbitraje						= -1;
+		this.quantitiyStatus				= QuantitiyChangeStatus.NoChange;
+		this.priceStatus					= PriceChangeStatus.NoChange;
 	
+	}
 	
 	
 	

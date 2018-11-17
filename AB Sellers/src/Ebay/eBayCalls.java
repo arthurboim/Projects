@@ -44,25 +44,25 @@ import Item.Item;
 
 public class eBayCalls implements Runnable{
 
-	private  static String FILENAME = "C:\\Keys\\ConfigFile-Keys.txt";
-	private  static int pageSize = 200;
-	private  static int minmumSoldItemsThreshold = 2;
-	private  static String scham = null;
-	private  static ApiContext apiContext = new ApiContext();
-	private  static ApiCredential cred = apiContext.getApiCredential(); 
-	private  static String eBay_token = null;
-	private  static String Server_url = null;
-	private  static String Application_id= null;
-	private  static SiteCodeType SiteCode = null;
-	private  static String Contry = null;
-	private  static PaginationType pt;
-	private	 static PaginationInput ptInput; 
-	private  static ApiLogging apiLogging;
-	private  static ClientConfig config; 
-	private  static TimeFilter tf;
-	private  static Calendar calFrom;
-	private  static Calendar calTo;
-	public   static int threadCounter = 0;
+	private   String FILENAME = "C:\\Keys\\ConfigFile-Keys.txt";
+	private   int pageSize = 200;
+	private   int minmumSoldItemsThreshold = 2;
+	private   String scham = null;
+	private   ApiContext apiContext;
+	private   ApiCredential cred; 
+	private   String eBay_token = null;
+	private   String Server_url = null;
+	private   String Application_id= null;
+	private   SiteCodeType SiteCode = null;
+	private   String Contry = null;
+	private   PaginationType pt;
+	private	  PaginationInput ptInput; 
+	private   ApiLogging apiLogging;
+	private   ClientConfig config; 
+	private   TimeFilter tf;
+	private   Calendar calFrom;
+	private   Calendar calTo;
+	private    static int threadCounter = 0;
 	private  FindingServicePortType serviceClient;
 	private  GetSellerListCall GetSellerListCall;
 	private  GetItemCall GetItemCall;
@@ -73,7 +73,12 @@ public class eBayCalls implements Runnable{
 	private  FindItemsByKeywordsResponse  FindItemsbykeywordRespond;
 	private  IDataBase DB; 
 	private  ResultSet Res;
-	
+	private DateFormat dateFormat;
+	private Date date;
+	private ArrayList<ItemType> sellerItemsList;
+	private Item newItem;
+	private ItemType[] activeItems;
+	private int ThreadId =0;
 	
 	/* Contractor */
 	public eBayCalls() {
@@ -84,6 +89,13 @@ public class eBayCalls implements Runnable{
 		/* Load Database */
 		DB = new SQLDataBase();
 		
+		date = new Date();
+		dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+		sellerItemsList = new ArrayList<ItemType>();
+		newItem = new Item();
+		apiContext = new ApiContext();
+		cred = apiContext.getApiCredential(); 
+		
 		/* eBay API Initialization */
 		eBayAPIGeneralinitialization();
 		InitializationSellerListCall();
@@ -91,6 +103,7 @@ public class eBayCalls implements Runnable{
 		InitializationFindAdvancedRequest();
 		InitializationFindByKeyWordRequest();
 		InitializationOfGetItemTransactions();
+		ThreadId = threadCounter;
 	}
 
 	/* Initialization */
@@ -264,14 +277,21 @@ public class eBayCalls implements Runnable{
 	/* Public functions */
 	public void RunProductFinder()
 	{
-		ArrayList<ItemType> sellerItemsList = new ArrayList<ItemType>();
+		System.out.println("I'm thread id: "+ThreadId+" start call GetSellerItems");
+		GetSellerItems(GetNextSeller());
+		System.out.println("I'm thread id: "+ThreadId+" start call GetSellerItems");
+
+		//ItemResearch();
 		
-		GetSellerItems(GetNextSeller(),sellerItemsList);
+	
+	}
+	
+	private void ItemResearch()
+	{
 		for(ItemType ele:sellerItemsList)
 		{
 			if (ele.getSellingStatus().getQuantitySold() > minmumSoldItemsThreshold)
 			{
-				Item newItem = new Item();
 				newItem.setMarketPlaceCode(ele.getItemID());
 				GetItemUniversalCode(newItem); 
 				
@@ -288,26 +308,21 @@ public class eBayCalls implements Runnable{
 					
 					if(true == newItem.IsEnoughDemand())
 					{
-						DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-						Date date = new Date();
-						
 						DB.Write("INSERT INTO "+scham+".productfromsellers (scan_date,SellerPrice,Code,CodeType,SoldBySeller,EbayLowestprice,SoldLastWeekAll,SellersAmountSold)"+
 								"VALUES ('"+dateFormat.format(date)+"',"+newItem.getSellerPrice()+",'"+newItem.getUniversalCode()+"','"+newItem.getCodeType()+"',"+newItem.getAmountSoldByTheSeller()+","+newItem.getMarketPlaceLowestPrice()+","+newItem.getQuantitySold()+","+newItem.getSellerSoldTheItem()+");");	
 					}
-					
-					
 				}
-				
-				newItem = null;
-				System.gc();
+				newItem.rest();
 			}
 		}
 		
-		sellerItemsList.removeAll(sellerItemsList);
+		sellerItemsList.clear();
 		System.out.println("Number of eBay live threads = "+threadCounter);
 	}
 	
-	public void GetSellerItems(String sellerName, ArrayList<ItemType> sellerItemsList)
+	
+	
+	public void GetSellerItems(String sellerName)
 	{
 		int pageCounter = 1;
 		Boolean hasMorePages = true; 
@@ -316,11 +331,10 @@ public class eBayCalls implements Runnable{
 		
 		do
 		{
-		    pt.setPageNumber(pageCounter); 
-		    GetSellerListCall.setPagination(pt);
 		    try {
-		    	ItemType[] activeItems = GetSellerListCall.getSellerList();
-		    	
+		    	pt.setPageNumber(pageCounter); 
+		    	GetSellerListCall.setPagination(pt);
+		    	activeItems = GetSellerListCall.getSellerList();
 		    	for(int i=0 ; i < activeItems.length;i++)
 		    	{
 		    		sellerItemsList.add(activeItems[i]);
@@ -334,8 +348,9 @@ public class eBayCalls implements Runnable{
 		    	{
 		    		hasMorePages = false;
 		    	}
-		    	activeItems = null;
-		    	System.gc();
+
+		    	ItemResearch();
+		    	
 			} catch (Exception e) 
 		    {
 				System.out.println("Exception GetSellerItems: "+e.getMessage());
@@ -345,39 +360,36 @@ public class eBayCalls implements Runnable{
 			}
 
 		}while(hasMorePages);
+    	System.out.println("Seller "+sellerName+" Active items = "+sellerItemsList.size());
+
+		activeItems = null;
 	}
 
 	public void GetItemUniversalCode(Item newItem)
 	{
-		ItemType item;
-		GetItemCall.setItemID(newItem.getMarketPlaceCode());
-		
 		try {
-			item = GetItemCall.getItem();
-			
-			if (null == item)
+			GetItemCall.setItemID(newItem.getMarketPlaceCode());
+			if (null == GetItemCall.getItem())
 			{
 				return;
 			}
 			
-			if (item.getProductListingDetails().getISBN()!=null && !item.getProductListingDetails().getISBN().toLowerCase().contains("apply") && !item.getProductListingDetails().getISBN().toLowerCase().contains("applicable")) 
+			if (GetItemCall.getItem().getProductListingDetails().getISBN()!=null && !GetItemCall.getItem().getProductListingDetails().getISBN().toLowerCase().contains("apply") && !GetItemCall.getItem().getProductListingDetails().getISBN().toLowerCase().contains("applicable")) 
 			{
-				 newItem.setUniversalCode(item.getProductListingDetails().getISBN());
+				 newItem.setUniversalCode(GetItemCall.getItem().getProductListingDetails().getISBN());
 				 newItem.setCodeType("ISBN");
 			}
-			else if (item.getProductListingDetails().getUPC()!=null&& !item.getProductListingDetails().getUPC().toLowerCase().contains("apply")&& !item.getProductListingDetails().getUPC().toLowerCase().contains("applicable"))
+			else if (GetItemCall.getItem().getProductListingDetails().getUPC()!=null&& !GetItemCall.getItem().getProductListingDetails().getUPC().toLowerCase().contains("apply")&& !GetItemCall.getItem().getProductListingDetails().getUPC().toLowerCase().contains("applicable"))
 			{
-				 newItem.setUniversalCode(item.getProductListingDetails().getUPC());
+				 newItem.setUniversalCode(GetItemCall.getItem().getProductListingDetails().getUPC());
 				 newItem.setCodeType("UPC");
 			}
-			else if (item.getProductListingDetails().getEAN()!= null && !item.getProductListingDetails().getEAN().toLowerCase().contains("apply")&& !item.getProductListingDetails().getEAN().toLowerCase().contains("applicable")) 
+			else if (GetItemCall.getItem().getProductListingDetails().getEAN()!= null && !GetItemCall.getItem().getProductListingDetails().getEAN().toLowerCase().contains("apply")&& !GetItemCall.getItem().getProductListingDetails().getEAN().toLowerCase().contains("applicable")) 
 			{
-				 newItem.setUniversalCode(item.getProductListingDetails().getUPC());
+				 newItem.setUniversalCode(GetItemCall.getItem().getProductListingDetails().getUPC());
 				 newItem.setCodeType("EAN");
 			}
 			
-			item = null;
-			System.gc();
 		} catch (Exception e) 
 		{
 			
@@ -385,97 +397,10 @@ public class eBayCalls implements Runnable{
 		
 	}
 
-	// Using of FIndAdvanced request
-	public void GetAndUpdateSearchResults1(Item newItem)
-	{
-		int soldAmount = 0;
-		String WriteToData = null;
-		int counter =0;
-		
-		/* eBay call */
-		FindItemsAdvancedRequest.setKeywords(newItem.getUniversalCode());
-		try{
-		FindItemsAdvancedResponse = serviceClient.findItemsAdvanced(FindItemsAdvancedRequest);
-		
-		if (AckValue.SUCCESS == FindItemsAdvancedResponse.getAck()) 
-		{
-		    List<SearchItem> items = FindItemsAdvancedResponse.getSearchResult().getItem();
-
-		    /* Set lowest price */
-	    	if(items.size() > 0)
-	    	{
-	    		newItem.setMarketPlaceLowestPrice(items.get(0).getSellingStatus().getCurrentPrice().getValue()+items.get(0).getShippingInfo().getShippingServiceCost().getValue());	    		
-	    	}
-	    	
-	    	for(int index = 0; index < items.size() && index < 8; index++) 
-	        {
-	    		/* Checking if he seller is Exist if not add to db */
-	        	if (DB.isExistInDataBase("select 1 from "+scham+".sellers where SellerId = '"+items.get(index).getSellerInfo().getSellerUserName()+"';")== false &&
-	        			items.get(index).getSellerInfo().getFeedbackScore().intValue() > 200) 
-	    		{
-	        		WriteToData = "INSERT INTO "+scham+".sellers (SellerId,Feedbackscore,PositiveFeedbackPercent,Scaned)"+
-	        		"VALUES ('"+items.get(index).getSellerInfo().getSellerUserName()+"',"+items.get(index).getSellerInfo().getFeedbackScore().intValue()+","+items.get(index).getSellerInfo().getPositiveFeedbackPercent().doubleValue()+","+0+");";
-	    			DB.Write(WriteToData);
-	    		}
-	    		
-        		/* Get the amount of sold items according to price and days range */
-	        	if (items.get(0).getSellingStatus().getCurrentPrice().getValue()<30)
-	        	{
-	        		soldAmount = GetItemTrasactions(items.get(index).getItemId(),7);
-	        	}else if (items.get(0).getSellingStatus().getCurrentPrice().getValue() >=30 &&
-	        			  items.get(0).getSellingStatus().getCurrentPrice().getValue() <70)
-	        	{
-	        		soldAmount = GetItemTrasactions(items.get(index).getItemId(),14);
-	        	}
-	        	else if (items.get(0).getSellingStatus().getCurrentPrice().getValue()>=70)
-	        	{
-	        		soldAmount = GetItemTrasactions(items.get(index).getItemId(),14);
-	        	}
-	        	
-        		/* Update the amount of total amount of sells for this item */
-        		newItem.setQuantitySold(soldAmount + newItem.getQuantitySold());
-        		
-        		/* Update the amount of sellers that sold the item */
-	        	if (soldAmount > 0)  
-	        	{
-	        		newItem.setSellerSoldTheItem(newItem.getSellerSoldTheItem()+1);
-	        	}
-	        }
-	    	
-	    	DB.Write("UPDATE "+scham+".productfromsellers SET SellersAmountSold="+newItem.getSellerSoldTheItem()+" , SoldLastWeekAll="+newItem.getQuantitySold()+" WHERE Code='"+newItem.getUniversalCode()+"' and Codetype = '"+newItem.getCodeType()+"';");
-	    	items = null;
-			
-		
-		}
-		else
-		{
-			counter++;
-		}
-		
-		if (counter > 2)
-		{
-			return;
-		}
-		}catch(Exception e)
-		{
-			System.out.println("Exception in GetAndUpdateSearchResults");
-			System.out.println(e.getMessage());
-			StackTraceElement[] elements = e.getStackTrace(); 
-			for (int iterator=1; iterator<=elements.length; iterator++)  
-                System.out.println("Class Name:"+elements[iterator-1].getClassName()+" Method Name:"+elements[iterator-1].getMethodName()+" Line Number:"+elements[iterator-1].getLineNumber());
-			counter++;
-		}
-		
-		FindItemsAdvancedResponse = null;
-		System.gc();
-		
-	}
-
 	// Using of findbykeyword request (in oder to change the service remove the 1 in GetAndUpdateSearchResults1)
 	public void UpdateSoldAmount(Item newItem)
 	{
 		int soldAmount = 0;
-		String WriteToData = null;
 		
 		GetSearchResults(newItem);
 	    List<SearchItem> items = FindItemsbykeywordRespond.getSearchResult().getItem();
@@ -500,9 +425,8 @@ public class eBayCalls implements Runnable{
         	if (DB.isExistInDataBase("select 1 from amazon.sellers where SellerId = '"+items.get(index).getSellerInfo().getSellerUserName()+"';")== false &&
         			items.get(index).getSellerInfo().getFeedbackScore().intValue() > 200) 
     		{
-        		WriteToData = "INSERT INTO "+scham+".sellers (SellerId,Feedbackscore,PositiveFeedbackPercent,Scaned)"+
-        		"VALUES ('"+items.get(index).getSellerInfo().getSellerUserName()+"',"+items.get(index).getSellerInfo().getFeedbackScore().intValue()+","+items.get(index).getSellerInfo().getPositiveFeedbackPercent().doubleValue()+","+0+");";
-    			DB.Write(WriteToData);
+         		DB.Write("INSERT INTO "+scham+".sellers (SellerId,Feedbackscore,PositiveFeedbackPercent,Scaned)"+
+    	        		"VALUES ('"+items.get(index).getSellerInfo().getSellerUserName()+"',"+items.get(index).getSellerInfo().getFeedbackScore().intValue()+","+items.get(index).getSellerInfo().getPositiveFeedbackPercent().doubleValue()+","+0+");");
     		}
     		
     		/* Get the amount of sold items according to price and days range */
@@ -619,7 +543,6 @@ public class eBayCalls implements Runnable{
 			System.out.println("Exception in GetNextSeller: "+e.getMessage());
 		}
 		
-		Res = null;
 		return sellerName;
 	}
 
@@ -644,9 +567,9 @@ public class eBayCalls implements Runnable{
 		
 		try{
 			threadCounter++;
-			System.out.println("Running threads: "+threadCounter);
 			while(true)
 			{
+				System.out.println("Running threads: "+threadCounter);
 				RunProductFinder();
 			}
 		}catch(Exception e)

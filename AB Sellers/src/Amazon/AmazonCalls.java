@@ -3,43 +3,22 @@ package Amazon;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.server.handler.FindElements;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-import com.ebay.sdk.ApiContext;
-import com.ebay.sdk.ApiCredential;
-import com.ebay.services.client.ClientConfig;
-import com.ebay.services.client.FindingServiceClientFactory;
-import com.ebay.services.finding.FindItemsAdvancedRequest;
-import com.ebay.services.finding.FindItemsAdvancedResponse;
-import com.ebay.services.finding.FindingServicePortType;
-import com.ebay.services.finding.ItemFilter;
-import com.ebay.services.finding.ItemFilterType;
-import com.ebay.services.finding.SearchItem;
-import com.ebay.services.finding.SortOrderType;
-import com.ebay.soap.eBLBaseComponents.SiteCodeType;
-
+import Configurations.Config;
 import DataBase.IDataBase;
 import DataBase.SQLDataBase;
 import Ebay.eBayCalls;
@@ -62,6 +41,7 @@ public class AmazonCalls implements Runnable {
 	private  IDataBase SQLDB;
 	private  ResultSet res;
 	private  eBayCalls eBayCaller;
+	private  int counter;
 	
 	/* Constractor */
 	public AmazonCalls() {
@@ -71,8 +51,10 @@ public class AmazonCalls implements Runnable {
     	options.addArguments("--start-maximized");
     	System.setProperty("webdriver.chrome.driver", webdriverPath);
 		Driver = new ChromeDriver(options);
+		Driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		SQLDB = new SQLDataBase();
 		eBayCaller = new eBayCalls();
+		counter =0;
 
 	}
 
@@ -157,41 +139,46 @@ public class AmazonCalls implements Runnable {
 			
 		while (true)
 		{
-			try {
-				readItems();
-				System.out.println("list size = "+list.size());
-				if (list.size() > 0)
+			
+			readItems();
+			System.out.println("Heap size = "+Config.GetHeapSize()+" "+Config.GetCurrentTime()+ " list size = "+list.size());
+
+			for (Item ele:list)
+			{
+				try{
+				CheckWithScraper(ele);
+				if (ele.isPrime())
 				{
-					for (Item ele:list)
+					eBayCaller.UpdateItemPosition(ele);
+					if ((((ele.getMarketPlaceLowestPrice())/(ele.getCurrentSupplierPrice()+0.3)		 > 1.14)   && (ele.getCurrentTax() == 0)) ||
+						(((ele.getMarketPlaceLowestPrice())/(ele.getCurrentSupplierPrice()+ele.getCurrentTax() + 0.3) > 1.185) && (ele.getCurrentTax() > 0)))
 					{
-						CheckWithScraper(ele);
-						if (ele.isPrime())
-						{
-							eBayCaller.UpdateItemPosition(ele);
-							if ((((ele.getMarketPlaceLowestPrice())/(ele.getCurrentSupplierPrice()+0.3)		 > 1.14)   && (ele.getCurrentTax() == 0)) ||
-								(((ele.getMarketPlaceLowestPrice())/(ele.getCurrentSupplierPrice()+ele.getCurrentTax() + 0.3) > 1.185) && (ele.getCurrentTax() > 0)))
-							{
-								System.out.println("Item added "+ele.getSupplierCode());
-								SQLDB.Write("UPDATE  amazon.productfromsellers SET asin = '"+ele.getSupplierCode()+"' , Amazon_price = "+ele.getCurrentSupplierPrice()+", AmazonAvailavle = 1 , placeinlowestprice = "+ele.getPlaceInLowestPrice()+" , BreakEvenForlowest = "+(ele.getMarketPlaceLowestPrice())/(ele.getCurrentSupplierPrice()+ele.getCurrentTax()+0.3)+" , arbitrajeLowestprice = "+ele.getArbitraje()+" , EbayLowestprice = "+(ele.getMarketPlaceLowestPrice())+" , Tax = "+ele.getCurrentTax()+" where Code = '"+ele.getUniversalCode()+"';");
-							}else 
-							{
-								SQLDB.Write("DELETE FROM amazon.productfromsellers WHERE Code = '"+ele.getUniversalCode()+"';");
-							}
-						}else 
-						{
-							SQLDB.Write("DELETE FROM amazon.productfromsellers WHERE Code = '"+ele.getUniversalCode()+"';");
-						}
+						System.out.println("Item added "+ele.getSupplierCode());
+						SQLDB.Write("UPDATE  amazon.productfromsellers SET asin = '"+ele.getSupplierCode()+"' , Amazon_price = "+ele.getCurrentSupplierPrice()+", AmazonAvailavle = 1 , placeinlowestprice = "+ele.getPlaceInLowestPrice()+" , BreakEvenForlowest = "+(ele.getMarketPlaceLowestPrice())/(ele.getCurrentSupplierPrice()+ele.getCurrentTax()+0.3)+" , arbitrajeLowestprice = "+ele.getArbitraje()+" , EbayLowestprice = "+(ele.getMarketPlaceLowestPrice())+" , Tax = "+ele.getCurrentTax()+" where Code = '"+ele.getUniversalCode()+"';");
+					}else 
+					{
+						SQLDB.Write("DELETE FROM amazon.productfromsellers WHERE Code = '"+ele.getUniversalCode()+"';");
 					}
-					
-					list.removeAll(list);
+				}else 
+				{
+					SQLDB.Write("DELETE FROM amazon.productfromsellers WHERE Code = '"+ele.getUniversalCode()+"';");
 				}
 				
-				Thread.sleep((1000*60*1)/2);
-				
-			} catch (InterruptedException e) 
-			{
-				System.out.println(e);
-			} 
+				}catch(Exception e)
+				{
+					SQLDB.Write("DELETE FROM amazon.productfromsellers WHERE Code = '"+ele.getUniversalCode()+"';");
+					e.printStackTrace();
+				}
+			}
+			
+			list.clear();
+			try {
+				Thread.sleep(1000*20);
+
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		
@@ -203,29 +190,65 @@ public class AmazonCalls implements Runnable {
     
     /* Private functions*/
     
-	private void CheckWithScraper(Item ele) 
+	private void CheckWithScraper(Item ele) throws InterruptedException 
 	{
 		double temp;
 		String CurrenteTax;
 		String Asin = null;
-		
-		try{
-			Driver.get("https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords="+ele.getUniversalCode().replaceAll(" ", "")+"");
+		List<WebElement> elements ;
+			try{
+				//Thread.sleep(1000);
+				counter++;
+				System.out.println(counter);
 			waitForLoad(Driver);
-			Asin = Driver.findElementByXPath("//*[@id='result_0']/div/div/div/div[2]/div[1]/div/a").getAttribute("href");
+			Driver.get("https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%Daps&field-keywords="+ele.getUniversalCode().replaceAll(" ", ""));			
+			//Driver.findElement(By.xpath("//*[@id='twotabsearchtextbox']")).click();
+			//Driver.findElement(By.xpath("//*[@id='twotabsearchtextbox']")).clear();
+			//Driver.findElement(By.xpath("//*[@id='twotabsearchtextbox']")).sendKeys(ele.getUniversalCode().replaceAll(" ", ""));
+			//Driver.findElement(By.xpath("//*[@id='nav-search']/form/div[2]/div/input")).click();
+			waitForLoad(Driver);
+			//Thread.sleep(1000);
+			
+			elements = Driver.findElements(By.id("noResultsTitle"));
+			if(elements.size() >0 )
+			{
+				ele.setCurrentSupplierPrice(-1);
+				ele.setPrime(false);
+				return;
+			}
+			
+			try{
+				Asin = Driver.findElementByXPath("//*[@id='result_0']/div/div/div/div[2]/div[1]/div/a").getAttribute("href");				
+			}catch(Exception e)
+			{									  							
+				Asin = Driver.findElementByXPath("//*[@id='result_0']/div/div[3]/div[1]/a").getAttribute("href");				
+			}
+
 			Asin = Asin.substring(Asin.lastIndexOf("dp/")+3, Asin.lastIndexOf("/ref="));
 			Driver.get("https://www.amazon.com/gp/offer-listing/"+Asin+"/ref=olp_f_new?ie=UTF8&f_all=true&f_new=true&f_primeEligible=true");
-			waitForLoad(Driver);
+			//waitForLoad(Driver);
+
+			//Thread.sleep(4000);
 			temp = Double.parseDouble(Driver.findElementByXPath("//*[@id='olpOfferList']/div/div/div[2]/div[1]/span[1]").getText().replace("$",""));
 			ele.setCurrentSupplierPrice(temp);
 			
 			try{
+				
+			if (Driver.findElement(By.xpath("//*[@id='olpOfferList']/div/div/div[2]/div[1]/p/span/span")).getText().contains("FREE Shipping"))
+			{
 				CurrenteTax = Driver.findElement(By.xpath("//*[@id='olpOfferList']/div/div/div[2]/div[1]/p/span/span")).getText();
 				CurrenteTax = CurrenteTax.substring(CurrenteTax.indexOf("+")+3, CurrenteTax.indexOf("estimated tax")-1);
-				ele.setCurrentTax(Double.parseDouble(CurrenteTax));
+			}
+			else
+			{
+				CurrenteTax = Driver.findElement(By.xpath("//*[@id='olpOfferList']/div/div/div[2]/div[1]/p/span/span")).getText();
+				CurrenteTax = CurrenteTax.substring(CurrenteTax.indexOf("+")+3, CurrenteTax.indexOf("estimated tax")-1);
+			}
+			
+			ele.setCurrentTax(Double.parseDouble(CurrenteTax));		
 			}catch(Exception e)
 			{
-				
+				e.printStackTrace();			
 			}
 			
 			if (Driver.findElementByXPath("//*[@id='olpOfferList']/div/div/div[2]/div[1]/span[2]/i").getAttribute("aria-label").contains("Eligible for free shipping with Amazon Prime."))
@@ -240,6 +263,8 @@ public class AmazonCalls implements Runnable {
 		{
 			ele.setCurrentSupplierPrice(-1);
 			ele.setPrime(false);
+			e.printStackTrace();			
+			Thread.sleep(1000);
 		}
 	}
 	
