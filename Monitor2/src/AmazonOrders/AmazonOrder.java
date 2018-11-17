@@ -40,6 +40,7 @@ public class AmazonOrder {
 	public static String ENDPOINT_FROM_FILE = null;
 	public static String Cid = null;
 	public static String Acid = null;
+	
 	public AmazonOrder() {
 		
 		//System.out.println("Constractor of Database");

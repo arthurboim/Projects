@@ -11,7 +11,7 @@ public class Item_UnitTest {
 		Item item = new Item();
 		item.setMarketPlaceLowestPrice(10);
 		item.setCurrentSupplierPrice(7);
-		item.setCurrentTax(1.2);
+		item.setCurrentTax(0.7);
 		item.CalculateMinPriceToSale();
 		System.out.println(item.toString());
 	}

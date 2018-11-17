@@ -24,6 +24,7 @@ public class FileDecoder implements Runnable
 	static public int numofthreads=0;
 	ArrayList<String> BrandsList;
 	String path;
+	
 	public FileDecoder(String path,ArrayList<String> BrandsList) 
 	{
 		this.BrandsList = BrandsList;

@@ -10,11 +10,11 @@ public class MonitorMainRun {
 	{
 		// Application Initialization
 		Config AppConfigurations = new Config();
-		Manager AmazonToeBayManager = new Manager();
+		//Manager AmazonToeBayManager = new Manager();
 		AppConfigurations.Initialization();
 		
 		// Application start
-		AmazonToeBayManager.MonitorScannerRun();
+		//AmazonToeBayManager.MonitorScannerRun();
 	}
 	
 	

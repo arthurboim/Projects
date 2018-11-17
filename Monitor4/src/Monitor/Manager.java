@@ -111,7 +111,6 @@ public class Manager {
 		
 		try {
 			
-			SQLDb.OpenConnection();
 			res = SQLDb.Read("SELECT * FROM amazon.online;");
 			
 			while(res.next())

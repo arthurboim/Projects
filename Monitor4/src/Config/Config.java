@@ -3,6 +3,10 @@ package Config;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.*;
 
 public class Config {
 	
@@ -19,15 +23,18 @@ public class Config {
 		Optimizer,
 		Normal
 	}
-	
+
+	public static String LogPath = "C:\\Keys\\Log.txt";
 	public static String KeysFilePath = "C:\\Keys\\ConfigFile-Keys-New.txt";
 	public static platform currentPlatform;
 	public static MonitorMode currentMonitorMode;
+	public static String OS;
 	public static int Version  = 0x0101;
 	public static int Month	   = (02);
 	public static int Day	   = (11);
 	public static int Year	   = (2018);
-	
+	public static DateFormat dateFormat;
+	public static Date date;
 	/* Contractor */
 	
 	public Config() {
@@ -38,6 +45,11 @@ public class Config {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		date = new Date();
+		OS = new String();
+
 	}
 
 	
@@ -46,8 +58,16 @@ public class Config {
 	
 	public void Initialization()
 	{
+		// Get platform 
 		GetPlatform();
+
 	}
+	
+	public static String GetCurrentTime()
+	{
+		return dateFormat.format(date);
+	}
+	
 	
 	
 	//Platform information 
@@ -64,7 +84,7 @@ public class Config {
 		} else if (isUnix(OS)) {
 			currentPlatform = platform.Linux;
 		}  else {
-			System.out.println("Your OS is not support!!");
+			System.out.println("Your OS is not support!!!");
 		}
 	}
 	
@@ -86,6 +106,8 @@ public class Config {
 		
 	}
 
+	
+	
 	
 	// Read configuration from file
 	private void ReadFileConfigurations(String KeysFilePath) throws IOException
