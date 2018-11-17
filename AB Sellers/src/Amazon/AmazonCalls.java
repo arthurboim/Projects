@@ -226,7 +226,7 @@ public class AmazonCalls implements Runnable {
 
 			Asin = Asin.substring(Asin.lastIndexOf("dp/")+3, Asin.lastIndexOf("/ref="));
 			Driver.get("https://www.amazon.com/gp/offer-listing/"+Asin+"/ref=olp_f_new?ie=UTF8&f_all=true&f_new=true&f_primeEligible=true");
-			//waitForLoad(Driver);
+			waitForLoad(Driver);
 
 			//Thread.sleep(4000);
 			temp = Double.parseDouble(Driver.findElementByXPath("//*[@id='olpOfferList']/div/div/div[2]/div[1]/span[1]").getText().replace("$",""));

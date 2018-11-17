@@ -317,7 +317,7 @@ public class eBayCalls implements Runnable{
 		}
 		
 		sellerItemsList.clear();
-		System.out.println("Number of eBay live threads = "+threadCounter);
+		//System.out.println("Number of eBay live threads = "+threadCounter);
 	}
 	
 	
