@@ -15,5 +15,6 @@
 	<classpathentry kind="lib" path="C:/JarInclude/Item_Api/Item_Api.jar"/>
 	<classpathentry kind="lib" path="C:/JarInclude/WebDriver_Api/WebDriver_API.jar"/>
 	<classpathentry kind="lib" path="C:/JarInclude/DataBase_Api/DataBase_Api.jar"/>
+	<classpathentry kind="lib" path="C:/JarInclude/eBay_Api/eBay_API.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
