@@ -11,18 +11,9 @@
 	<classpathentry kind="lib" path="C:/FinditemEbay/slf4j-api-1.6.1.jar"/>
 	<classpathentry kind="lib" path="C:/FinditemEbay/slf4j-jdk14-1.6.1.jar"/>
 	<classpathentry kind="lib" path="C:/JarInclude/commons-codec-1.4.jar"/>
-	<classpathentry kind="lib" path="C:/JarInclude/httpcomponents-client-4.5.6/lib/commons-codec-1.10.jar"/>
-	<classpathentry kind="lib" path="C:/JarInclude/httpcomponents-client-4.5.6/lib/commons-logging-1.2.jar"/>
-	<classpathentry kind="lib" path="C:/JarInclude/httpcomponents-client-4.5.6/lib/fluent-hc-4.5.6.jar"/>
-	<classpathentry kind="lib" path="C:/JarInclude/httpcomponents-client-4.5.6/lib/httpclient-4.5.6.jar"/>
-	<classpathentry kind="lib" path="C:/JarInclude/httpcomponents-client-4.5.6/lib/httpclient-cache-4.5.6.jar"/>
-	<classpathentry kind="lib" path="C:/JarInclude/httpcomponents-client-4.5.6/lib/httpclient-win-4.5.6.jar"/>
-	<classpathentry kind="lib" path="C:/JarInclude/httpcomponents-client-4.5.6/lib/httpcore-4.4.10.jar"/>
-	<classpathentry kind="lib" path="C:/JarInclude/httpcomponents-client-4.5.6/lib/httpmime-4.5.6.jar"/>
-	<classpathentry kind="lib" path="C:/JarInclude/httpcomponents-client-4.5.6/lib/jna-4.4.0.jar"/>
-	<classpathentry kind="lib" path="C:/JarInclude/httpcomponents-client-4.5.6/lib/jna-platform-4.4.0.jar"/>
 	<classpathentry kind="lib" path="C:/ChromeDriverFolder/selenium-server-standalone-3.0.1.jar"/>
-	<classpathentry kind="lib" path="C:/JarInclude/jsoup-1.11.3.jar"/>
-	<classpathentry kind="lib" path="C:/JarInclude/w3c-dom.jar"/>
+	<classpathentry kind="lib" path="C:/JarInclude/Item_Api/Item_Api.jar"/>
+	<classpathentry kind="lib" path="C:/JarInclude/WebDriver_Api/WebDriver_API.jar"/>
+	<classpathentry kind="lib" path="C:/JarInclude/DataBase_Api/DataBase_Api.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
