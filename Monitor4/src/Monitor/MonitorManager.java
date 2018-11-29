@@ -21,7 +21,7 @@ import MarketPlace.eBayMarketPlace;
 import Supplier.AmazonSupplier;
 
 
-public class Manager {
+public class MonitorManager {
 
 	private static int size = 100;
 	private static int threadAmount = 1;
@@ -32,7 +32,7 @@ public class Manager {
 	ArrayList<Item> 	 ListOfItems;
 	List<List<Item>> 	 alist;
 	
- 	public Manager() {
+ 	public MonitorManager() {
  		
  		try {
  			// Read configurations

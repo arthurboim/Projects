@@ -2,23 +2,23 @@ package Monitor;
 
 import java.util.ArrayList;
 import Item.Item;
-import Monitor.Manager;
+import Monitor.MonitorManager;
 
 public class ManagerTest {
 
-	Manager manager;
+	MonitorManager monitorManager;
 	
 	public ManagerTest() {
-		manager = new Manager();
+		monitorManager = new MonitorManager();
 	}
 	
 	public void Test() {
-		manager.AmazonToeBayScanner();
+		monitorManager.AmazonToeBayScanner();
 	}
 	
 	public void test_InitDatabase()
 	{
-		manager.UpdateDatabase();
+		monitorManager.UpdateDatabase();
 	}
 	
 	public void test_PriceChangingDecision()
@@ -43,8 +43,8 @@ public class ManagerTest {
 		item.setMarketPlaceSecondLowestPrice(12);
 		list.add(item);
 
-		manager.PriceChangingDecision(list);
-		manager.printList(list);
+		monitorManager.PriceChangingDecision(list);
+		monitorManager.printList(list);
 	}
 	
 

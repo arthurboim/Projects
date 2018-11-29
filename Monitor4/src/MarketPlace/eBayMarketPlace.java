@@ -1,20 +1,20 @@
 package MarketPlace;
 
 import java.util.ArrayList;
-import Ebay.eBayCalls;
+import Ebay.eBayAPI;
 import Item.Item;
 
 public class eBayMarketPlace implements MarketPlaceInterface
 {
 	/* Variables */
 	
-	private eBayCalls eBayCalls;
+	private eBayAPI eBayAPI;
 	
 	/* Constructor */
 	
 	public eBayMarketPlace()
 	{
-		eBayCalls = new eBayCalls();
+		eBayAPI = new eBayAPI();
 	}
 	
 	/* Interface implementation */
@@ -22,31 +22,31 @@ public class eBayMarketPlace implements MarketPlaceInterface
 	@Override
 	public void GetItemsUpdate(ArrayList<Item> ListOfItems)
 	{
-		eBayCalls.GetItemsUpdate(ListOfItems);
+		eBayAPI.GetItemsUpdate(ListOfItems);
 	}
 	
 	@Override
 	public void PriceChange(Item itemToChange)
 	{
-		eBayCalls.ChangePrice(itemToChange);
+		eBayAPI.ChangePrice(itemToChange);
 	}
 	
 	@Override
 	public void RemoveList(Item itemToChange)
 	{
-		eBayCalls.DeleteItem(itemToChange);
+		eBayAPI.DeleteItem(itemToChange);
 	}
 	
 	@Override
 	public void ChangeStock(Item itemToChange, int newQuantity)
 	{
-		eBayCalls.ChangeQuantity(itemToChange, newQuantity);
+		eBayAPI.ChangeQuantity(itemToChange, newQuantity);
 	}
 	
 	@Override
 	public void PlaceInSearchLowestFirst(Item itemToCheck)
 	{
-		eBayCalls.GetPositionInLowestPriceSearch(itemToCheck);
+		eBayAPI.GetPositionInLowestPriceSearch(itemToCheck);
 	}
 	
 	/* Private functions */

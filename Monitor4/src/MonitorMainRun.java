@@ -1,6 +1,6 @@
 
 import Config.Config;
-import Monitor.Manager;
+import Monitor.MonitorManager;
 
 
 public class MonitorMainRun {
@@ -10,11 +10,11 @@ public class MonitorMainRun {
 	{
 		// Application Initialization
 		Config AppConfigurations = new Config();
-		//Manager AmazonToeBayManager = new Manager();
+		MonitorManager AmazonToeBayManager = new MonitorManager();
 		AppConfigurations.Initialization();
 		
 		// Application start
-		//AmazonToeBayManager.MonitorScannerRun();
+		AmazonToeBayManager.MonitorScannerRun();
 	}
 	
 	
