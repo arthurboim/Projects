@@ -1,15 +1,9 @@
 package ExternalMonitor;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import org.openqa.selenium.WebElement;
-
-import DataBase.IDataBase;
 import DataBase.SQLDataBase;
 import Item.Item;
 import WebDriver.SelenumWebDriver;
@@ -76,7 +70,6 @@ public class ShopMaster implements ExternalMonitorInterface
 		String XpathForEbay = null;
 		int numberOfItems = 0;
 		List<WebElement> listOfElements;
-
 		Driver.wait(5);
 		DB.GetOnlineItems(ItemsListFromDb);
 		
@@ -136,13 +129,5 @@ public class ShopMaster implements ExternalMonitorInterface
 		}
 	}
 	
-	private void printList(ArrayList<Item> list)
-	{
-		for (Item ele : list)
-		{
-			System.out.println(ele.getSupplierCode());
-			System.out.println(ele.getMarketPlaceCode());
-			System.out.println("---------------");
-		}
-	}
+	
 }

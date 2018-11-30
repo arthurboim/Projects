@@ -28,7 +28,7 @@ public class MonitorManager {
 	private static int OutOfStockLimit = 2;
 	
 	MarketPlaceInterface ebay; 
-	IDataBase 	  		 SQLDb;
+	SQLDataBase 	  	 SQLDb;
 	ArrayList<Item> 	 ListOfItems;
 	List<List<Item>> 	 alist;
 	
@@ -291,6 +291,7 @@ public class MonitorManager {
 		for(Item ele:ListOfItems)
 		{
 			ebay.PlaceInSearchLowestFirst(ele);
+			SQLDb.SetUniversalCode(ele);
 		}
 	}
 
