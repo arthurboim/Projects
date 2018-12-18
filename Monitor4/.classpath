@@ -11,10 +11,10 @@
 	<classpathentry kind="lib" path="C:/FinditemEbay/slf4j-jdk14-1.6.1.jar"/>
 	<classpathentry kind="lib" path="C:/JarInclude/commons-codec-1.4.jar"/>
 	<classpathentry kind="lib" path="C:/ChromeDriverFolder/selenium-server-standalone-3.0.1.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Item"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/DataBase"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/eBay_API"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/WebDriver"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Amazon_API"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Item"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/eBayAPI"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

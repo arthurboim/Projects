@@ -10,9 +10,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.ebay.sdk.ApiException;
+import com.ebay.sdk.SdkException;
+
 import Config.Config;
 import DataBase.IDataBase;
 import DataBase.SQLDataBase;
+import Ebay.eBayAPI;
 import Item.Item;
 import Item.Item.PriceChangeStatus;
 import Item.Item.QuantitiyChangeStatus;
@@ -24,13 +28,17 @@ import Supplier.AmazonSupplier;
 public class MonitorManager {
 
 	private static int size = 100;
-	private static int threadAmount = 1;
+	private static int SuppliyerthreadAmount = 1;
+	private static int MarketPlaceScanThreadAmount =1;
 	private static int OutOfStockLimit = 2;
 	
-	MarketPlaceInterface ebay; 
+	eBayAPI 			 ebay; 
 	SQLDataBase 	  	 SQLDb;
 	ArrayList<Item> 	 ListOfItems;
-	List<List<Item>> 	 alist;
+	ArrayList<Item> 	 ListOfItemsForSuppliyer;
+	List<List<Item>> 	 alistSuppliyer;
+	ArrayList<Item> 	 ListOfItemsForMarketPlace;
+	List<List<Item>> 	 alistMarketPlace;
 	
  	public MonitorManager() {
  		
@@ -42,13 +50,16 @@ public class MonitorManager {
 			e.printStackTrace();
 		}
  		// List to hold the items from database
- 		ListOfItems = new ArrayList<Item>();
- 		alist = new ArrayList<List<Item>>();
+ 		ListOfItemsForSuppliyer = new ArrayList<Item>();
+ 		alistSuppliyer = new ArrayList<List<Item>>();
+ 		ListOfItemsForMarketPlace = new ArrayList<Item>();
+ 		alistMarketPlace = new ArrayList<List<Item>>();
+ 		ListOfItems  = new ArrayList<Item>();
  		
 		SQLDb  = new SQLDataBase();
- 		UpdateDatabase();
+ 		//UpdateDatabase();
  		
- 		ebay = new eBayMarketPlace();
+ 		ebay = new eBayAPI();
 	}
  	
 	private void ReadFileConfigurations(String KeysFilePath) throws IOException
@@ -73,7 +84,13 @@ public class MonitorManager {
 				if (sCurrentLine.contains("SupplierScanThreadAmount: "))
 				{
 					String s = sCurrentLine.substring(sCurrentLine.indexOf("SupplierScanThreadAmount: ")+"SupplierScanThreadAmount: ".length());
-					threadAmount = Integer.parseInt(s);
+					SuppliyerthreadAmount = Integer.parseInt(s);
+				}
+				
+				if (sCurrentLine.contains("MarketPlaceScanThreadAmount: "))
+				{
+					String s = sCurrentLine.substring(sCurrentLine.indexOf("MarketPlaceScanThreadAmount: ")+"MarketPlaceScanThreadAmount: ".length());
+					MarketPlaceScanThreadAmount = Integer.parseInt(s);
 				}
 			}
 		} catch (IOException e) {
@@ -140,7 +157,7 @@ public class MonitorManager {
 	public void MonitorScannerRun()
 	{
 		AmazonToeBayScanner();
-		//OptimizerChange();
+		OptimizerChange();
 		//NormalChanges();
 	}
 	
@@ -150,13 +167,15 @@ public class MonitorManager {
 	
 	/* Inner functions */
 	
-	protected  void PriceChangingDecision(ArrayList<Item> ListOfItems)
+	protected  void PriceChangingDecision()
 	{
-		for(Item ele:ListOfItems)
+		for(Item ele:ListOfItemsForSuppliyer)
 		{
 			ele.CalculateMinPriceToSale();
 			ele.CalculateCurrentProfitPersent();
+			ele.setPriceStatus(PriceChangeStatus.NoChange);
 			
+			// Case when i'm lowestprice and want to increase the price untill the second
 			if (ele.getPlaceInLowestPrice() == 1 && 
 				ele.getMarketPlaceResults() > 1  &&	
 				ele.getCurrentMarketPlacePrice()+0.01 < ele.getMarketPlaceSecondLowestPrice())
@@ -164,15 +183,22 @@ public class MonitorManager {
 				ele.CalculateNewProfitPersentFromSpecificPrice(ele.getMarketPlaceSecondLowestPrice());
 				ele.CalculateNewMarketPlacePrice(ele.getMarketPlaceSecondLowestPrice());
 				ele.setPriceStatus(PriceChangeStatus.PriceIncrease);
-
-			}else if (ele.getPlaceInLowestPrice() > 1 && 
-					ele.getMinPriceToSale() < ele.getMarketPlaceLowestPrice())
+			}
+			
+			else if (ele.getPlaceInLowestPrice() > 1)
 			{
-				ele.CalculateNewProfitPersentFromSpecificPrice(ele.getMarketPlaceLowestPrice());
-				ele.CalculateNewMarketPlacePrice(ele.getMarketPlaceLowestPrice());
-				ele.setPriceStatus(PriceChangeStatus.PriceReduce);
-
-			}else if (ele.getMarketPlaceResults() == 1)
+				for(Double ele1:ele.getPricesList())
+				{
+					if (ele.getMinPriceToSale() <= ele1 && 
+							ele.getCurrentMarketPlacePrice() != ele1)
+					{
+						ele.CalculateNewProfitPersentFromSpecificPrice(ele1-0.01);
+						ele.CalculateNewMarketPlacePrice(ele1-0.01);
+						ele.setPriceStatus(PriceChangeStatus.PriceReduce);
+						break;
+					}
+				}
+			}else
 			{
 				ele.setMyProfitPercent(1.1);
 				ele.CalculateNewMarketPlacePrice(ele.getMyProfitPercent());
@@ -180,9 +206,9 @@ public class MonitorManager {
 		}
 	}
 	
-	protected  void StockChangingDecision(ArrayList<Item> ListOfItems)
+	protected  void StockChangingDecision()
 	{
-		for(Item ele:ListOfItems)
+		for(Item ele:ListOfItemsForSuppliyer)
 		{
 			if (ele.getQuantity() >= OutOfStockLimit)
 			{
@@ -194,29 +220,40 @@ public class MonitorManager {
 		}
 	}
 	
-	protected  void UpdateChanges(ArrayList<Item> ListOfItems)
+	protected  void UpdateChanges(Item item)
 	{
-		for(Item ele:ListOfItems)
+		ListOfItemsForSuppliyer.add(item);
+		UpdateChanges();
+	}
+	
+	protected  void UpdateChanges()
+	{
+		for(Item ele:ListOfItemsForSuppliyer)
 		{
-			if (ele.getPriceStatus()     != PriceChangeStatus.NoChange ||
-				ele.getQuantitiyStatus() != QuantitiyChangeStatus.Instock)
+			if (ele.getPriceStatus() != PriceChangeStatus.NoChange)
 			{
-				System.out.println(ele.toString());
+				//Ebay chang price 
+				ebay.ChangePrice(ele);
+				// Update DB
+				SQLDb.UpdateProfitPercent(ele);
+				SQLDb.UpdatePrice(ele);
+				SQLDb.UpdateTax(ele);
+				SQLDb.UpdateLastTimeUpdated(ele);
 			}
 		}
 	}
 	
-	private void DevideArrayList(ArrayList<Item> ListOfItemsToDivide, List<List<Item>> alist)
+	private void DevideArrayList(ArrayList<Item> ListOfItemsToDivide, List<List<Item>> alist, int splitMount)
 	{
 		int i=0;
 		
-		if (ListOfItemsToDivide.size()<threadAmount)
+		if (ListOfItemsToDivide.size()<splitMount)
 		{
 			alist.add(ListOfItemsToDivide.subList(i, ListOfItemsToDivide.size()));
 
 		}else
 		{
-			size = ListOfItemsToDivide.size()/threadAmount;
+			size = ListOfItemsToDivide.size()/splitMount;
 			while(i + size < ListOfItemsToDivide.size())
 			{
 				alist.add(ListOfItemsToDivide.subList(i, i + size));
@@ -235,7 +272,7 @@ public class MonitorManager {
 			{
 				Item tempItem = new Item();
 				tempItem.setSupplierCode(res.getString("AmazonAsin"));
-				tempItem.setMarketPlaceCode(res.getString("EbayId"));	
+				tempItem.setMarketPlaceCode(res.getString("EbayId"));
 				tempItem.setUniversalCode(res.getString("Bestresults"));	
 				ListOfItems.add(tempItem);
 			}
@@ -286,36 +323,32 @@ public class MonitorManager {
 		
 	}
 
-	private void WrapFunctionForMarketPlaceInterface(ArrayList<Item> ListOfItems)
-	{
-		for(Item ele:ListOfItems)
-		{
-			ebay.PlaceInSearchLowestFirst(ele);
-			SQLDb.SetUniversalCode(ele);
-		}
-	}
-
 	private void MultiThreadScanner()
 	{
 		//Thread for marketplace scan
-		Thread marketplaceScanThread = new Thread(new Runnable() {
-	         @Override
-	         public void run() {
-	        	 WrapFunctionForMarketPlaceInterface(ListOfItems);
-	         }
-		});
-		marketplaceScanThread.start();
 		
+		Iterator<List<Item>> marketplaceIt = alistMarketPlace.listIterator();
+		Thread marketplaceScanThread = null;
+		for(int i = 0; i < MarketPlaceScanThreadAmount ;i++)
+		{
+			marketplaceScanThread = new Thread(new Runnable() {
+		         @Override
+		         public void run() {
+		        	 new eBayMarketPlace().GetItemsUpdate(marketplaceIt.next());
+		         }
+			});
+			marketplaceScanThread.start();
+		}
 		
 		//Thread branch for supplier scan 
-		Iterator<List<Item>> it = alist.listIterator();
+		Iterator<List<Item>> supplierIt = alistSuppliyer.listIterator();
 		Thread supplierScanThread = null;
-		for(int i = 0; i < threadAmount ;i++)
+		for(int i = 0; i < SuppliyerthreadAmount ;i++)
 		{
 			supplierScanThread = new Thread(new Runnable() {
 		         @Override
 		         public void run() {
-		        	 new AmazonSupplier().GetItemsUpdate(it.next());
+		        	 new AmazonSupplier().GetItemsUpdate(supplierIt.next());
 		         }
 			});
 			supplierScanThread.start();
@@ -324,24 +357,26 @@ public class MonitorManager {
 		
 		// Join the threads (supplier and marketplace)
 		try {
-			supplierScanThread.join();
 			marketplaceScanThread.join();
+			supplierScanThread.join();
 		} catch (InterruptedException e) 
 		{
 			e.printStackTrace();
 		}
 		
+		//MergeArrayList(alistMarketPlace);
 	}
-
 
 	private void OptimizerChange()
 	{
-//		// Make change decision
-//		StockChangingDecision(ListOfItems);
-//		PriceChangingDecision(ListOfItems);
-//		
-//		// Execute changes
-//		UpdateChanges(ListOfItems);
+		// Make change decision
+		PriceChangingDecision();
+		
+		// Stock decision
+		//StockChangingDecision();
+		
+		// Execute changes
+		UpdateChanges();
 	}
 	
 	private void NormalChanges()
@@ -368,13 +403,14 @@ public class MonitorManager {
 		ResultSet res = SQLDb.Read("SELECT * FROM amazon.online;");
 		
 		// Arrange results
-		ArrangeResultSet(res,ListOfItems);
-		DevideArrayList(ListOfItems,alist);
-		
+		ArrangeResultSet(res,ListOfItemsForSuppliyer);
+		DevideArrayList(ListOfItemsForSuppliyer,alistSuppliyer,SuppliyerthreadAmount);
+		DevideArrayList(ListOfItemsForSuppliyer,alistMarketPlace,MarketPlaceScanThreadAmount);
+
 		// Execute scan marketplace and supplier
 		MultiThreadScanner();
 
-		//printList(ListOfItems);
+//		printList(ListOfItems);
 	}
 
 

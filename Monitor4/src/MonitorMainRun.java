@@ -14,7 +14,18 @@ public class MonitorMainRun {
 		AppConfigurations.Initialization();
 		
 		// Application start
-		AmazonToeBayManager.MonitorScannerRun();
+		while(true)
+		{
+			AmazonToeBayManager.MonitorScannerRun();
+			try
+			{
+				Thread.sleep(1000*60*60);
+			} catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	
