@@ -3,8 +3,6 @@ package MarketPlace;
 
 import java.util.List;
 
-import com.ebay.sdk.ApiException;
-import com.ebay.sdk.SdkException;
 
 import Item.Item;
 
@@ -13,7 +11,7 @@ public interface MarketPlaceInterface
 
 	void GetItemsUpdate(List<Item> ListOfItems);
 	
-	void PriceChange(Item itemToChange) throws ApiException, SdkException, Exception;
+	void PriceChange(Item itemToChange);
 	
 	void RemoveList(Item itemToChange);
 

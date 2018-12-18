@@ -5,22 +5,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import com.ebay.sdk.ApiException;
-import com.ebay.sdk.SdkException;
-
 import Config.Config;
-import DataBase.IDataBase;
 import DataBase.SQLDataBase;
 import Ebay.eBayAPI;
 import Item.Item;
 import Item.Item.PriceChangeStatus;
 import Item.Item.QuantitiyChangeStatus;
-import MarketPlace.MarketPlaceInterface;
 import MarketPlace.eBayMarketPlace;
 import Supplier.AmazonSupplier;
 

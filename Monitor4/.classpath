@@ -4,11 +4,6 @@
 	<classpathentry kind="lib" path="mysql-connector-java-5.1.40-bin.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="C:/JarInclude/finding.jar"/>
-	<classpathentry kind="lib" path="C:/JarInclude/log4j-1.2.16.jar"/>
-	<classpathentry kind="lib" path="C:/JarInclude/ebaysdkcore.jar"/>
-	<classpathentry kind="lib" path="C:/FinditemEbay/slf4j-api-1.6.1.jar"/>
-	<classpathentry kind="lib" path="C:/FinditemEbay/slf4j-jdk14-1.6.1.jar"/>
 	<classpathentry kind="lib" path="C:/JarInclude/commons-codec-1.4.jar"/>
 	<classpathentry kind="lib" path="C:/ChromeDriverFolder/selenium-server-standalone-3.0.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/DataBase"/>

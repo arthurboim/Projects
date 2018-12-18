@@ -2,8 +2,6 @@ package MarketPlace;
 
 import java.util.List;
 
-import com.ebay.sdk.ApiException;
-import com.ebay.sdk.SdkException;
 
 import DataBase.SQLDataBase;
 import Ebay.eBayAPI;
@@ -31,7 +29,7 @@ public class eBayMarketPlace implements MarketPlaceInterface
 	}
 	
 	@Override
-	public void PriceChange(Item itemToChange) throws ApiException, SdkException, Exception
+	public void PriceChange(Item itemToChange)
 	{
 		eBayAPI.ChangePrice(itemToChange);
 	}
