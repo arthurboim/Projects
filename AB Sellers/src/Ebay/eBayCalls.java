@@ -66,8 +66,6 @@ public class eBayCalls implements Runnable{
 	private  FindingServicePortType serviceClient;
 	private  GetSellerListCall GetSellerListCall;
 	private  GetItemCall GetItemCall;
-	private  FindItemsAdvancedRequest FindItemsAdvancedRequest;
-	private  FindItemsAdvancedResponse FindItemsAdvancedResponse;
 	private  GetItemTransactionsCall GetItemTransactionsCall;
 	private  FindItemsByKeywordsRequest  FindItemsbykeywordRequest;
 	private  FindItemsByKeywordsResponse  FindItemsbykeywordRespond;
@@ -100,7 +98,6 @@ public class eBayCalls implements Runnable{
 		eBayAPIGeneralinitialization();
 		InitializationSellerListCall();
 		InitializationGetItemCall();
-		InitializationFindAdvancedRequest();
 		InitializationFindByKeyWordRequest();
 		InitializationOfGetItemTransactions();
 		ThreadId = threadCounter;
@@ -204,35 +201,7 @@ public class eBayCalls implements Runnable{
 	    GetItemCall = new GetItemCall(apiContext);
 		GetItemCall.addDetailLevel(DetailLevelCodeType.RETURN_ALL);
 	}
-	private void InitializationFindAdvancedRequest()
-	{
-	    /* initialization of find item advanced request */
-		serviceClient =  FindingServiceClientFactory.getServiceClient(config);
-	    FindItemsAdvancedRequest = new FindItemsAdvancedRequest();
-	    ItemFilter filter2 = new ItemFilter();
-		filter2.setName(ItemFilterType.CONDITION);
-		filter2.getValue().add("1000");
-		FindItemsAdvancedRequest.getItemFilter().add(filter2);  
-	
-		ItemFilter filter = new ItemFilter();
-		filter.setName(ItemFilterType.LISTING_TYPE);
-		filter.getValue().add("FixedPrice");
-		FindItemsAdvancedRequest.getItemFilter().add(filter);  
-	
-		ItemFilter filter6 = new ItemFilter();
-		filter6.setName(ItemFilterType.LOCATED_IN);
-		filter6.getValue().add(Contry);
-		FindItemsAdvancedRequest.getItemFilter().add(filter6);  
-		
-		List<OutputSelectorType> outputSelector = FindItemsAdvancedRequest.getOutputSelector();
-		OutputSelectorType outputSelectorType = OutputSelectorType.SELLER_INFO;
-		outputSelector.add(outputSelectorType);
-		ptInput = new PaginationInput();
-		ptInput.setEntriesPerPage(8);   
-		ptInput.setPageNumber(1);
-		FindItemsAdvancedRequest.setPaginationInput(ptInput);
-		FindItemsAdvancedRequest.setSortOrder(SortOrderType.PRICE_PLUS_SHIPPING_LOWEST);
-	}
+
 	private void InitializationOfGetItemTransactions()
 	{
 	    /* initialization of get item transactions */
@@ -249,8 +218,8 @@ public class eBayCalls implements Runnable{
 	    ItemFilter filter2 = new ItemFilter();
 		filter2.setName(ItemFilterType.CONDITION);
 		filter2.getValue().add("1000");
-		FindItemsAdvancedRequest.getItemFilter().add(filter2);  
-	
+		FindItemsbykeywordRequest.getItemFilter().add(filter2); 
+		
 		ItemFilter filter = new ItemFilter();
 		filter.setName(ItemFilterType.LISTING_TYPE);
 		filter.getValue().add("FixedPrice");
@@ -279,12 +248,8 @@ public class eBayCalls implements Runnable{
 	{
 		System.out.println("I'm thread id: "+ThreadId+" start call GetSellerItems");
 		GetSellerItems(GetNextSeller());
-		System.out.println("I'm thread id: "+ThreadId+" start call GetSellerItems");
-
-		//ItemResearch();
-		
-	
 	}
+	
 	
 	private void ItemResearch()
 	{
@@ -300,7 +265,7 @@ public class eBayCalls implements Runnable{
 				{
 					newItem.setAmountSoldByTheSeller(ele.getSellingStatus().getQuantitySold());
 					newItem.setSellerPrice(ele.getSellingStatus().getCurrentPrice().getValue());
-					if ((DB.isExistInDataBase("select * from "+scham+".productfromsellers where Code = '"+newItem.getUniversalCode()+"';") == false) && 
+					if ((DB.IsExcist("select * from "+scham+".productfromsellers where Code = '"+newItem.getUniversalCode()+"';") == false) && 
 						newItem.getAmountSoldByTheSeller() > 0)
 					{
 						UpdateSoldAmount(newItem);
@@ -360,8 +325,6 @@ public class eBayCalls implements Runnable{
 			}
 
 		}while(hasMorePages);
-    	System.out.println("Seller "+sellerName+" Active items = "+sellerItemsList.size());
-
 		activeItems = null;
 	}
 
@@ -422,7 +385,7 @@ public class eBayCalls implements Runnable{
     	for(int index = 0; index < items.size() && index < 8; index++) 
         {
     		/* Checking if he seller is Exist if not add to db */
-        	if (DB.isExistInDataBase("select 1 from amazon.sellers where SellerId = '"+items.get(index).getSellerInfo().getSellerUserName()+"';")== false &&
+        	if (DB.IsExcist("select 1 from amazon.sellers where SellerId = '"+items.get(index).getSellerInfo().getSellerUserName()+"';")== false &&
         			items.get(index).getSellerInfo().getFeedbackScore().intValue() > 200) 
     		{
          		DB.Write("INSERT INTO "+scham+".sellers (SellerId,Feedbackscore,PositiveFeedbackPercent,Scaned)"+
@@ -569,7 +532,6 @@ public class eBayCalls implements Runnable{
 			threadCounter++;
 			while(true)
 			{
-				System.out.println("Running threads: "+threadCounter);
 				RunProductFinder();
 			}
 		}catch(Exception e)

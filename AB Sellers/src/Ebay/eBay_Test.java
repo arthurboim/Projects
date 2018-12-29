@@ -11,14 +11,14 @@ public class eBay_Test {
 
 
 	public void test_GetSellerItems() {
-		ArrayList<ItemType> sellerItemsList = new ArrayList<ItemType>();
-		eBayCalls ebay_caller = new eBayCalls();
-		ebay_caller.GetSellerItems("ubuythebestforu", sellerItemsList);
-		
-		for(ItemType ele:sellerItemsList)
-		{
-			System.out.println(ele.getItemID());
-		}
+//		ArrayList<ItemType> sellerItemsList = new ArrayList<ItemType>();
+//		eBayCalls ebay_caller = new eBayCalls();
+//		ebay_caller.GetSellerItems("ubuythebestforu", sellerItemsList);
+//		
+//		for(ItemType ele:sellerItemsList)
+//		{
+//			System.out.println(ele.getItemID());
+//		}
 	}
 
 	

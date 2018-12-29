@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+
 public class SQLDataBase implements IDataBase{
 
 	private  Connection con ;
@@ -122,7 +123,6 @@ public class SQLDataBase implements IDataBase{
 		try {
 			con.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -147,26 +147,36 @@ public class SQLDataBase implements IDataBase{
 		return res;
 	}
 	
+		@Override
+	public int GetResultsAmount(String statment) {
+		int ResultsAmount = 0;
+		
+		try {
+			res = Read(statment);
+			res.beforeFirst();
+			res.last();  
+			ResultsAmount = res.getRow();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}  
+		
+		return ResultsAmount;
+	}
+	
 	@Override
-	public Boolean isExistInDataBase(String statment) {
-		Boolean isExist = false;
-		Read(statment);
-		try{
-			res.last();   
-			if (res.getRow() == 0)
-			{
-				isExist = false;
-			}else
-			{
-				isExist = true;
-			}
-		}catch(Exception e)
+	public Boolean IsExcist(String statment) 
+	{
+		int size = 0;
+		Boolean isExcist = false;
+		size = GetResultsAmount(statment);
+		if (size > 0)
 		{
-			isExist = false;
+			isExcist = true;
 		}
 		
-		return isExist;
+		return isExcist;
 	}
+
 	
 	/* Getters and Setters */
 	
@@ -182,6 +192,8 @@ public class SQLDataBase implements IDataBase{
 	protected void finalize() throws Throwable {
 		CloseConnection();
 	}
+
+
 
 
 	

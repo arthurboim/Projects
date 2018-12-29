@@ -47,10 +47,14 @@ public class Item {
 	private String 		CodeType;
 	private int			quantitySold;
 	private int 		sellerSoldTheItem;
+	private String		orderNumber;
+	private String		orderId;
+	private String		buyerUserID;
+	private String		Carrier;
+	private String		Tracking;
 	private int 		amountSoldByTheSeller;
 	private double		sellerPrice;
 	private double		arbitraje;
-
 	
 	/* Constructor */
 	
@@ -60,6 +64,11 @@ public class Item {
 		this.marketPlaceCode				= null;
 		this.title							= null;
 		this.CodeType						= null;
+		this.orderNumber					= null;
+		this.orderId						= null;
+		this.buyerUserID					= null;
+		this.Carrier						= null;
+		this.Tracking 						= null;
 		this.inStock 						= false;
 		this.isPrime						= false;
 		this.isPreorder						= false;
@@ -441,25 +450,68 @@ public class Item {
 	public int getAmountSoldByTheSeller() {
 		return amountSoldByTheSeller;
 	}
-
-	public void setAmountSoldByTheSeller(int amountSoldByTheSeller) {
+			   
+	public void setAmountSoldByTheSeller(int  amountSoldByTheSeller) {
 		this.amountSoldByTheSeller = amountSoldByTheSeller;
+	}
+	
+	public String getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(String orderNumber) {
+		this.orderNumber = orderNumber;
+	}
+
+	public String getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
 	}
 
 	public double getSellerPrice() {
 		return sellerPrice;
 	}
+	
+	public String getBuyerUserID() {
+		return buyerUserID;
+	}
+
 
 	public void setSellerPrice(double sellerPrice) {
 		this.sellerPrice = sellerPrice;
 	}
-
-	public double getArbitraje() {
+	
+	public void setBuyerUserID(String buyerUserID) {
+		this.buyerUserID = buyerUserID;
+	}
+	
+		public double getArbitraje() {
 		return arbitraje;
 	}
 
-	public void setArbitraje(double arbitraje) {
+
+	public String getCarrier() {
+		return Carrier;
+	}
+	
+		public void setArbitraje(double arbitraje) {
 		this.arbitraje = arbitraje;
+	}
+
+
+	public void setCarrier(String carrier) {
+		Carrier = carrier;
+	}
+
+	public String getTracking() {
+		return Tracking;
+	}
+
+	public void setTracking(String tracking) {
+		Tracking = tracking;
 	}
 
 }

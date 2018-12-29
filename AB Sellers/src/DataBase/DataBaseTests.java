@@ -13,7 +13,7 @@ public class DataBaseTests {
 		assertTrue("Success", true);
 	}
 
-	
+	@Test
 	public void TestRead() throws IOException, SQLException {
 		SQLDataBase DB = new SQLDataBase();
 		DB.Read("SELECT * FROM amazon.online;");
@@ -31,11 +31,21 @@ public class DataBaseTests {
 		assertTrue("Success", true);
 	}
 	
+
+	public void TestGetResultsAmount()
+	{
+		int size =0;
+		SQLDataBase DB = new SQLDataBase();
+		size = DB.GetResultsAmount("SELECT * FROM amazon.orders where Buyer_User_ID = 'aks_smiley1'");
+		System.out.println(size);
+	}
+
+	
 	@Test
 	public void TestisExistInDataBase()
 	{
 		SQLDataBase DB = new SQLDataBase();
-		Boolean bool = DB.isExistInDataBase("SELECT * FROM amazon.online where EbayId = '223072085098';");
+		Boolean bool = DB.IsExcist("SELECT * FROM amazon.online where EbayId = '223072085098';");
 		System.out.println(bool);
 	}
 
