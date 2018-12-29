@@ -75,11 +75,6 @@ public class EbaySearch {
 				System.out.println("Ebay Constarctor ");
 			}
 			}
-
-		System.setProperty("webdriver.chrome.driver", "C:\\ChromeDriverFolder\\chromedriver.exe");
-	    driver = new ChromeDriver();
-	    driver.get("https://www.ebay.com/");
-	    driverCounter =0;
 	}
 
 	public void Finditem (List<product> ItemsList) throws IOException
@@ -113,66 +108,58 @@ public class EbaySearch {
 	    
         for (product ele:ItemsList)
 	    {
-//	        try
-//	        {
-//	        	
-//	        	if (true == IsCharacterExist(ele.ASIN))
-//	        	{
-//	        		request.setKeywords(ele.getBestresult());	            		
-//	        	}else
-//	        	{
-//	        		request.setKeywords(ele.ASIN);
-//	        	}
-//	        	
-//	        	FindItemsAdvancedResponse result = serviceClient.findItemsAdvanced(request);
-//	        	ele.ebayResults = result.getSearchResult().getCount();
-//	        	if(0 == ele.ebayResults)
-//	        	{
-//	        		continue;
-//	        	}
-//	        	
-//	            List<SearchItem> items = result.getSearchResult().getItem();
-//	            int counter=1;
-//	            
-//	            ele.ebayLowestPrice = (double)(items.get(0).getSellingStatus().getCurrentPrice().getValue()+items.get(0).getShippingInfo().getShippingServiceCost().getValue());
-//	            ele.arbitraje 		= (ele.ebayLowestPrice + ele.Ebay_shipping) - ScrapInfo.Min_price_to_sale(ele.price);
-//	            
-//	            for(SearchItem item : items) 
-//	            {
-//		          try{
-//	            	if (item.getSellingStatus().getCurrentPrice().getValue() +item.getShippingInfo().getShippingServiceCost().getValue() > ScrapInfo.Min_price_to_sale(ele.price) && item != null )
-//	            	{
-//	            		ele.PlaceInlowestprice = counter;
-//	            		break;
-//	            	}
-//		          }catch (Exception e){}
-//		           counter++;
-//		        }
-//	        }
-//	        catch(Exception ex)
-//	        {
-	        	try{
-	        		FinditemByWebDriver(ele);
-	        	}catch(Exception ex1)
+	        try
+	        {
+	        	
+	        	if (true == IsCharacterExist(ele.ASIN))
 	        	{
-		        	System.out.println(ex1.getMessage());
-		        	System.out.println("Ebay Call fail api and webdriver");
-		        	System.out.println("Item code = "+ele.ASIN);
-		        	ele.ebayResults = -1;
-		        	restDriver();
-		        	System.out.println("Driver reset");
+	        		request.setKeywords(ele.getBestresult());	            		
+	        	}else
+	        	{
+	        		request.setKeywords(ele.ASIN);
 	        	}
-//	        }
-//	        
-//	        if (ele.price>0)
-//	        {
-//	        	ele.Breakevenlowestprice = ele.ebayLowestPrice/(ele.price+0.3);
-//	        }
-//	
-//	        if (ele.ebayResults>0)
-//	        {
-//	        	ele.Sale_true = (ele.sold/ele.ebayResults)*100;
-//	        }
+	        	
+	        	FindItemsAdvancedResponse result = serviceClient.findItemsAdvanced(request);
+	        	ele.ebayResults = result.getSearchResult().getCount();
+	        	if(0 == ele.ebayResults)
+	        	{
+	        		continue;
+	        	}
+	        	
+	            List<SearchItem> items = result.getSearchResult().getItem();
+	            int counter=1;
+	            
+	            ele.ebayLowestPrice = (double)(items.get(0).getSellingStatus().getCurrentPrice().getValue()+items.get(0).getShippingInfo().getShippingServiceCost().getValue());
+	            ele.arbitraje 		= (ele.ebayLowestPrice + ele.Ebay_shipping) - ScrapInfo.Min_price_to_sale(ele.price);
+	            
+	            for(SearchItem item : items) 
+	            {
+		          try{
+	            	if (item.getSellingStatus().getCurrentPrice().getValue() +item.getShippingInfo().getShippingServiceCost().getValue() > ScrapInfo.Min_price_to_sale(ele.price) && item != null )
+	            	{
+	            		ele.PlaceInlowestprice = counter;
+	            	}
+	            	{
+	            		break;
+	            	}
+		          }catch (Exception e){}
+		           counter++;
+		        }
+	        }
+	        catch(Exception ex)
+	        {
+
+	        }
+	        
+	        if (ele.price>0)
+	        {
+	        	ele.Breakevenlowestprice = ele.ebayLowestPrice/(ele.price+0.3);
+	        }
+	
+	        if (ele.ebayResults>0)
+	        {
+	        	ele.Sale_true = (ele.sold/ele.ebayResults)*100;
+	        }
 	      }
         
         
