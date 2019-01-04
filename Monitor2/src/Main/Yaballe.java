@@ -22,6 +22,7 @@ public class Yaballe extends Thread{
 	public static int ItemsPerPage = 100;
 	public static int LoadedItems = 0;
 	public static int ItemsNumber = 0;
+	
 	@Override
 	public void run() {
 		try {
@@ -225,29 +226,43 @@ public class Yaballe extends Thread{
 			for(ProductOnline ele1:database_list) 
 			{
 				if (ele.AmazonAsin.equals(ele1.AmazonAsin)) 
-					{
+				{
 					ele1.flag = 1;
 					ele.flag = 1;
-					}
+				}
 			}
 
 		}
-		}catch(Exception e){System.out.println("Compering items error");return 0;}
+		}catch(Exception e)
+		{
+			System.out.println("Compering items error");
+			return 0;
+		}
 		
 		//update and remove //
 		try{
+			
 		for(ProductOnline ele1:database_list)
 		{
-		if (ele1.flag==-1)
-		DatabaseOp.RemoveItemFromOnlineTable(ele1.AmazonAsin);
+			if (ele1.flag==-1)
+			{
+				DatabaseOp.RemoveItemFromOnlineTable(ele1.AmazonAsin);
+			}
 		}
 		
 		for(ProductOnline ele1:list)
 		{
-		if (ele1.flag==-1)
-		DatabaseOp.SetNewItemToDb(ele1);
+			if (ele1.flag==-1)
+			{
+				DatabaseOp.SetNewItemToDb(ele1);
+			}
 		}
-		}catch(Exception e){System.out.println("Update and remove error");System.out.println(e);return 0;}
+		}catch(Exception e)
+		{
+			System.out.println("Update and remove error");
+			System.out.println(e);
+			return 0;
+		}
 		
 		return 1;
 	}

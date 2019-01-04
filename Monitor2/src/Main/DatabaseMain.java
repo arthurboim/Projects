@@ -196,7 +196,7 @@ public class DatabaseMain {
 				size++;
 				Product.setAmazonAsin(res.getString("AmazonAsin"));
 				Product.setEbayId(res.getString("EbayId"));
-				Product.setPrice(res.getDouble("Price"));
+				//Product.setPrice(res.getDouble("Price"));
 			
 			}
 			con.close();

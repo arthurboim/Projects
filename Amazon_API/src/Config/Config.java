@@ -26,8 +26,6 @@ public class Config {
 
 	public static String LogPath = "C:\\Keys\\Log.txt";
 	public static String KeysFilePath = "C:\\Keys\\ConfigFile-Keys-New.txt";
-	public static String ImageSavePath = "C:\\Users\\Noname\\Desktop\\ImageBeforUplode\\";
-
 	public static platform currentPlatform;
 	public static MonitorMode currentMonitorMode;
 	public static String OS;

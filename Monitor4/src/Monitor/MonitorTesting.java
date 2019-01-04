@@ -1,5 +1,7 @@
 package Monitor;
 
+import java.util.ArrayList;
+
 import org.junit.Test;
 
 import Ebay.*;
@@ -28,15 +30,14 @@ public class MonitorTesting
 		eBayAPI ebay = new eBayAPI();
 
 		Item newItem= new Item();
-		newItem.setMarketPlaceCode("223159966105");
-		newItem.setUpdatedPrice(113.04);
-		ebay.ChangePrice(newItem);
-		System.out.println("$$$");
-		newItem.setUpdatedPrice(113.05);
-		ebay.ChangePrice(newItem);
-		System.out.println("$$$");
-		newItem.setUpdatedPrice(113.04);
-		ebay.ChangePrice(newItem);
+		newItem.setMarketPlaceCode("223159222703");
+		ArrayList<Item> list = new ArrayList<Item>();
+		list.add(newItem);
+		ebay.GetItemsUpdate(list);
+		System.out.println("Market place code = "+list.get(0).getMarketPlaceCode());
+		System.out.println("Current market place price = "+list.get(0).getCurrentMarketPlacePrice());
+		System.out.println("New price = "+list.get(0).getUpdatedPrice());
+		System.out.println("***************************");
 	}
 		
 	

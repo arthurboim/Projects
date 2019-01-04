@@ -448,6 +448,8 @@ public class Tracking_number_amazon extends Thread
 			String TransactionID = ele.OrderId;
 			TransactionID = TransactionID.substring(TransactionID.indexOf("-")+1);
 			Tracking_number_ebay tracking_number_ebay = new Tracking_number_ebay(Db.GetStoreInfoByName(GetStoreNameByAmazonOrderNumber(ele.Amazon_OrderNumber)));
+			
+			
 			if (tracking_number_ebay.Update_tracking_and_feedback_in_ebay(ItemID ,TransactionID,ele.Tracking,ele.Carrier,ele.Buyer_User_ID).equals("Success")) Db.Set_OrderStatus_Complete_to_database(ele.Amazon_OrderNumber);
 			tracking_number_ebay = null;
 			

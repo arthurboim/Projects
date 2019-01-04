@@ -112,3 +112,8 @@
 [0626/185617.735:ERROR:crash_report_exception_handler.cc(97)] PrepareNewCrashReport failed
 [0626/185635.984:ERROR:file_io_win.cc(170)] CreateFile C:\Users\Noname\AppData\Local\Temp\scoped_dir20424_1583\Crashpad\reports\148a21ff-81e4-4100-9617-dcf4cde99724.dmp: The system cannot find the path specified. (0x3)
 [0626/185635.987:ERROR:crash_report_exception_handler.cc(97)] PrepareNewCrashReport failed
+[1223/085116.332:ERROR:crash_report_database_win.cc(569)] CreateDirectory C:\Users\Noname\AppData\Local\Temp\scoped_dir37580_6674\Crashpad: There is not enough space on the disk. (0x70)
+[1223/174723.361:ERROR:registration_protocol_win.cc(84)] TransactNamedPipe: The pipe has been ended. (0x6D)
+[0101/115403.841:ERROR:crash_report_database_win.cc(569)] CreateDirectory C:\Users\Noname\AppData\Local\Temp\scoped_dir12576_1972\Crashpad: There is not enough space on the disk. (0x70)
+[0101/115403.871:ERROR:registration_protocol_win.cc(84)] TransactNamedPipe: The pipe has been ended. (0x6D)
+[0101/115403.872:ERROR:crash_report_database_win.cc(569)] CreateDirectory C:\Users\Noname\AppData\Local\Temp\scoped_dir12576_1972\Crashpad: There is not enough space on the disk. (0x70)

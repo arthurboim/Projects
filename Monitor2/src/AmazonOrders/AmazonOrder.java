@@ -838,14 +838,14 @@ public class AmazonOrder {
 	private boolean Login(ChromeDriver Driver)
 	{
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(3000);
 			Driver.findElement(By.id("nav-link-accountList")).click();
-			Thread.sleep(500);
+			Thread.sleep(3000);
 			Driver.findElementByXPath("//*[@id='ap_email']").click();
 			Driver.findElementByXPath("//*[@id='ap_email']").clear();
-			Driver.findElementByXPath("//*[@id='ap_email']").sendKeys("arthur.boim6@gmail.com");
+			Driver.findElementByXPath("//*[@id='ap_email']").sendKeys("arthur.boim7@gmail.com");
 			Driver.findElementByXPath("//*[@id='continue']").click();
-			Thread.sleep(2000);
+			Thread.sleep(3000);
 			Driver.findElementByXPath("//*[@id='ap_password']").click();
 			Driver.findElementByXPath("//*[@id='ap_password']").sendKeys("a69fa2");
 			Driver.findElementByXPath("//*[@id='signInSubmit']").click();
@@ -1276,10 +1276,21 @@ public class AmazonOrder {
 	
 	public void  Login3(ChromeDriver Driver)
 	{
-										
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}							
 			Driver.findElementByXPath("//*[@id='ap_email']").click();
 			Driver.findElementByXPath("//*[@id='ap_email']").clear();
 			Driver.findElementByXPath("//*[@id='ap_email']").sendKeys(Acid);
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			//Driver.findElementByXPath("//*[@id='continue']").click();
 			Driver.findElementByXPath("//*[@id='ap_password']").click();
 			Driver.findElementByXPath("//*[@id='ap_password']").sendKeys("a69fa2");

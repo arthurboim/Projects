@@ -14,15 +14,17 @@ import Ebay.eBayAPI;
 import Item.Item;
 import Item.Item.PriceChangeStatus;
 import Item.Item.QuantitiyChangeStatus;
+import Item.Item.SellerPrice;
 import MarketPlace.eBayMarketPlace;
 import Supplier.AmazonSupplier;
 
 
 public class MonitorManager {
 
-	private static int size = 100;
+	
 	private static int SuppliyerthreadAmount = 1;
 	private static int MarketPlaceScanThreadAmount =1;
+	private static String StoreName;
 	private static int OutOfStockLimit = 2;
 	
 	eBayAPI 			 ebay; 
@@ -73,7 +75,10 @@ public class MonitorManager {
 			String sCurrentLine;
 			while ((sCurrentLine = br.readLine()) != null) 
 			{
-
+				if (sCurrentLine.contains("Store name: "))
+				{
+					StoreName = sCurrentLine.substring(sCurrentLine.indexOf("Store name: ")+"Store name: ".length());
+				}
 				if (sCurrentLine.contains("SupplierScanThreadAmount: "))
 				{
 					String s = sCurrentLine.substring(sCurrentLine.indexOf("SupplierScanThreadAmount: ")+"SupplierScanThreadAmount: ".length());
@@ -170,31 +175,40 @@ public class MonitorManager {
 			
 			// Case when i'm lowestprice and want to increase the price untill the second
 			if (ele.getPlaceInLowestPrice() == 1 && 
-				ele.getMarketPlaceResults() > 1  &&	
-				ele.getCurrentMarketPlacePrice()+0.01 < ele.getMarketPlaceSecondLowestPrice())
+				ele.getPricesList().get(0).getName().equals(StoreName) &&
+				ele.getMarketPlaceResults() > 1 &&
+				ele.getPricesList().get(0).getPrice()+0.01 < ele.getPricesList().get(1).getPrice())
 			{
-				ele.CalculateNewProfitPersentFromSpecificPrice(ele.getMarketPlaceSecondLowestPrice());
-				ele.CalculateNewMarketPlacePrice(ele.getMarketPlaceSecondLowestPrice());
+				ele.CalculateNewProfitPersentFromSpecificPrice(ele.getPricesList().get(1).getPrice()-0.01);
+				ele.SetNewMarketPlacePrice(ele.getPricesList().get(1).getPrice()-0.01);
 				ele.setPriceStatus(PriceChangeStatus.PriceIncrease);
 			}
 			
 			else if (ele.getPlaceInLowestPrice() > 1)
 			{
-				for(Double ele1:ele.getPricesList())
+				for(SellerPrice ele1:ele.getPricesList())
 				{
-					if (ele.getMinPriceToSale() <= ele1 && 
-							ele.getCurrentMarketPlacePrice() != ele1)
+					if (ele.getMinPriceToSale() <= ele1.getPrice() && 
+						ele.getCurrentMarketPlacePrice() != ele1.getPrice() &&
+						!ele1.getName().equals(StoreName))
 					{
-						ele.CalculateNewProfitPersentFromSpecificPrice(ele1-0.01);
-						ele.CalculateNewMarketPlacePrice(ele1-0.01);
+						System.out.println("Lower then -> "+ele1.getName());
+						System.out.println("Seller price is  -> "+ele1.getPrice());
+						System.out.println("My new price  -> "+(ele1.getPrice()-0.01));
+						ele.CalculateNewProfitPersentFromSpecificPrice(ele1.getPrice()-0.01);
+						ele.SetNewMarketPlacePrice(ele1.getPrice()-0.01);
 						ele.setPriceStatus(PriceChangeStatus.PriceReduce);
 						break;
 					}
 				}
 			}else
 			{
-				ele.setMyProfitPercent(1.1);
-				ele.CalculateNewMarketPlacePrice(ele.getMyProfitPercent());
+				ele.setPriceStatus(PriceChangeStatus.NoChange);
+			}
+			
+			if (ele.getMyProfitPercent() < 0)
+			{
+				ele.setPriceStatus(PriceChangeStatus.NoChange);
 			}
 		}
 	}
@@ -223,8 +237,14 @@ public class MonitorManager {
 	{
 		for(Item ele:ListOfItemsForSuppliyer)
 		{
-			if (ele.getPriceStatus() != PriceChangeStatus.NoChange)
+			if (ele.getPriceStatus() != PriceChangeStatus.NoChange &&
+				ele.getCurrentMarketPlacePrice() != ele.getUpdatedPrice())
 			{
+				System.out.println("Market place code = "+ele.getMarketPlaceCode());
+				System.out.println("Current market place price = "+ele.getCurrentMarketPlacePrice());
+				System.out.println("New price = "+ele.getUpdatedPrice());
+				System.out.println("Universal code = "+ele.getUniversalCode());
+				System.out.println("***************************");
 				//Ebay chang price 
 				ebay.ChangePrice(ele);
 				// Update DB
@@ -239,14 +259,13 @@ public class MonitorManager {
 	private void DevideArrayList(ArrayList<Item> ListOfItemsToDivide, List<List<Item>> alist, int splitMount)
 	{
 		int i=0;
-		
-		if (ListOfItemsToDivide.size()<splitMount)
+		int size = ListOfItemsToDivide.size()/splitMount;
+		if (ListOfItemsToDivide.size() < splitMount)
 		{
 			alist.add(ListOfItemsToDivide.subList(i, ListOfItemsToDivide.size()));
 
 		}else
 		{
-			size = ListOfItemsToDivide.size()/splitMount;
 			while(i + size < ListOfItemsToDivide.size())
 			{
 				alist.add(ListOfItemsToDivide.subList(i, i + size));
@@ -256,6 +275,7 @@ public class MonitorManager {
 		}
 		
 		System.out.println("Divided into: "+alist.size());
+
 	}
 	
 	private void ArrangeResultSet(ResultSet res,ArrayList<Item> ListOfItems)
@@ -356,8 +376,6 @@ public class MonitorManager {
 		{
 			e.printStackTrace();
 		}
-		
-		//MergeArrayList(alistMarketPlace);
 	}
 
 	private void OptimizerChange()
@@ -382,14 +400,6 @@ public class MonitorManager {
 //		UpdateChanges(ListOfItems);
 	}
 	
-	void printList(ArrayList<Item> ListOfItems)
-	{
-		for(Item ele:ListOfItems)
-		{
-			System.out.println(ele.toString());
-		}
-	}
-	
 	void AmazonToeBayScanner()
 	{
 		// Read data from database
@@ -402,10 +412,6 @@ public class MonitorManager {
 
 		// Execute scan marketplace and supplier
 		MultiThreadScanner();
-
-//		printList(ListOfItems);
 	}
-
-
 
 }
