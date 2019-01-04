@@ -11,5 +11,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/Amazon_API"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Item"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/eBayAPI"/>
+	<classpathentry kind="lib" path="C:/JarInclude/ebaycalls.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

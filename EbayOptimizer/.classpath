@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="Itemspictures"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="C:/FinditemEbay/lib/finding.jar"/>
+	<classpathentry kind="lib" path="C:/FinditemEbay/lib/log4j-1.2.16.jar"/>
+	<classpathentry kind="lib" path="C:/FinditemEbay/ebaycalls.jar"/>
+	<classpathentry kind="lib" path="C:/FinditemEbay/ebaysdkcore.jar"/>
+	<classpathentry kind="lib" path="C:/FinditemEbay/finding.jar"/>
+	<classpathentry kind="lib" path="C:/FinditemEbay/log4j-1.2.16.jar"/>
+	<classpathentry kind="lib" path="C:/FinditemEbay/slf4j-api-1.6.1.jar"/>
+	<classpathentry kind="lib" path="C:/FinditemEbay/slf4j-log4j12-1.6.1.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/activation.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/ebaycalls.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/ebaycalls-src.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/ebaysdkcore.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/ebaysdkcore-src.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/FastInfoset.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/helper.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/helper-src.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/http.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/jakarta-oro-2.0.8.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/jaxb-api.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/jaxb-impl.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/jaxb-xjc.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/jaxp-api.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/jaxp-ri.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/jaxws-api.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/jaxws-rt.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/jaxws-tools.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/jsr173_api.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/jsr181-api.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/jsr250-api.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/junit.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/log4j-1.2.16.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/mimepull.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/resolver.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/saaj-api.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/saaj-impl.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/serializer.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/sjsxp.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/slf4j-api-1.6.1.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/slf4j-jdk14-1.6.1.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/slf4j-log4j12-1.6.1.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/slf4j-nop-1.6.1.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/slf4j-simple-1.6.1.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/src.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/stax-ex.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/streambuffer.jar"/>
+	<classpathentry kind="lib" path="C:/JavaSdkForJava/xalan.jar"/>
+	<classpathentry kind="lib" path="C:/ChromeDriverFolder/selenium-server-standalone-3.0.1.jar"/>
+	<classpathentry kind="lib" path="C:/JDBC Driver/mysql-connector-java-5.1.40-bin.jar"/>
+	<classpathentry kind="lib" path="miglayout15-swing.jar" sourcepath="miglayout-src.zip"/>
+	<classpathentry kind="lib" path="jgoodies-common-1.8.0.jar" sourcepath="jgoodies-common-1.8.0-sources.jar"/>
+	<classpathentry kind="lib" path="jgoodies-forms-1.8.0.jar" sourcepath="jgoodies-forms-1.8.0-sources.jar"/>
+	<classpathentry kind="lib" path="C:/JavaExcel/commons-codec-1.10.jar"/>
+	<classpathentry kind="lib" path="C:/JavaExcel/commons-collections4-4.1.jar"/>
+	<classpathentry kind="lib" path="C:/JavaExcel/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="C:/JavaExcel/curvesapi-1.04.jar"/>
+	<classpathentry kind="lib" path="C:/JavaExcel/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="C:/JavaExcel/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="C:/JavaExcel/poi-3.17-beta1.jar"/>
+	<classpathentry kind="lib" path="C:/JavaExcel/poi-examples-3.17-beta1.jar"/>
+	<classpathentry kind="lib" path="C:/JavaExcel/poi-excelant-3.17-beta1.jar"/>
+	<classpathentry kind="lib" path="C:/JavaExcel/poi-ooxml-3.17-beta1.jar"/>
+	<classpathentry kind="lib" path="C:/JavaExcel/poi-ooxml-schemas-3.17-beta1.jar"/>
+	<classpathentry kind="lib" path="C:/JavaExcel/poi-scratchpad-3.17-beta1.jar"/>
+	<classpathentry kind="lib" path="C:/JavaExcel/xmlbeans-2.6.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

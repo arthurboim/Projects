@@ -152,6 +152,26 @@ public class SQLDataBase implements IDataBase{
 	
 	// Online items 
 	
+	public void GetItemForImagesGrab(ArrayList<Item> ListOfItems)
+	{
+		ResultSet res = Read("SELECT * FROM amazon.productfromsellers where BreakEvenForLowest >0 and  Uploaded = 0;");
+		try
+		{
+			while (res.next())
+			{
+				Item newItem = new Item();
+				newItem.setSupplierCode(res.getString("ASIN").trim());
+				ListOfItems.add(newItem);
+			}
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+	
+	}
+
+	
+	
 	public void GetOnlineItems(ArrayList<Item> ListOfItems)
 	{
 		ResultSet res = Read("SELECT * FROM amazon.online;");

@@ -6,22 +6,22 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
-
 import Config.Config;
 import DataBase.SQLDataBase;
+import Item.Item;
 import WebDriver.SelenumWebDriver;
 
 public class Images
 {
 	SQLDataBase 	  	 SQLDb;
 	SelenumWebDriver 	 Driver;
-	ArrayList<String>    ListOfItems;
+	ArrayList<Item>      ListOfItems;
 	// Constarctor 
 	
 	public Images()
 	{
 		SQLDb = new SQLDataBase();
-		ListOfItems = new ArrayList<String>();
+		ListOfItems = new ArrayList<Item>();
 		Driver = new SelenumWebDriver();
 	}
 	
@@ -31,14 +31,38 @@ public class Images
 	
 	// Public 
 	
-	public void SaveItemImageS()
+	public void SaveItemImages()
 	{
-		for(String ele:ListOfItems)
+		String temp = null;
+		
+		SQLDb.GetItemForImagesGrab(ListOfItems);
+		
+		for(Item ele:ListOfItems)
 		{
-			Driver.OpenLink("www.amazon.com/dp/"+ele);
-			//Driver.GetDriver()
+			try{
+			Driver.OpenLink("https://www.amazon.com/dp/"+ele.getSupplierCode());
+			Thread.sleep(1000);
+			temp = Driver.GetDriver().findElementByXPath("//*[@id='landingImage']").getAttribute("src");
+			System.out.println(temp);
+			}catch(Exception e)
+			{
+				try{
+				temp = Driver.GetDriver().findElementByXPath("//*[@id='imgBlkFront']").getAttribute("src");
+				System.out.println(temp);
+				}catch(Exception e1)
+				{
+					
+				}
+			}
+			try
+			{
+				saveImage(temp,Config.ImageSavePath+ele.getSupplierCode()+".png");
+			} catch (IOException e)
+			{
+				e.printStackTrace();
+			}			
 		}
-		//saveImage(,Config.ImageSavePath++".png");			
+		Driver.CloseWebDriver();
 	}
 	
 	// Protected
@@ -46,7 +70,6 @@ public class Images
 	
 	// Private
 	
-
 	 private void saveImage(String imageUrl, String destinationFile) throws IOException 
 	 {
 	    URL url = new URL(imageUrl);
