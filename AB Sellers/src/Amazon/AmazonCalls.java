@@ -312,13 +312,13 @@ public class AmazonCalls implements Runnable {
 	private boolean Login(ChromeDriver Driver) {
 		try {
 			Driver.get("https://www.amazon.com/");
-			waitForLoad(Driver);
-			Driver.findElement(By.id("nav-link-accountList")).click();
-			waitForLoad(Driver);
+			Thread.sleep(2000);
+			Driver.findElementByXPath("//*[@id='nav-link-accountList']").click();
+			Thread.sleep(2000);
 			Driver.findElementByXPath("//*[@id='ap_email']").click();
 			Driver.findElementByXPath("//*[@id='ap_email']").clear();
 			Driver.findElementByXPath("//*[@id='ap_email']").sendKeys(user);
-			Driver.findElementByXPath("//*[@id='continue']").click();
+			// Driver.findElementByXPath("//*[@id='continue']").click();
 			Driver.findElementByXPath("//*[@id='ap_password']").click();
 			Driver.findElementByXPath("//*[@id='ap_password']").sendKeys(pass);
 			Driver.findElementByXPath("//*[@id='signInSubmit']").click();
@@ -330,7 +330,12 @@ public class AmazonCalls implements Runnable {
 	}
 
 	private void Login2(ChromeDriver Driver) {
-		waitForLoad(Driver);
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Driver.findElementByXPath("//*[@id='ap_email']").click();
 		Driver.findElementByXPath("//*[@id='ap_email']").clear();
 		Driver.findElementByXPath("//*[@id='ap_email']").sendKeys(user);
