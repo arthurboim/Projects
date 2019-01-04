@@ -17,7 +17,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import Configurations.Config;
 import DataBase.IDataBase;
 import DataBase.SQLDataBase;
 import Ebay.eBayCalls;
@@ -122,20 +121,30 @@ public class AmazonCalls implements Runnable {
 	/* Thread public runnable */
 	@Override
 	public void run() {
-
+		int counter = 0;
 		Boolean success = Login(Driver);
 		if (false == success) {
 			Login2(Driver);
 		}
 
-		while (true) {
+		while (true) 
+		{
 
 			readItems();
-			System.out.println("Heap size = " + Config.GetHeapSize() + " " + Config.GetCurrentTime() + " list size = "
-					+ list.size());
-
-			for (Item ele : list) {
+			for (Item ele : list) 
+			{
 				try {
+					if (counter > 100)
+					{
+						RestDriver();
+						counter = 0;
+						Thread.sleep(1000*60);
+					}
+					else
+					{
+						counter++;
+					}
+					
 					CheckWithScraper(ele);
 					if (ele.isPrime()) {
 						eBayCaller.UpdateItemPosition(ele);
@@ -173,8 +182,8 @@ public class AmazonCalls implements Runnable {
 			try {
 				Thread.sleep(1000 * 20);
 
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+			} catch (InterruptedException e) 
+			{
 				e.printStackTrace();
 			}
 		}
@@ -274,7 +283,8 @@ public class AmazonCalls implements Runnable {
 			Thread.sleep(1000);
 		}
 	}
-
+	
+	
 	
 	private void RestDriver()
 	{
