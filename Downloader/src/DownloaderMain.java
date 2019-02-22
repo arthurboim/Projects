@@ -8,7 +8,7 @@ public class DownloaderMain {
 		{					  
 			//downloader.DownloadFile("https://listen.freshrecords.ru/?id="+i,"F:\\Downloads\\"+i+".mp3");
 			Thread t = new Thread(new Download("https://listen.freshrecords.ru/?id="+i,"C:\\Downloads\\"+i+".mp3"));
-			while(java.lang.Thread.activeCount()>100);   
+			while(java.lang.Thread.activeCount()>101);   
 			t.start();
 		}
 
