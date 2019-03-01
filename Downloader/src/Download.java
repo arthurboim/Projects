@@ -13,6 +13,7 @@ public class Download implements Runnable{
 
 	String Path;
 	String Filename;
+	 private final Object lock = new Object();
 	public static int TotalFilesDownloaded = 0;
 	
 	public Download(String Path ,String Filename ) 
@@ -36,11 +37,16 @@ public class Download implements Runnable{
 			InputStream in = url.openStream(); 
 			Files.copy(in, Paths.get(Filename), StandardCopyOption.REPLACE_EXISTING);
 			in.close();
-			TotalFilesDownloaded++;
-			System.out.println("Total amount => "+TotalFilesDownloaded);
+			
+			
 		}catch(Exception e)
 		{
 			//System.out.println(e.getMessage());
+		}
+		
+		synchronized (lock) {
+			TotalFilesDownloaded++;
+			System.out.println("Total amount => "+TotalFilesDownloaded);
 		}
 	}
 
